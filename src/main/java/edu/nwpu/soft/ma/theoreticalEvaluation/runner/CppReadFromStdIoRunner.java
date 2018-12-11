@@ -1,6 +1,6 @@
 package edu.nwpu.soft.ma.theoreticalEvaluation.runner;
 
-import edu.nwpu.soft.ma.theoreticalEvaluation.dataClass.*;
+import edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas.*;
 import edu.nwpu.soft.ma.theoreticalEvaluation.utils.ArrayUtils;
 import edu.nwpu.soft.ma.theoreticalEvaluation.utils.StreamUtils;
 import lombok.NonNull;

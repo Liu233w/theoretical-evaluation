@@ -1,4 +1,4 @@
-package edu.nwpu.soft.ma.theoreticalEvaluation.dataClass;
+package edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas;
 
 /**
  * 一次运行的输入。具体类型由分析器决定

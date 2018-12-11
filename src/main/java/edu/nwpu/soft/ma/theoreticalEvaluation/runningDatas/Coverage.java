@@ -1,4 +1,4 @@
-package edu.nwpu.soft.ma.theoreticalEvaluation.dataClass;
+package edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas;
 
 import lombok.EqualsAndHashCode;
 

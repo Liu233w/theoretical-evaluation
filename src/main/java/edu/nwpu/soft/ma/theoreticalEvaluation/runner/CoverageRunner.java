@@ -1,8 +1,8 @@
 package edu.nwpu.soft.ma.theoreticalEvaluation.runner;
 
-import edu.nwpu.soft.ma.theoreticalEvaluation.dataClass.Program;
-import edu.nwpu.soft.ma.theoreticalEvaluation.dataClass.ProgramInput;
-import edu.nwpu.soft.ma.theoreticalEvaluation.dataClass.SingleRunResult;
+import edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas.Program;
+import edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas.ProgramInput;
+import edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas.SingleRunResult;
 
 /**
  * 通过特定的分析器运行程序，得出覆盖信息的接口

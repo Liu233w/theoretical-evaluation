@@ -1,6 +1,6 @@
 package edu.nwpu.soft.ma.theoreticalEvaluation.runner;
 
-import edu.nwpu.soft.ma.theoreticalEvaluation.dataClass.ProgramInput;
+import edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas.ProgramInput;
 
 /**
  * 从命令行读入，检测输出是否正确

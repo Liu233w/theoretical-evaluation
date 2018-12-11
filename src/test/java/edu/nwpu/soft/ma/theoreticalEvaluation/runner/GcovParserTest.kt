@@ -1,6 +1,6 @@
 package edu.nwpu.soft.ma.theoreticalEvaluation.runner
 
-import edu.nwpu.soft.ma.theoreticalEvaluation.dataClass.Coverage
+import edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas.Coverage
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import java.nio.file.Path
