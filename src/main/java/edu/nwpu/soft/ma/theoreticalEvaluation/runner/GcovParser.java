@@ -1,14 +1,13 @@
 package edu.nwpu.soft.ma.theoreticalEvaluation.runner;
 
 import edu.nwpu.soft.ma.theoreticalEvaluation.dataClass.Coverage;
+import lombok.NonNull;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
-
-import static edu.nwpu.soft.ma.theoreticalEvaluation.utils.ParameterUtils.checkNull;
 
 /**
  * 从 gcov 文件生成覆盖信息，基于行。只支持不带任何参数调用的 gcov 生成的文件，比如 gcov 1.cpp
@@ -22,8 +21,7 @@ public class GcovParser {
      * @return
      * @throws IOException
      */
-    public static Coverage generateCoverageFromFile(Path path) throws IOException {
-        checkNull(path);
+    public static Coverage generateCoverageFromFile(@NonNull Path path) throws IOException {
 
         List<String> lines = Files.readAllLines(path);
         GcovParser gcovParser = new GcovParser();
