@@ -1,7 +1,6 @@
 package edu.nwpu.soft.ma.theoreticalEvaluation.runner;
 
 import edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas.*;
-import edu.nwpu.soft.ma.theoreticalEvaluation.utils.ArrayUtils;
 import edu.nwpu.soft.ma.theoreticalEvaluation.utils.StreamUtils;
 import lombok.NonNull;
 
@@ -61,7 +60,7 @@ public class CppReadFromStdIoRunner implements CoverageRunner {
 
         final String[] command = new String[typedInput.getInput().length + 1];
         command[0] = executable.toString();
-        ArrayUtils.fillBy(command, typedInput.getInput(), 1);
+        System.arraycopy(typedInput.getInput(), 0, command, 1, typedInput.getInput().length);
 
         try {
 
