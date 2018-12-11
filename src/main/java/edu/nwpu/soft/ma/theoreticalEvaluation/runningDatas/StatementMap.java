@@ -22,4 +22,34 @@ public class StatementMap {
     private final ArrayList<StatementInfo> mapList;
 
     private final StatementMapType type;
+
+    /**
+     * 获取总共的语句数量
+     *
+     * @return
+     */
+    public int getStatementCount() {
+        return mapList.size();
+    }
+
+    /**
+     * 生成一个基于行的 StatementMap，由于基于行，因此不需要读取源文件，只需要知道行数即可
+     *
+     * @param lineCount
+     * @param filePath
+     * @return
+     */
+    public static StatementMap ofLineBasedStatementMap(int lineCount, String filePath) {
+
+        final StatementMap statementMap = new StatementMap(StatementMapType.LINE_BASED);
+
+        final ArrayList<StatementInfo> mapList = statementMap.getMapList();
+        mapList.ensureCapacity(lineCount + 1);
+        mapList.add(null);
+        for (int i = 1; i <= lineCount; i++) {
+            mapList.add(new StatementInfo(i, filePath, i, i));
+        }
+
+        return statementMap;
+    }
 }

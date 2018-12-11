@@ -106,19 +106,11 @@ public class CppReadFromStdIoRunner implements CoverageRunner {
      * @throws IOException
      */
     private StatementMap getSimpleStatementMap() throws IOException {
-        final int lineNumber = Files.readAllLines(filePath).size();
-        final StatementMap statementMap = new StatementMap(StatementMapType.LINE_BASED);
 
+        final int lineCount = Files.readAllLines(filePath).size();
         final String filePathStr = filePath.toString();
 
-        final ArrayList<StatementInfo> mapList = statementMap.getMapList();
-        mapList.ensureCapacity(lineNumber + 1);
-        mapList.add(null);
-        for (int i = 1; i <= lineNumber; i++) {
-            mapList.add(new StatementInfo(i, filePathStr, i, i));
-        }
-
-        return statementMap;
+        return StatementMap.ofLineBasedStatementMap(lineCount, filePathStr);
     }
 
     @Override
