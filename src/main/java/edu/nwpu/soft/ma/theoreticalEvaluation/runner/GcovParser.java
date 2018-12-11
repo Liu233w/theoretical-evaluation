@@ -6,11 +6,12 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Optional;
 
 import static edu.nwpu.soft.ma.theoreticalEvaluation.utils.ParameterUtils.checkNull;
 
 /**
- * 从 gcov 文件生成覆盖信息，基于行
+ * 从 gcov 文件生成覆盖信息，基于行。只支持不带任何参数调用的 gcov 生成的文件，比如 gcov 1.cpp
  */
 public class GcovParser {
 
@@ -43,7 +44,7 @@ public class GcovParser {
         for (String line :
                 lines) {
 
-            String[] parts = line.trim().split("[\\s:]+");
+            String[] parts = line.trim().split("[\\s:]+", 3);
 
             // 至少需要两个参数来分析
             if (parts.length < 2) {
@@ -68,10 +69,10 @@ public class GcovParser {
             |    --------  |
             1    2         3
              */
-            Integer hitOrNull = Integer.getInteger(parts[0], 10);
-            if (hitOrNull != null && parts[1].endsWith("-block")) {
+            Optional<Integer> hitOptional = parseInteger(parts[0]);
+            if (hitOptional.isPresent() && parts[1].endsWith("-block")) {
                 int lineNumber = Integer.getInteger(parts[1].replace("-block", ""), 10);
-                addHitToLineCoverage(lineNumber, hitOrNull);
+                addHitToLineCoverage(lineNumber, hitOptional.get());
                 continue;
             }
 
@@ -79,9 +80,9 @@ public class GcovParser {
             一行普通的代码
             1:   14:    int a = stoi(argv[1]);
              */
-            Integer lineNumberOrNull = Integer.getInteger(parts[1], 10);
-            if (hitOrNull != null && lineNumberOrNull != null) {
-                addHitToLineCoverage(lineNumberOrNull, hitOrNull);
+            Optional<Integer> lineNumberOptional = parseInteger(parts[1]);
+            if (hitOptional.isPresent() && lineNumberOptional.isPresent()) {
+                addHitToLineCoverage(lineNumberOptional.get(), hitOptional.get());
                 continue;
             }
 
@@ -108,5 +109,14 @@ public class GcovParser {
     private void addHitToLineCoverage(int lineNumber, int hit) {
         int prevHit = coverage.getCoverageForStatement(lineNumber);
         coverage.setCoverageForStatement(lineNumber, prevHit + hit);
+    }
+
+    private Optional<Integer> parseInteger(String num) {
+        try {
+            int res = Integer.parseInt(num, 10);
+            return Optional.of(res);
+        } catch (NumberFormatException e) {
+            return Optional.empty();
+        }
     }
 }
