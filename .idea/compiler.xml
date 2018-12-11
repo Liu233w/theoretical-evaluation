@@ -7,7 +7,11 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="theoretical-evaluation" />
+        <module name="theoretical-evaluation-framework" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="theoretical-evaluation-framework" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
