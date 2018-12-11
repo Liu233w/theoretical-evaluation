@@ -1,6 +1,7 @@
 package edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas;
 
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +10,7 @@ import java.util.HashMap;
  * 表示一次运行的语句覆盖信息
  */
 @EqualsAndHashCode
+@ToString
 public class Coverage {
 
     /**

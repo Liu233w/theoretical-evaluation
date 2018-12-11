@@ -20,24 +20,31 @@ public class CppReadFromStdIoRunner implements CoverageRunner {
     private Program program = null;
 
     private Path filePath;
-    private String filePathStr;
+    private Path directoryPath;
     private StatementMap statementMap;
+
+    private Path executable;
+    private Path gcovFile;
 
     @Override
     public void prepare(@NonNull Program program) throws CoverageRunnerException {
         this.program = program;
 
-        filePathStr = program.getPath();
-        final String[] cmd = {"g++", "-fprofile-arcs", "-ftest-coverage", filePathStr};
+        final String[] cmd = {};
 
         try {
 
             // 初始化 StatementMap，顺便检查文件是否存在。
-            filePath = Paths.get(filePathStr);
+            filePath = Paths.get(program.getPath());
             statementMap = getSimpleStatementMap();
+            directoryPath = filePath.getParent();
 
-            Process process = Runtime.getRuntime().exec(cmd);
-            waitProcessAndAssertReturnCode(process);
+            waitToRunCommandAndGetProcess(new String[]{
+                    "g++", "-fprofile-arcs", "-ftest-coverage", filePath.toString()
+            });
+
+            executable = directoryPath.resolve("a");
+            gcovFile = directoryPath.resolve(filePath.getFileName().toString() + ".gcov");
 
         } catch (IOException | InterruptedException e) {
             throw new CoverageRunnerException(e);
@@ -52,22 +59,21 @@ public class CppReadFromStdIoRunner implements CoverageRunner {
         }
         final CppReadFromStdIoInput typedInput = (CppReadFromStdIoInput) programInput;
 
-        final Path path = Paths.get(program.getPath());
-        final Path dir = path.getParent();
-        final Path executable = dir.resolve("a");
-
         final String[] command = new String[typedInput.getInput().length + 1];
         command[0] = executable.toString();
         ArrayUtils.fillBy(command, typedInput.getInput(), 1);
 
         try {
-            final Process process = Runtime.getRuntime().exec(command);
-            waitProcessAndAssertReturnCode(process);
 
+            // run program and get output
+            final Process process = waitToRunCommandAndGetProcess(command);
             final InputStream inputStream = process.getInputStream();
             final String output = StreamUtils.convertStreamToString(inputStream);
 
-            final Coverage coverage = GcovParser.generateCoverageFromFile(filePath);
+            // run gcov
+            waitToRunCommandAndGetProcess(new String[]{"gcov", filePath.toString()});
+
+            final Coverage coverage = GcovParser.generateCoverageFromFile(gcovFile);
 
             return new SingleRunResult(
                     program,
@@ -81,13 +87,17 @@ public class CppReadFromStdIoRunner implements CoverageRunner {
         }
     }
 
-    private static void waitProcessAndAssertReturnCode(Process process) throws InterruptedException, CoverageRunnerException {
+    private Process waitToRunCommandAndGetProcess(String[] command) throws InterruptedException, IOException, CoverageRunnerException {
+
+        Process process = Runtime.getRuntime().exec(command, null, directoryPath.toFile());
 
         int returnCode = process.waitFor();
 
         if (returnCode != 0) {
             throw new CoverageRunnerException("execution failed with return code : " + returnCode);
         }
+
+        return process;
     }
 
     /**
@@ -99,6 +109,8 @@ public class CppReadFromStdIoRunner implements CoverageRunner {
     private StatementMap getSimpleStatementMap() throws IOException {
         final int lineNumber = Files.readAllLines(filePath).size();
         final StatementMap statementMap = new StatementMap(StatementMapType.LINE_BASED);
+
+        final String filePathStr = filePath.toString();
 
         final ArrayList<StatementInfo> mapList = statementMap.getMapList();
         mapList.ensureCapacity(lineNumber + 1);

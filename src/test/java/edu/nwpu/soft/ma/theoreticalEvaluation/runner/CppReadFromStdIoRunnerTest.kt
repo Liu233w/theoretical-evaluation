@@ -10,16 +10,22 @@ class CppReadFromStdIoRunnerTest {
     // 执行此测试需要计算机安装有 g++ 和 gcov
     fun `test execution`() {
 
+        // arrange
         val runner = CppReadFromStdIoRunner()
         val testFilePath = getTestFilePath("1.cpp").toString()
 
+        // act
         runner.prepare(Program("test cpp: 1.cpp", testFilePath))
+
         val singleRunResult = runner.runWithInput(
                 CppReadFromStdIoInput(
                         arrayOf("1"),
                         "input 1\n"))
 
-        assertEquals(singleRunResult, SingleRunResult(
+        runner.cleanUp()
+
+        // assert
+        assertEquals(SingleRunResult(
                 Program("test cpp: 1.cpp", testFilePath),
                 CppReadFromStdIoInput(arrayOf("1"), "input 1\n"),
                 true,
@@ -40,6 +46,6 @@ class CppReadFromStdIoRunnerTest {
                         mapList.add(StatementInfo(i, testFilePath, i, i))
                     }
                 }
-        ))
+        ), singleRunResult)
     }
 }

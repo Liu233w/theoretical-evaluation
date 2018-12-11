@@ -1,27 +1,21 @@
 package edu.nwpu.soft.ma.theoreticalEvaluation.runner;
 
 import edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas.ProgramInput;
+import lombok.Data;
 
 /**
  * 从命令行读入，检测输出是否正确
  */
+@Data
 public class CppReadFromStdIoInput implements ProgramInput {
 
-    private String[] input;
+    private final String[] input;
 
-    private String shouldOutputFromStdOut;
+    private final String shouldOutputFromStdOut;
 
     public CppReadFromStdIoInput(String[] input, String shouldOutputFromStdOut) {
         this.input = input;
         this.shouldOutputFromStdOut = shouldOutputFromStdOut;
-    }
-
-    public String[] getInput() {
-        return input;
-    }
-
-    public String getShouldOutputFromStdOut() {
-        return shouldOutputFromStdOut;
     }
 
     @Override
