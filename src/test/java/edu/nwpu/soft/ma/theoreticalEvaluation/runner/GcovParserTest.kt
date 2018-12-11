@@ -13,7 +13,6 @@ class GcovParserTest {
 
         assertParserOutput(
                 "basicGcovFile.gcov",
-                24,
                 6 to 1,
                 10 to 1,
                 12 to 1,
@@ -53,7 +52,6 @@ class GcovParserTest {
 fun assertComplexFile(fileName: String) {
     assertParserOutput(
             fileName,
-            37,
             7 to 1,
             8 to 2,
             18 to 1,
@@ -70,18 +68,14 @@ fun assertComplexFile(fileName: String) {
     )
 }
 
-fun assertParserOutput(fileName: String, lineNum: Int, vararg shouldResultInMap: Pair<Int, Int>) {
+fun assertParserOutput(fileName: String, vararg shouldResultInMap: Pair<Int, Int>) {
 
     val coverage = GcovParser.generateCoverageFromFile(getTestFilePath(fileName))
+    val expectedCoverage = Coverage(hashMapOf(*shouldResultInMap))
 
-    val covArray = coverage.getAllCoverageInformation(lineNum)
-    assertEquals(genExpectedArray(lineNum, *shouldResultInMap), covArray)
+    assertEquals(expectedCoverage, coverage)
 }
 
 fun getTestFilePath(fileName: String): Path {
     return Paths.get(ClassLoader.getSystemResource(fileName).toURI())
-}
-
-fun genExpectedArray(lineNum: Int, vararg pairs: Pair<Int, Int>): ArrayList<Int> {
-    return Coverage(hashMapOf(*pairs)).getAllCoverageInformation(lineNum)
 }
