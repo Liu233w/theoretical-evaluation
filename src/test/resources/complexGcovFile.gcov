@@ -1,0 +1,42 @@
+        -:    0:Source:2.cpp
+        -:    0:Graph:2.gcno
+        -:    0:Data:2.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdio.h>
+        -:    2:
+        -:    3:template<class T>
+        -:    4:class Foo
+        -:    5:{
+        -:    6:  public:
+        1:    7:  Foo(): b (1000) {}
+        2:    8:  void inc () { b++; }
+        -:    9:
+        -:   10:  private:
+        -:   11:  int b;
+        -:   12:};
+        -:   13:
+        -:   14:template class Foo<int>;
+        -:   15:template class Foo<char>;
+        -:   16:
+        -:   17:int
+        1:   18:main (void)
+        -:   19:{
+        -:   20:  int i, total;
+        1:   21:  Foo<int> counter;
+        -:   22:
+        1:   23:  counter.inc();
+        1:   24:  counter.inc();
+        1:   25:  total = 0;
+        -:   26:
+       11:   27:  for (i = 0; i < 10; i++)
+       10:   28:    total += i;
+        -:   29:
+        1:   30:  int v = total > 100 ? 1 : 2;
+        -:   31:
+        1:   32:  if (total != 45)
+    #####:   33:    printf ("Failure\n");
+        -:   34:  else
+        1:   35:    printf ("Success\n");
+        1:   36:  return 0;
+        -:   37:}

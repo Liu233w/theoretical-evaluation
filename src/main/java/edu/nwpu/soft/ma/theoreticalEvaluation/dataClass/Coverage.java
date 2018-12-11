@@ -12,13 +12,17 @@ public class Coverage {
      * 1 语句编号
      * 2 执行次数；如果分析器不支持使用执行次数，将只为 0 或 1
      */
-    private HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+    private HashMap<Integer, Integer> map;
 
     /**
      * 默认构造函数，将所有语句初始化为 “没有执行”
      */
     public Coverage() {
+        map = new HashMap<>();
+    }
 
+    public Coverage(HashMap<Integer, Integer> map) {
+        this.map = map;
     }
 
     /**

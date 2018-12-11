@@ -1,0 +1,29 @@
+        -:    0:Source:1.cpp
+        -:    0:Graph:1.gcno
+        -:    0:Data:1.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <iostream>
+        -:    2:#include <string>
+        -:    3:
+        -:    4:using namespace std;
+        -:    5:
+        1:    6:void tf() {
+        -:    7:    if (0) {
+        -:    8:        cout << "no" << endl;
+        -:    9:    }
+        1:   10:}
+        -:   11:
+        1:   12:int main(int argc, char** argv) {
+        -:   13:
+        1:   14:    int a = stoi(argv[1]);
+        1:   15:    if (a == 1) {
+        1:   16:        cout << "input 1" << endl;
+        -:   17:    } else {
+    #####:   18:        cout << "else" << endl;
+        -:   19:    }
+        -:   20:
+        1:   21:    tf();
+        -:   22:
+        1:   23:    return 0;
+        3:   24:}

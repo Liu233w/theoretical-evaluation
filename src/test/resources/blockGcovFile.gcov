@@ -1,0 +1,70 @@
+        -:    0:Source:tmp.cpp
+        -:    0:Working directory:/home/gcc/testcase
+        -:    0:Graph:tmp.gcno
+        -:    0:Data:tmp.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:#include <stdio.h>
+        -:    2:
+        -:    3:template<class T>
+        -:    4:class Foo
+        -:    5:{
+        -:    6:  public:
+       1*:    7:  Foo(): b (1000) {}
+------------------
+Foo<char>::Foo():
+    #####:    7:  Foo(): b (1000) {}
+------------------
+Foo<int>::Foo():
+        1:    7:  Foo(): b (1000) {}
+------------------
+       2*:    8:  void inc () { b++; }
+------------------
+Foo<char>::inc():
+    #####:    8:  void inc () { b++; }
+------------------
+Foo<int>::inc():
+        2:    8:  void inc () { b++; }
+------------------
+        -:    9:
+        -:   10:  private:
+        -:   11:  int b;
+        -:   12:};
+        -:   13:
+        -:   14:template class Foo<int>;
+        -:   15:template class Foo<char>;
+        -:   16:
+        -:   17:int
+        1:   18:main (void)
+        -:   19:{
+        -:   20:  int i, total;
+        1:   21:  Foo<int> counter;
+        1:   21-block  0
+        -:   22:
+        1:   23:  counter.inc();
+        1:   23-block  0
+        1:   24:  counter.inc();
+        1:   24-block  0
+        1:   25:  total = 0;
+        -:   26:
+       11:   27:  for (i = 0; i < 10; i++)
+        1:   27-block  0
+       11:   27-block  1
+       10:   28:    total += i;
+       10:   28-block  0
+        -:   29:
+       1*:   30:  int v = total > 100 ? 1 : 2;
+        1:   30-block  0
+    %%%%%:   30-block  1
+        1:   30-block  2
+        -:   31:
+        1:   32:  if (total != 45)
+        1:   32-block  0
+    #####:   33:    printf ("Failure\n");
+    %%%%%:   33-block  0
+        -:   34:  else
+        1:   35:    printf ("Success\n");
+        1:   35-block  0
+        1:   36:  return 0;
+        1:   36-block  0
+        -:   37:}
