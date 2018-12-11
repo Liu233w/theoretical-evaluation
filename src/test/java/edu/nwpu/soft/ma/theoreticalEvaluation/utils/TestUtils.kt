@@ -1,4 +1,4 @@
-package edu.nwpu.soft.ma.theoreticalEvaluation.runner
+package edu.nwpu.soft.ma.theoreticalEvaluation.utils
 
 import java.nio.file.Path
 import java.nio.file.Paths

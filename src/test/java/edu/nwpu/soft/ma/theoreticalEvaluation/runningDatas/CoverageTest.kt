@@ -1,6 +1,5 @@
-package edu.nwpu.soft.ma.theoreticalEvaluation.runner
+package edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas
 
-import edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas.Coverage
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
