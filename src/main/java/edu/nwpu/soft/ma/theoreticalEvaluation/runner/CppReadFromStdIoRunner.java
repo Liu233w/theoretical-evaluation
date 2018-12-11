@@ -12,7 +12,10 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-public class CppReadFromCmdRunner implements CoverageRunner {
+/**
+ * 使用 gcov 执行 c++ 源代码的覆盖率检测。程序从程序参数读取输入，从标准输出输出结果。
+ */
+public class CppReadFromStdIoRunner implements CoverageRunner {
 
     private Program program = null;
 
@@ -44,10 +47,10 @@ public class CppReadFromCmdRunner implements CoverageRunner {
     @Override
     public SingleRunResult runWithInput(ProgramInput programInput) throws CoverageRunnerException {
 
-        if (!(programInput instanceof CppReadFromCmdInput)) {
-            throw new CoverageRunnerException("input should be an instance of CppReadFromCmdInput");
+        if (!(programInput instanceof CppReadFromStdIoInput)) {
+            throw new CoverageRunnerException("input should be an instance of CppReadFromStdIoInput");
         }
-        final CppReadFromCmdInput typedInput = (CppReadFromCmdInput) programInput;
+        final CppReadFromStdIoInput typedInput = (CppReadFromStdIoInput) programInput;
 
         final Path path = Paths.get(program.getPath());
         final Path dir = path.getParent();

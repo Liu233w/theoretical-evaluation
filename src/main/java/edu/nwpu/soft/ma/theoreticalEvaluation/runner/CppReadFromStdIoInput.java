@@ -5,13 +5,13 @@ import edu.nwpu.soft.ma.theoreticalEvaluation.dataClass.ProgramInput;
 /**
  * 从命令行读入，检测输出是否正确
  */
-public class CppReadFromCmdInput implements ProgramInput {
+public class CppReadFromStdIoInput implements ProgramInput {
 
     private String[] input;
 
     private String shouldOutputFromStdOut;
 
-    public CppReadFromCmdInput(String[] input, String shouldOutputFromStdOut) {
+    public CppReadFromStdIoInput(String[] input, String shouldOutputFromStdOut) {
         this.input = input;
         this.shouldOutputFromStdOut = shouldOutputFromStdOut;
     }
