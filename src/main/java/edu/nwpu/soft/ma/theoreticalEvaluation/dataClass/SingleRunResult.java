@@ -21,7 +21,7 @@ public class SingleRunResult {
     /**
      * 当前运行（测试用例）是否得到了正确的结果
      */
-    private boolean correct;
+    private final boolean correct;
 
     /**
      * 本次运行的覆盖情况
@@ -31,5 +31,5 @@ public class SingleRunResult {
     /**
      * 本次运行中分析器所得出的语句的对应关系
      */
-    private StatementMap statementMap;
+    private final StatementMap statementMap;
 }

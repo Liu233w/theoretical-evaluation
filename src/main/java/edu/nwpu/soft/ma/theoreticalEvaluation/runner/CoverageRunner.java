@@ -15,7 +15,7 @@ public interface CoverageRunner {
      *
      * @param program 需要保证其中的 path 可用
      */
-    void prepare(Program program);
+    void prepare(Program program) throws CoverageRunnerException;
 
     /**
      * 运行一次程序，获取运行结果。需要在 prepare 之后运行，使用 prepare 中传入的程序路径。
@@ -23,10 +23,10 @@ public interface CoverageRunner {
      * @param programInput 本次运行的输入
      * @return 单次运行结果
      */
-    SingleRunResult runWithInput(ProgramInput programInput);
+    SingleRunResult runWithInput(ProgramInput programInput) throws CoverageRunnerException;
 
     /**
      * 清理程序。与 prepare 对应，在最后运行。使用 prepare 中的输入。
      */
-    void cleanUp();
+    void cleanUp() throws CoverageRunnerException;
 }

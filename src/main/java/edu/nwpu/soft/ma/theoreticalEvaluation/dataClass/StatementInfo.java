@@ -18,7 +18,7 @@ public class StatementInfo {
     /**
      * 包含语句的源代码的路径
      */
-    private final String path;
+    private final String filePath;
 
     /**
      * 语句在源代码中的起始行
@@ -40,10 +40,16 @@ public class StatementInfo {
      */
     private final int endColomn;
 
-    public StatementInfo(int statementIndex, String path, int startRow, int endRow) {
+    /**
+     * @param statementIndex
+     * @param filePath       包含语句的源代码的路径
+     * @param startRow
+     * @param endRow
+     */
+    public StatementInfo(int statementIndex, String filePath, int startRow, int endRow) {
         this.statementIndex = statementIndex;
 
-        this.path = path;
+        this.filePath = filePath;
         this.startRow = startRow;
         this.endRow = endRow;
 
