@@ -1,16 +1,12 @@
 package edu.nwpu.soft.ma.theoreticalEvaluation.runner
 
 import edu.nwpu.soft.ma.theoreticalEvaluation.runningDatas.Coverage
-import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
-import java.nio.file.Path
-import java.nio.file.Paths
+import io.kotlintest.shouldBe
+import io.kotlintest.specs.FreeSpec
 
-class GcovParserTest {
+class GcovParserTest : FreeSpec({
 
-    @Test
-    fun `basic test - 自己写的测试代码`() {
-
+    "basic test - 自己写的测试代码" {
         assertParserOutput(
                 "basicGcovFile.gcov",
                 6 to 1,
@@ -25,28 +21,33 @@ class GcovParserTest {
         )
     }
 
-    @Test
-    fun `complex test - 在 gcov 官网上找到的 gcov 文件`() {
-        assertComplexFile("complexGcovFile.gcov")
-    }
+    "complex test - 在 gcov 官网上找到的 gcov 文件" - {
 
-    // 下列三个都不支持。在使用 GcovParser 时需要传入不带任何参数的 gcov 生成的文件
+        "不带任何参数的输入" {
+            assertComplexFile("complexGcovFile.gcov")
+        }
 
-    //@Test
-    fun `demangled test - 在 gcov 官网上找到的 gcov 文件，将每个模板分别计算`() {
-        assertComplexFile("demangledGcovFile.gcov")
-    }
+        "! 暂时不支持的输入" - {
 
-    //@Test
-    fun `block test - 在 gcov 官网上找到的 gcov 文件，将每个模板, block 分别计算`() {
-        assertComplexFile("blockGcovFile.gcov")
-    }
+            """
+            下列三个都不支持。在使用 GcovParser 时需要传入不带任何参数的 gcov 生成的文件
+            下面三个测试不运行
+            """.trimIndent()
 
-    //@Test
-    fun `branch test - 在 gcov 官网上找到的 gcov 文件，将每个模板, block, branch 分别计算`() {
-        assertComplexFile("branchGcovFile.gcov")
+            "每个模板分别计算" {
+                assertComplexFile("demangledGcovFile.gcov")
+            }
+
+            "每个模板, block 分别计算" {
+                assertComplexFile("blockGcovFile.gcov")
+            }
+
+            "每个模板, block, branch 分别计算" {
+                assertComplexFile("branchGcovFile.gcov")
+            }
+        }
     }
-}
+})
 
 // 官网上的三个文件的评测结果应该都是一样的，放到这里避免编写重复代码
 private fun assertComplexFile(fileName: String) {
@@ -71,7 +72,5 @@ private fun assertComplexFile(fileName: String) {
 private fun assertParserOutput(fileName: String, vararg shouldResultInMap: Pair<Int, Int>) {
 
     val coverage = GcovParser.generateCoverageFromFile(getTestFilePath(fileName))
-    val expectedCoverage = Coverage(hashMapOf(*shouldResultInMap))
-
-    assertEquals(expectedCoverage, coverage)
+    coverage.shouldBe(Coverage(hashMapOf(*shouldResultInMap)))
 }
