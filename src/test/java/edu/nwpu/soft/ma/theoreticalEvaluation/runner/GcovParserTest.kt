@@ -49,7 +49,7 @@ class GcovParserTest {
 }
 
 // 官网上的三个文件的评测结果应该都是一样的，放到这里避免编写重复代码
-fun assertComplexFile(fileName: String) {
+private fun assertComplexFile(fileName: String) {
     assertParserOutput(
             fileName,
             7 to 1,
@@ -68,14 +68,10 @@ fun assertComplexFile(fileName: String) {
     )
 }
 
-fun assertParserOutput(fileName: String, vararg shouldResultInMap: Pair<Int, Int>) {
+private fun assertParserOutput(fileName: String, vararg shouldResultInMap: Pair<Int, Int>) {
 
     val coverage = GcovParser.generateCoverageFromFile(getTestFilePath(fileName))
     val expectedCoverage = Coverage(hashMapOf(*shouldResultInMap))
 
     assertEquals(expectedCoverage, coverage)
-}
-
-fun getTestFilePath(fileName: String): Path {
-    return Paths.get(ClassLoader.getSystemResource(fileName).toURI())
 }
