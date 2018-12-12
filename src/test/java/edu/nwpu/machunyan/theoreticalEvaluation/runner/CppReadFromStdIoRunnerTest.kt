@@ -89,4 +89,24 @@ class CppReadFromStdIoRunnerTest : FreeSpec({
             )
         }
     }
+
+    "runWithInput" - {
+
+        "在多次运行时，后一次运行不会受前一次运行的影响" {
+
+            val runner = CppReadFromStdIoRunner()
+            runner.prepare(Program("1.cpp", getTestFilePath("1.cpp").toString()))
+
+            val input = CppReadFromStdIoInput(arrayOf("1"), "input 1\n")
+
+            // 第一次运行
+            runner.runWithInput(input).coverage
+                    .getCoverageForStatement(14) shouldBe 1
+
+            // 第二次运行
+            runner.runWithInput(input).coverage
+                    .getCoverageForStatement(14) shouldBe 1
+        }
+
+    }
 })

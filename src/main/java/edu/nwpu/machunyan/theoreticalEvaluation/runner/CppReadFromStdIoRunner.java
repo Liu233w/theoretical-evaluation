@@ -23,6 +23,7 @@ public class CppReadFromStdIoRunner implements ICoverageRunner {
 
     private Path executable;
     private Path gcovFile;
+    private Path gcdaFile;
 
     @Override
     public void prepare(@NonNull Program program) throws CoverageRunnerException {
@@ -42,7 +43,10 @@ public class CppReadFromStdIoRunner implements ICoverageRunner {
             });
 
             executable = directoryPath.resolve("a");
-            gcovFile = directoryPath.resolve(filePath.getFileName().toString() + ".gcov");
+
+            final String fileName = filePath.getFileName().toString();
+            gcovFile = directoryPath.resolve(fileName + ".gcov");
+            gcdaFile = directoryPath.resolve(fileName.replaceAll("\\.cpp|\\.c|\\.cc", "") + ".gcda");
 
         } catch (IOException | InterruptedException e) {
             throw new CoverageRunnerException(e);
@@ -62,6 +66,9 @@ public class CppReadFromStdIoRunner implements ICoverageRunner {
         System.arraycopy(typedInput.getInput(), 0, command, 1, typedInput.getInput().length);
 
         try {
+
+            // remove gcda file to get rid of previous running result
+            gcdaFile.toFile().delete();
 
             // run program and get output
             final Process process = waitToRunCommandAndGetProcess(command);
