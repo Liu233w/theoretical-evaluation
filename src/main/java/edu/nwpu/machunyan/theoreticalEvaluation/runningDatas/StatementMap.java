@@ -16,6 +16,11 @@ public class StatementMap {
         this.mapList = new ArrayList<>();
     }
 
+    public StatementMap(StatementMapType type, ArrayList<StatementInfo> mapList) {
+        this.mapList = mapList;
+        this.type = type;
+    }
+
     /**
      * 语句编号同语句信息的对应，编号从 1 开始
      */
