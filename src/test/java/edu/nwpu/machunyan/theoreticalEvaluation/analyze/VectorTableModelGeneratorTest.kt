@@ -104,5 +104,5 @@ private fun buildVectorModelTableFromMatrix(vararg records: Array<Int>): ArrayLi
     }).apply { add(0, null) }
 }
 
-val mockProgramInput = ProgramInput { "mock ProgramInput" }
+val mockProgramInput = IProgramInput { "mock ProgramInput" }
 val mockProgram = Program("mock program", "...")

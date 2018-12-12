@@ -16,7 +16,7 @@ public class SingleRunResult {
     /**
      * 程序的输入，对于不同的分析器类型不同
      */
-    private final ProgramInput input;
+    private final IProgramInput input;
 
     /**
      * 当前运行（测试用例）是否得到了正确的结果

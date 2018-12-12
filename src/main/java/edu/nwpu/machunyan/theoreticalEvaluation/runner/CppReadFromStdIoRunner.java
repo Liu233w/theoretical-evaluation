@@ -13,7 +13,7 @@ import java.nio.file.Paths;
 /**
  * 使用 gcov 执行 c++ 源代码的覆盖率检测。程序从程序参数读取输入，从标准输出输出结果。
  */
-public class CppReadFromStdIoRunner implements CoverageRunner {
+public class CppReadFromStdIoRunner implements ICoverageRunner {
 
     private Program program = null;
 
@@ -50,7 +50,7 @@ public class CppReadFromStdIoRunner implements CoverageRunner {
     }
 
     @Override
-    public SingleRunResult runWithInput(ProgramInput programInput) throws CoverageRunnerException {
+    public SingleRunResult runWithInput(IProgramInput programInput) throws CoverageRunnerException {
 
         if (!(programInput instanceof CppReadFromStdIoInput)) {
             throw new CoverageRunnerException("input should be an instance of CppReadFromStdIoInput");

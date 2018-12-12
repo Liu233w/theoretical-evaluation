@@ -1,13 +1,13 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.ProgramInput;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import lombok.Data;
 
 /**
  * 从命令行读入，检测输出是否正确
  */
 @Data
-public class CppReadFromStdIoInput implements ProgramInput {
+public class CppReadFromStdIoInput implements IProgramInput {
 
     private final String[] input;
 

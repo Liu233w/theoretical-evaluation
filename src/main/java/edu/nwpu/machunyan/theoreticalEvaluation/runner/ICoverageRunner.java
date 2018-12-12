@@ -1,13 +1,13 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.ProgramInput;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
 
 /**
  * 通过特定的分析器运行程序，得出覆盖信息的接口
  */
-public interface CoverageRunner {
+public interface ICoverageRunner {
 
     /**
      * 准备程序。在开始时运行一次。部分分析器可以利用这个方法提高运行效率。
@@ -23,7 +23,7 @@ public interface CoverageRunner {
      * @param programInput 本次运行的输入
      * @return 单次运行结果
      */
-    SingleRunResult runWithInput(ProgramInput programInput) throws CoverageRunnerException;
+    SingleRunResult runWithInput(IProgramInput programInput) throws CoverageRunnerException;
 
     /**
      * 清理程序。与 prepare 对应，在最后运行。使用 prepare 中的输入。
