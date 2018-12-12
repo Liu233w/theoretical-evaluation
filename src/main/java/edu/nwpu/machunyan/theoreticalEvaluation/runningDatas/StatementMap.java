@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.ArrayList;
 
 /**
- * 表示一个程序源代码的语句信息，包含了文件中每条语句的位置和语句编号
+ * 表示一个程序源代码的语句信息，包含了文件中每条语句的位置和语句编号。编号从 1 开始。因此 map 的第 0 个元素是 null
  */
 @Data
 public class StatementMap {
@@ -29,7 +29,8 @@ public class StatementMap {
      * @return
      */
     public int getStatementCount() {
-        return mapList.size();
+        // 除去第一个位置的 null
+        return mapList.size() - 1;
     }
 
     /**
