@@ -16,18 +16,25 @@ public class VectorTableModelGenerator {
     public static ArrayList<VectorTableModelRecord> generateVectorTableModelFromRunResult(List<SingleRunResult> runResults) {
 
         final int statementCount = runResults.get(0).getStatementMap().getStatementCount();
-        final ArrayList<VectorTableModelRecord> result = new ArrayList<>(statementCount);
 
-        result.add(null);
-        for (int i = 1; i <= statementCount; i++) {
-            result.add(new VectorTableModelRecord(i));
+        final ArrayList<VectorTableModelRecordBuilder> builders = new ArrayList<>(statementCount);
+
+        for (int i = 0; i < statementCount; i++) {
+            builders.add(new VectorTableModelRecordBuilder(i + 1));
         }
 
         for (SingleRunResult singleRunResult :
                 runResults) {
-            for (int i = 1; i <= statementCount; i++) {
-                result.get(i).processSingleRunResult(singleRunResult);
+            for (int i = 0; i < statementCount; i++) {
+                builders.get(i).processSingleRunResult(singleRunResult);
             }
+        }
+
+        final ArrayList<VectorTableModelRecord> result = new ArrayList<>(statementCount + 1);
+        result.add(null);
+        for (VectorTableModelRecordBuilder builder :
+                builders) {
+            result.add(builder.build());
         }
 
         return result;
