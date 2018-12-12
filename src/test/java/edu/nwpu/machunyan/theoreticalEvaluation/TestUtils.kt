@@ -1,4 +1,4 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.utils
+package edu.nwpu.machunyan.theoreticalEvaluation
 
 import java.nio.file.Path
 import java.nio.file.Paths
