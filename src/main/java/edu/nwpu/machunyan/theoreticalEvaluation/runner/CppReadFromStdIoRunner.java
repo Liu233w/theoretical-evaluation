@@ -25,6 +25,24 @@ public class CppReadFromStdIoRunner implements ICoverageRunner {
     private Path gcovFile;
     private Path gcdaFile;
 
+    /**
+     * 根据文件的后缀名来确定要使用的编译器。（cpp和cc使用 g++，c使用 gcc）
+     *
+     * @param fileName 文件名，可以包含文件的完整路径
+     * @return
+     * @throws CoverageRunnerException 如果无法判断此后缀名时抛出
+     */
+    public static String decideCompilerFromFileExtension(String fileName) throws CoverageRunnerException {
+
+        if (fileName.matches("^.*\\.(cpp|cc)$")) {
+            return "g++";
+        } else if (fileName.matches("^.*\\.c")) {
+            return "gcc";
+        } else {
+            throw new CoverageRunnerException("runner doesn't support such file extension");
+        }
+    }
+
     @Override
     public void prepare(@NonNull Program program) throws CoverageRunnerException {
         this.program = program;
@@ -38,8 +56,10 @@ public class CppReadFromStdIoRunner implements ICoverageRunner {
             statementMap = getSimpleStatementMap();
             directoryPath = filePath.getParent();
 
+            final String compiler = decideCompilerFromFileExtension(program.getPath());
+
             waitToRunCommandAndGetProcess(new String[]{
-                    "g++", "-fprofile-arcs", "-ftest-coverage", filePath.toString()
+                    compiler, "-fprofile-arcs", "-ftest-coverage", filePath.toString()
             });
 
             executable = directoryPath.resolve("a");

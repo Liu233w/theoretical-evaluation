@@ -109,4 +109,22 @@ class CppReadFromStdIoRunnerTest : FreeSpec({
         }
 
     }
+
+    "decideCompilerFromFileExtension - 能够正确得到指定的编译器名称" - {
+
+        "cpp" {
+            CppReadFromStdIoRunner.decideCompilerFromFileExtension("a.cpp")
+                    .shouldBe("g++")
+        }
+
+        "cc" {
+            CppReadFromStdIoRunner.decideCompilerFromFileExtension("a.cc")
+                    .shouldBe("g++")
+        }
+
+        "c" {
+            CppReadFromStdIoRunner.decideCompilerFromFileExtension("a.c")
+                    .shouldBe("gcc")
+        }
+    }
 })
