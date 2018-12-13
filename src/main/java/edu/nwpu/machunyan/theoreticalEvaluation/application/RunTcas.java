@@ -13,6 +13,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -31,7 +32,7 @@ public class RunTcas {
         // 程序文件夹
         final Path versionsDir = FileUtils.getFilePathFromResources("tcas/versions");
         // 一共多少个版本
-        final int lastVersionNum = 1;
+        final int lastVersionNum = 41;
 
         // 输出结果
         final JsonArray output = new JsonArray();
@@ -47,8 +48,11 @@ public class RunTcas {
                     testCases);
 
             // 使用测试用例运行程序
+            LogUtils.logInfo("running version: " + versionNumString);
             final ArrayList<SingleRunResult> runResults = runningScheduler.runAndGetResults();
             final long passedCount = runResults.stream().filter(SingleRunResult::isCorrect).count();
+
+            LogUtils.logInfo("passed test case count: " + passedCount);
 
             final ArrayList<VectorTableModelRecord> vectorTableModel = VectorTableModelGenerator.generateVectorTableModelFromRunResult(runResults);
 
