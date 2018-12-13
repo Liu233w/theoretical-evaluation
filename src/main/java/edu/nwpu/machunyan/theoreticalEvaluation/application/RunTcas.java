@@ -89,7 +89,10 @@ public class RunTcas {
         for (JsonElement item :
                 list) {
             final JsonObject testCase = item.getAsJsonObject();
-            result.add(new GccReadFromStdIoInput(new String[]{testCase.get("input").getAsString()}, testCase.get("output").getAsString()));
+            final String[] input = new Gson().fromJson(testCase.get("input"), String[].class);
+            final String output = testCase.get("output").getAsString();
+
+            result.add(new GccReadFromStdIoInput(input, output));
         }
 
         return result;
