@@ -3,6 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,9 +35,16 @@ public class RunningScheduler {
         try {
             runner.prepare(program);
 
-            for (IProgramInput input :
-                    inputs) {
-                final SingleRunResult result = runner.runWithInput(input);
+            for (int i = 0; i < inputs.size(); i++) {
+                if (i >= inputs.size() * (3.0 / 4.0)) {
+                    progressReport("reach 3/4");
+                } else if (i >= inputs.size() / 2) {
+                    progressReport("reach 1/2");
+                } else if (i >= inputs.size() * (1.0 / 4.0)) {
+                    progressReport("reach 1/4");
+                }
+
+                final SingleRunResult result = runner.runWithInput(inputs.get(i));
                 runResults.add(result);
             }
         } finally {
@@ -44,5 +52,9 @@ public class RunningScheduler {
         }
 
         return runResults;
+    }
+
+    private void progressReport(String info) {
+        LogUtils.logFine("Progress report for " + program.getTitle() + ": " + info);
     }
 }
