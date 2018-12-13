@@ -14,7 +14,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
-import sun.rmi.runtime.Log;
+import me.tongfei.progressbar.ProgressBar;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -34,6 +34,8 @@ public class RunTcas {
     // 一共多少个版本
     private static final int lastVersionNum = 41;
 
+    private static ProgressBar progressBar;
+
     static {
         try {
             testCases = buildTestCasesObject();
@@ -45,12 +47,16 @@ public class RunTcas {
 
     public static void main(String[] args) throws IOException, InterruptedException {
 
+        // 初始化线程池
         final int availableProcessors = Runtime.getRuntime().availableProcessors();
         LogUtils.logInfo("ready to start, thread pool size: " + availableProcessors);
         final ExecutorService threadPool = Executors.newFixedThreadPool(availableProcessors);
 
-        final JsonArray output = new JsonArray();
+        //初始化进度条
+        progressBar = new ProgressBar("progress", testCases.size() * lastVersionNum);
 
+        // 填充任务
+        final JsonArray output = new JsonArray();
         for (int versionNum = 1; versionNum <= lastVersionNum; versionNum++) {
 
             // 准备当前版本的程序
@@ -70,9 +76,13 @@ public class RunTcas {
             });
         }
 
+        // 等待所有任务完成
         threadPool.shutdown();
         threadPool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
 
+        progressBar.close();
+
+        // 输出结果
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
         final byte[] outputBytes = gson.toJson(output).getBytes();
         Files.write(Paths.get("suspiciousness-factors.json"), outputBytes);
@@ -91,7 +101,8 @@ public class RunTcas {
         final RunningScheduler runningScheduler = new RunningScheduler(
                 new Program(versionNumString, sourceFilePath.toString()),
                 new GccReadFromStdIoRunner(),
-                testCases);
+                testCases,
+                progressBar);
 
         // 使用测试用例运行程序
         LogUtils.logInfo("start running version: " + versionNumString);
@@ -112,7 +123,7 @@ public class RunTcas {
                 record -> record.calculateSuspiciousnessFactorAsOp(testCases.size(), (int) passedCount)
         );
 
-        //输出结果
+        // 记录结果
         resultRecord.add("version", new JsonPrimitive(versionNumString));
         resultRecord.add("factors of O", new Gson().toJsonTree(factorOfO));
         resultRecord.add("factors of Op", new Gson().toJsonTree(factorOfOp));

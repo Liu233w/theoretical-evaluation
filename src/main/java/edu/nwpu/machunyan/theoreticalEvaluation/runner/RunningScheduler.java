@@ -4,6 +4,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
+import me.tongfei.progressbar.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,10 +17,25 @@ public class RunningScheduler {
 
     private ArrayList<SingleRunResult> runResults;
 
+    private final ProgressBar progressBar;
+
     public RunningScheduler(Program program, ICoverageRunner runner, List<IProgramInput> inputs) {
+        this(program, runner, inputs, null);
+    }
+
+    /**
+     * 构造函数。
+     *
+     * @param program
+     * @param runner
+     * @param inputs
+     * @param progressBar 进度条信息。如果为 null （省略），将不会汇报进度条信息。
+     */
+    public RunningScheduler(Program program, ICoverageRunner runner, List<IProgramInput> inputs, ProgressBar progressBar) {
         this.runner = runner;
         this.inputs = inputs;
         this.program = program;
+        this.progressBar = progressBar;
     }
 
     /**
@@ -33,21 +49,17 @@ public class RunningScheduler {
         runResults = new ArrayList<>(inputs.size());
 
         try {
+            progressReport("start preparing");
             runner.prepare(program);
 
-            for (int i = 0; i < inputs.size(); i++) {
-                if (i >= inputs.size() * (3.0 / 4.0)) {
-                    progressReport("reach 3/4");
-                } else if (i >= inputs.size() / 2) {
-                    progressReport("reach 1/2");
-                } else if (i >= inputs.size() * (1.0 / 4.0)) {
-                    progressReport("reach 1/4");
-                }
-
-                final SingleRunResult result = runner.runWithInput(inputs.get(i));
+            for (IProgramInput input :
+                    inputs) {
+                final SingleRunResult result = runner.runWithInput(input);
                 runResults.add(result);
+                stepProgressBar();
             }
         } finally {
+            progressReport("start cleaning up");
             runner.cleanUp();
         }
 
@@ -57,6 +69,14 @@ public class RunningScheduler {
     }
 
     private void progressReport(String info) {
-        LogUtils.logFine("Progress report for " + program.getTitle() + ": " + info);
+
+        final String message = "Progress report for " + program.getTitle() + ": " + info;
+        LogUtils.logFine(message);
+    }
+
+    private void stepProgressBar() {
+        if (progressBar != null) {
+            progressBar.step();
+        }
     }
 }
