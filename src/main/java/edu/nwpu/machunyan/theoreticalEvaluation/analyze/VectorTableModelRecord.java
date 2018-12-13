@@ -48,7 +48,12 @@ public class VectorTableModelRecord {
 
     // anf => m; anp => k
 
-    public int calculateSuspiciousnessFactorForO() {
+    /**
+     * 使用 O 公式来计算当前语句的错误指数
+     *
+     * @return
+     */
+    public int calculateSuspiciousnessFactorAsO() {
         if (getType() == Type.TypeOne) {
             return 0;
         } else {
@@ -60,7 +65,14 @@ public class VectorTableModelRecord {
         }
     }
 
-    public double calculateSuspiciousnessFactorForOp(int testcaseCount, int passedTestCount) {
+    /**
+     * 使用 Op 公式来计算当前语句的错误指数
+     *
+     * @param testcaseCount   总共的测试用例数量
+     * @param passedTestCount 通过的测试用例数量
+     * @return
+     */
+    public double calculateSuspiciousnessFactorAsOp(int testcaseCount, int passedTestCount) {
         final double t = testcaseCount;
         final double p = passedTestCount;
 
@@ -71,8 +83,7 @@ public class VectorTableModelRecord {
             if (anf == 0) {
                 return t - p - ((p - anp) / (p + 1));
             } else {
-                // TODO
-                throw new RuntimeException("TODO");
+                return t - p - (anf * (p + 1) + p - anp) / (p + 1);
             }
         }
     }
