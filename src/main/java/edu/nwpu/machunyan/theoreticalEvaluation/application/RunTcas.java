@@ -6,8 +6,8 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorReco
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelGenerator;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelRecord;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.CppReadFromStdIoInput;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.CppReadFromStdIoRunner;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoInput;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningScheduler;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
@@ -43,7 +43,7 @@ public class RunTcas {
             final Path sourceFilePath = versionsDir.resolve(versionNumString).resolve("tcas.c");
             final RunningScheduler runningScheduler = new RunningScheduler(
                     new Program(versionNumString, sourceFilePath.toString()),
-                    new CppReadFromStdIoRunner(),
+                    new GccReadFromStdIoRunner(),
                     testCases);
 
             // 使用测试用例运行程序
@@ -89,7 +89,7 @@ public class RunTcas {
         for (JsonElement item :
                 list) {
             final JsonObject testCase = item.getAsJsonObject();
-            result.add(new CppReadFromStdIoInput(new String[]{testCase.get("input").getAsString()}, testCase.get("output").getAsString()));
+            result.add(new GccReadFromStdIoInput(new String[]{testCase.get("input").getAsString()}, testCase.get("output").getAsString()));
         }
 
         return result;

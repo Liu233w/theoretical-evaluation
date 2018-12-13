@@ -5,20 +5,20 @@ import edu.nwpu.machunyan.theoreticalEvaluation.getTestFilePath
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
-class CppReadFromStdIoRunnerTest : FreeSpec({
+class GccReadFromStdIoRunnerTest : FreeSpec({
 
     "test execution - 执行此测试需要计算机安装有 g++ 和 gcov" - {
 
         "输入 1" {
             // arrange
-            val runner = CppReadFromStdIoRunner()
+            val runner = GccReadFromStdIoRunner()
             val testFilePath = getTestFilePath("1.cpp").toString()
 
             // act
             runner.prepare(Program("test cpp: 1.cpp", testFilePath))
 
             val singleRunResult = runner.runWithInput(
-                    CppReadFromStdIoInput(
+                    GccReadFromStdIoInput(
                             arrayOf("1"),
                             "input 1\n"))
 
@@ -27,7 +27,7 @@ class CppReadFromStdIoRunnerTest : FreeSpec({
             // assert
             singleRunResult shouldBe SingleRunResult(
                     Program("test cpp: 1.cpp", testFilePath),
-                    CppReadFromStdIoInput(arrayOf("1"), "input 1\n"),
+                    GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),
                     true,
                     Coverage(hashMapOf(
                             6 to 1,
@@ -51,14 +51,14 @@ class CppReadFromStdIoRunnerTest : FreeSpec({
 
         "输入 2" {
             // arrange
-            val runner = CppReadFromStdIoRunner()
+            val runner = GccReadFromStdIoRunner()
             val testFilePath = getTestFilePath("1.cpp").toString()
 
             // act
             runner.prepare(Program("test cpp: 1.cpp", testFilePath))
 
             val singleRunResult = runner.runWithInput(
-                    CppReadFromStdIoInput(
+                    GccReadFromStdIoInput(
                             arrayOf("2"),
                             "else\n"))
 
@@ -67,7 +67,7 @@ class CppReadFromStdIoRunnerTest : FreeSpec({
             // assert
             singleRunResult shouldBe SingleRunResult(
                     Program("test cpp: 1.cpp", testFilePath),
-                    CppReadFromStdIoInput(arrayOf("2"), "else\n"),
+                    GccReadFromStdIoInput(arrayOf("2"), "else\n"),
                     true,
                     Coverage(hashMapOf(
                             6 to 1,
@@ -94,10 +94,10 @@ class CppReadFromStdIoRunnerTest : FreeSpec({
 
         "在多次运行时，后一次运行不会受前一次运行的影响" {
 
-            val runner = CppReadFromStdIoRunner()
+            val runner = GccReadFromStdIoRunner()
             runner.prepare(Program("1.cpp", getTestFilePath("1.cpp").toString()))
 
-            val input = CppReadFromStdIoInput(arrayOf("1"), "input 1\n")
+            val input = GccReadFromStdIoInput(arrayOf("1"), "input 1\n")
 
             // 第一次运行
             runner.runWithInput(input).coverage
@@ -113,17 +113,17 @@ class CppReadFromStdIoRunnerTest : FreeSpec({
     "decideCompilerFromFileExtension - 能够正确得到指定的编译器名称" - {
 
         "cpp" {
-            CppReadFromStdIoRunner.decideCompilerFromFileExtension("a.cpp")
+            GccReadFromStdIoRunner.decideCompilerFromFileExtension("a.cpp")
                     .shouldBe("g++")
         }
 
         "cc" {
-            CppReadFromStdIoRunner.decideCompilerFromFileExtension("a.cc")
+            GccReadFromStdIoRunner.decideCompilerFromFileExtension("a.cc")
                     .shouldBe("g++")
         }
 
         "c" {
-            CppReadFromStdIoRunner.decideCompilerFromFileExtension("a.c")
+            GccReadFromStdIoRunner.decideCompilerFromFileExtension("a.c")
                     .shouldBe("gcc")
         }
     }

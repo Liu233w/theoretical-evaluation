@@ -2,7 +2,6 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner
 
 import edu.nwpu.machunyan.theoreticalEvaluation.getTestFilePath
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program
-import io.kotlintest.matchers.shouldNotBe
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
@@ -12,11 +11,11 @@ class RunningSchedulerTest : FreeSpec({
 
         val results = RunningScheduler(
                 Program("1.cpp", getTestFilePath("1.cpp").toString()),
-                CppReadFromStdIoRunner(),
+                GccReadFromStdIoRunner(),
                 listOf(
-                        CppReadFromStdIoInput(arrayOf("1"), "input 1\n"),
-                        CppReadFromStdIoInput(arrayOf("2"), "else\n"),
-                        CppReadFromStdIoInput(arrayOf("2"), "wrong\n")
+                        GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),
+                        GccReadFromStdIoInput(arrayOf("2"), "else\n"),
+                        GccReadFromStdIoInput(arrayOf("2"), "wrong\n")
                 ))
                 .runAndGetResults()
 
