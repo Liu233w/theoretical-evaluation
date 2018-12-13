@@ -10,7 +10,7 @@ import java.util.function.Function;
 public class SuspiciousnessFactorGenerator {
 
     /**
-     * 使用指定的公式从 vector table model 生成错误率指数。指数按从小到大的顺序排列。
+     * 使用指定的公式从 vector table model 生成错误率指数。指数按从大到小的顺序排列。
      *
      * @param vectorTableModel
      * @param suspiciousnessFactorFunc
