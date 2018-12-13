@@ -74,7 +74,7 @@ public class RunTcas {
 
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
         final byte[] outputBytes = gson.toJson(output).getBytes();
-        Files.write(Paths.get("."), outputBytes);
+        Files.write(Paths.get("suspiciousness-factors.json"), outputBytes);
     }
 
     private static ArrayList<IProgramInput> buildTestCases() throws URISyntaxException, IOException {

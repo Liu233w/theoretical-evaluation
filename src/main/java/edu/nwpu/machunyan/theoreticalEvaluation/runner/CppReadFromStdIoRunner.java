@@ -71,7 +71,8 @@ public class CppReadFromStdIoRunner implements ICoverageRunner {
             gcdaFile.toFile().delete();
 
             // run program and get output
-            final Process process = waitToRunCommandAndGetProcess(command);
+            // 返回非 0 值也是测试的一部分，这里不应该抛出异常
+            final Process process = waitToRunCommandAndGetProcess(command, false);
             final InputStream inputStream = process.getInputStream();
             final String output = StreamUtils.convertStreamToString(inputStream);
 
@@ -93,13 +94,20 @@ public class CppReadFromStdIoRunner implements ICoverageRunner {
     }
 
     private Process waitToRunCommandAndGetProcess(String[] command) throws InterruptedException, IOException, CoverageRunnerException {
+        return waitToRunCommandAndGetProcess(command, true);
+    }
+
+    private Process waitToRunCommandAndGetProcess(String[] command, boolean throwWhenNotExitWithZero) throws InterruptedException, IOException, CoverageRunnerException {
 
         Process process = Runtime.getRuntime().exec(command, null, directoryPath.toFile());
 
         int returnCode = process.waitFor();
 
-        if (returnCode != 0) {
-            throw new CoverageRunnerException("execution failed with return code : " + returnCode);
+        if (returnCode != 0 && throwWhenNotExitWithZero) {
+            throw new CoverageRunnerException("execution failed with return code : " + returnCode + "\n" +
+                    "Outputs: \n" +
+                    "std out: \n" + StreamUtils.convertStreamToString(process.getInputStream()) + "\n" +
+                    "std err: \n" + StreamUtils.convertStreamToString(process.getErrorStream()));
         }
 
         return process;
