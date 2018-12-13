@@ -51,6 +51,8 @@ public class RunningScheduler {
             runner.cleanUp();
         }
 
+        progressReport("all testcase finished running");
+
         return runResults;
     }
 
