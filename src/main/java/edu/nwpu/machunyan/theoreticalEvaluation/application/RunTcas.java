@@ -28,9 +28,9 @@ import java.util.concurrent.TimeUnit;
 public class RunTcas {
 
     // 准备好的测试用例
-    private ArrayList<IProgramInput> testCases = buildTestCasesObject();
+    private final ArrayList<IProgramInput> testCases = buildTestCasesObject();
     // 程序文件夹
-    private Path versionsDir = FileUtils.getFilePathFromResources("tcas/versions");
+    private final Path versionsDir = FileUtils.getFilePathFromResources("tcas/versions");
     // 一共多少个版本
     private final int lastVersionNum = 1;
     // 结果的输出位置
