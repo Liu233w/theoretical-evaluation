@@ -32,7 +32,7 @@ public class RunTcas {
     // 程序文件夹
     private final Path versionsDir = FileUtils.getFilePathFromResources("tcas/versions");
     // 一共多少个版本
-    private final int lastVersionNum = 1;
+    private final int lastVersionNum = 41;
     // 结果的输出位置
     private static final String resultOutputPath = "./target/outputs/tcasRunningResult.json";
 
