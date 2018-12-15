@@ -102,10 +102,7 @@ public class RunTcas {
         progressBar.close();
 
         // 输出结果
-        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        final File outputFile = Paths.get(resultOutputPath).toFile();
-        outputFile.getParentFile().mkdirs();
-        gson.toJson(result, new FileWriter(outputFile));
+        FileUtils.printJsonToFile(Paths.get(resultOutputPath), result);
     }
 
     /**
