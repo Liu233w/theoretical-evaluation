@@ -84,7 +84,9 @@ public class RunTcas {
 
         // 输出结果
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        gson.toJson(result, new FileWriter(resultOutputPath));
+        final File outputFile = Paths.get(resultOutputPath).toFile();
+        outputFile.getParentFile().mkdirs();
+        gson.toJson(result, new FileWriter(outputFile));
     }
 
     /**
