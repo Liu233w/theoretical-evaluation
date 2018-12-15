@@ -13,13 +13,14 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import me.tongfei.progressbar.ProgressBar;
 
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -27,26 +28,44 @@ import java.util.concurrent.TimeUnit;
 public class RunTcas {
 
     // 准备好的测试用例
-    private static ArrayList<IProgramInput> testCases;
+    private ArrayList<IProgramInput> testCases = buildTestCasesObject();
     // 程序文件夹
-    private static Path versionsDir;
+    private Path versionsDir = FileUtils.getFilePathFromResources("tcas/versions");
     // 一共多少个版本
-    private static final int lastVersionNum = 1;
+    private final int lastVersionNum = 1;
     // 结果的输出位置
-    private static final String resultOutputPath = "target/outputs/tcasRunningResult.json";
+    private static final String resultOutputPath = "./target/outputs/tcasRunningResult.json";
 
-    private static ProgressBar progressBar;
-
-    static {
-        try {
-            testCases = buildTestCasesObject();
-            versionsDir = FileUtils.getFilePathFromResources("tcas/versions");
-        } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
-        }
+    public static void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
+        new RunTcas().runAllProgramsAndOutputResultsToFile();
     }
 
-    public static void main(String[] args) throws IOException, InterruptedException {
+    /**
+     * 从之前的输出中获取中间的运行结果
+     *
+     * @return key 为程序的 title（版本），value 为该程序的所有运行结果和覆盖值
+     */
+    public static HashMap<String, ArrayList<SingleRunResult>> getRunResultsFromSavedFile() throws FileNotFoundException {
+
+        final File file = Paths.get(resultOutputPath).toFile();
+        final JsonObject jsonObject = new JsonParser().parse(new FileReader(file)).getAsJsonObject();
+
+        final HashMap<String, ArrayList<SingleRunResult>> result = new HashMap<>();
+
+        for (Map.Entry<String, JsonElement> stringJsonElementEntry : jsonObject.entrySet()) {
+
+            final JsonObject runResultsJsonObject = stringJsonElementEntry.getValue().getAsJsonObject();
+            final ArrayList<SingleRunResult> runResults = RunResultsJsonProcessor.loadFromJson(runResultsJsonObject, GccReadFromStdIoInput.class);
+
+            result.put(stringJsonElementEntry.getKey(), runResults);
+        }
+
+        return result;
+    }
+
+    private ProgressBar progressBar;
+
+    private void runAllProgramsAndOutputResultsToFile() throws InterruptedException, IOException {
 
         // 初始化线程池
         final int availableProcessors = Runtime.getRuntime().availableProcessors();
@@ -54,7 +73,7 @@ public class RunTcas {
         final ExecutorService threadPool = Executors.newFixedThreadPool(availableProcessors);
 
         //初始化进度条
-        progressBar = new ProgressBar("progress", testCases.size() * lastVersionNum);
+        progressBar = new ProgressBar("", testCases.size() * lastVersionNum);
 
         // 填充任务
         final JsonObject result = new JsonObject();
@@ -97,7 +116,7 @@ public class RunTcas {
      * @return
      * @throws CoverageRunnerException
      */
-    private static JsonObject runAndGetJsonObject(String versionNumString, Path sourceFilePath) throws CoverageRunnerException {
+    private JsonObject runAndGetJsonObject(String versionNumString, Path sourceFilePath) throws CoverageRunnerException {
 
         final RunningScheduler runningScheduler = new RunningScheduler(
                 new Program(versionNumString, sourceFilePath.toString()),
@@ -115,7 +134,7 @@ public class RunTcas {
         return RunResultsJsonProcessor.bumpToJson(runResults, GccReadFromStdIoInput.class);
     }
 
-    private static ArrayList<IProgramInput> buildTestCasesObject() throws URISyntaxException, IOException {
+    private ArrayList<IProgramInput> buildTestCasesObject() throws URISyntaxException, IOException {
 
         final Path casePath = FileUtils.getFilePathFromResources("tcas/testplans/cases.json");
         final InputStreamReader jsonReader = new InputStreamReader(Files.newInputStream(casePath));
@@ -134,5 +153,8 @@ public class RunTcas {
         }
 
         return result;
+    }
+
+    private RunTcas() throws IOException, URISyntaxException {
     }
 }
