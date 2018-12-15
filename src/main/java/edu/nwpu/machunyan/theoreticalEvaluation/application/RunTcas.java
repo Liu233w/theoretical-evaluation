@@ -1,10 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import com.google.gson.*;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorGenerator;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorRecord;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelGenerator;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelRecord;
+import edu.nwpu.machunyan.theoreticalEvaluation.interData.RunResultsJsonProcessor;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoRunner;
@@ -16,14 +13,16 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import me.tongfei.progressbar.ProgressBar;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class RunTcas {
 
@@ -32,7 +31,9 @@ public class RunTcas {
     // 程序文件夹
     private static Path versionsDir;
     // 一共多少个版本
-    private static final int lastVersionNum = 41;
+    private static final int lastVersionNum = 1;
+    // 结果的输出位置
+    private static final String resultOutputPath = "target/outputs/tcasRunningResult.json";
 
     private static ProgressBar progressBar;
 
@@ -56,20 +57,19 @@ public class RunTcas {
         progressBar = new ProgressBar("progress", testCases.size() * lastVersionNum);
 
         // 填充任务
-        final JsonArray output = new JsonArray();
+        final JsonObject result = new JsonObject();
         for (int versionNum = 1; versionNum <= lastVersionNum; versionNum++) {
 
             // 准备当前版本的程序
             final String versionNumString = "v" + versionNum;
             final Path sourceFilePath = versionsDir.resolve(versionNumString).resolve("tcas.c");
 
-            // 多线程运行程序
-            final JsonObject resultRecord = new JsonObject();
-            output.add(resultRecord);
-
             threadPool.submit(() -> {
                 try {
-                    runAndFillJsonObject(versionNumString, sourceFilePath, resultRecord);
+                    final JsonObject resultRecord = runAndGetJsonObject(versionNumString, sourceFilePath);
+                    synchronized (result) {
+                        result.add(versionNumString, resultRecord);
+                    }
                 } catch (CoverageRunnerException e) {
                     e.printStackTrace();
                 }
@@ -84,19 +84,18 @@ public class RunTcas {
 
         // 输出结果
         final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        final byte[] outputBytes = gson.toJson(output).getBytes();
-        Files.write(Paths.get("suspiciousness-factors.json"), outputBytes);
+        gson.toJson(result, new FileWriter(resultOutputPath));
     }
 
     /**
-     * 运行某个版本程序的所有测试用例，用结果填充 json string
+     * 运行某个版本程序的所有测试用例，获得结果 jsonObject
      *
      * @param versionNumString
      * @param sourceFilePath
-     * @param resultRecord
+     * @return
      * @throws CoverageRunnerException
      */
-    private static void runAndFillJsonObject(String versionNumString, Path sourceFilePath, JsonObject resultRecord) throws CoverageRunnerException {
+    private static JsonObject runAndGetJsonObject(String versionNumString, Path sourceFilePath) throws CoverageRunnerException {
 
         final RunningScheduler runningScheduler = new RunningScheduler(
                 new Program(versionNumString, sourceFilePath.toString()),
@@ -111,22 +110,7 @@ public class RunTcas {
 
         LogUtils.logInfo("passed test case count for version " + versionNumString + ": " + passedCount);
 
-        final ArrayList<VectorTableModelRecord> vectorTableModel = VectorTableModelGenerator.generateVectorTableModelFromRunResult(runResults);
-
-        // 某行代码的错误率（排序过的）
-        final ArrayList<SuspiciousnessFactorRecord> factorOfO = SuspiciousnessFactorGenerator.getSuspiciousnessFactorMatrixOrdered(
-                vectorTableModel,
-                record -> (double) record.calculateSuspiciousnessFactorAsO()
-        );
-        final ArrayList<SuspiciousnessFactorRecord> factorOfOp = SuspiciousnessFactorGenerator.getSuspiciousnessFactorMatrixOrdered(
-                vectorTableModel,
-                record -> record.calculateSuspiciousnessFactorAsOp(testCases.size(), (int) passedCount)
-        );
-
-        // 记录结果
-        resultRecord.add("version", new JsonPrimitive(versionNumString));
-        resultRecord.add("factors of O", new Gson().toJsonTree(factorOfO));
-        resultRecord.add("factors of Op", new Gson().toJsonTree(factorOfOp));
+        return RunResultsJsonProcessor.bumpToJson(runResults, GccReadFromStdIoInput.class);
     }
 
     private static ArrayList<IProgramInput> buildTestCasesObject() throws URISyntaxException, IOException {
