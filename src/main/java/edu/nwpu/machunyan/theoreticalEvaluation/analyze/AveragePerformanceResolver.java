@@ -1,10 +1,11 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
- * 从 {@link OrderedVectorTableModel} 中生成测试用例的平均性能
+ * 从 {@link OrderedVectorTableModel} 中生成测试用例的平均代价
+ * <p>
+ * 是故障定位付出的代价测量，越小越好。
  */
 public class AveragePerformanceResolver {
 
