@@ -7,7 +7,7 @@ import org.jetbrains.annotations.NotNull;
  * 表示 vector table model 中的一行
  */
 @Data
-public class VectorTableModelRecord implements Comparable<VectorTableModelRecord> {
+public class VectorTableModelRecord implements Comparable {
 
     /**
      * 语句的序号
@@ -25,17 +25,21 @@ public class VectorTableModelRecord implements Comparable<VectorTableModelRecord
     private final int aep;
 
     @Override
-    public int compareTo(@NotNull VectorTableModelRecord o) {
-        if (anf != o.getAnf()) {
-            return anf - o.getAnf();
+    public int compareTo(@NotNull Object o) {
+        if (!(o instanceof VectorTableModelRecord)) {
+            throw new IllegalArgumentException("VectorTableModelRecord can only be compared to VectorTableModelRecord");
         }
-        if (anp != o.getAnp()) {
-            return anp - o.getAnp();
+        VectorTableModelRecord that = (VectorTableModelRecord) o;
+        if (anf != that.getAnf()) {
+            return anf - that.getAnf();
         }
-        if (aef != o.getAef()) {
-            return aef - o.getAef();
+        if (anp != that.getAnp()) {
+            return anp - that.getAnp();
         }
-        return aep - o.getAep();
+        if (aef != that.getAef()) {
+            return aef - that.getAef();
+        }
+        return aep - that.getAep();
     }
 
     /**

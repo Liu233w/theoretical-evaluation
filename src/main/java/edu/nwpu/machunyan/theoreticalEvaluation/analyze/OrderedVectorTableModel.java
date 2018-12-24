@@ -5,6 +5,7 @@ import lombok.Data;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 根据要求排序过的 vector table model，可以从中获得 I-set, II-set1, II-set2
@@ -40,8 +41,11 @@ public class OrderedVectorTableModel {
      * @return
      */
     public static OrderedVectorTableModel fromVectorTableModel(List<VectorTableModelRecord> vectorTableModel) {
-        final ArrayList<VectorTableModelRecord> result = new ArrayList<>(vectorTableModel);
-        Collections.sort(result);
+
+        final ArrayList<VectorTableModelRecord> result = vectorTableModel.stream()
+                .skip(vectorTableModel.get(0) == null ? 1 : 0)
+                .sorted()
+                .collect(Collectors.toCollection(ArrayList::new));
 
         int i = 0;
         for (; i < result.size(); ++i) {
