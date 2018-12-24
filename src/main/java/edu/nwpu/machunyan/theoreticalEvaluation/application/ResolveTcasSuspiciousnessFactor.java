@@ -19,7 +19,7 @@ import java.util.HashMap;
 /**
  * 计算 tcas 的 suspiciousness factor，请保证上一步输出的结果文件存在
  */
-public class CalcTcasSuspiciousnessFactor {
+public class ResolveTcasSuspiciousnessFactor {
 
     // 结果的输出路径
     private static final String resultOutputPath = "./target/outputs/suspiciousness-factors.json";
