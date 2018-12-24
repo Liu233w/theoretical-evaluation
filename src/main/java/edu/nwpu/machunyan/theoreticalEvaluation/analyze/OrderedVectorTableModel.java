@@ -19,12 +19,12 @@ public class OrderedVectorTableModel {
     private final ArrayList<VectorTableModelRecord> vectorTableModel;
 
     /**
-     * II-set1 的开始位置，如果和 {@see OrderedVectorTableModel#getIIset2BeginPosition} 重合，代表不存在
+     * II-set1 的开始位置，如果和 {@link OrderedVectorTableModel#getIIset2BeginPosition()} 重合，代表不存在
      */
     private final int IIset1BeginPosition;
 
     /**
-     * II-set2 的开始位置，如果为 {@see OrderedVectorTableModel#getVectorTableModel#size} ，表示不存在。
+     * II-set2 的开始位置，如果为 {@link OrderedVectorTableModel#getVectorTableModel()}的长度，表示不存在。
      */
     private final int IIset2BeginPosition;
 
