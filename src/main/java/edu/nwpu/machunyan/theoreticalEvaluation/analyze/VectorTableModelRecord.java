@@ -1,12 +1,13 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import lombok.Data;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * 表示 vector table model 中的一行
  */
 @Data
-public class VectorTableModelRecord {
+public class VectorTableModelRecord implements Comparable<VectorTableModelRecord> {
 
     /**
      * 语句的序号
@@ -22,6 +23,20 @@ public class VectorTableModelRecord {
     private final int aef;
 
     private final int aep;
+
+    @Override
+    public int compareTo(@NotNull VectorTableModelRecord o) {
+        if (anf != o.getAnf()) {
+            return anf - o.getAnf();
+        }
+        if (anp != o.getAnp()) {
+            return anp - o.getAnp();
+        }
+        if (aef != o.getAef()) {
+            return aef - o.getAef();
+        }
+        return aep - o.getAep();
+    }
 
     /**
      * 类型
