@@ -33,6 +33,11 @@ public class AveragePerformanceResolver {
             }
         }
 
+        // 输出最后一个分区
+        if (partitionDegree > 1) {
+            result.add(partitionDegree);
+        }
+
         return result;
     }
 
