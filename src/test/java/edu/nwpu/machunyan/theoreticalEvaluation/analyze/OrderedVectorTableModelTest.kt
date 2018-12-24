@@ -18,7 +18,7 @@ class OrderedVectorTableModelTest : FreeSpec({
             arrayOf(0, 3, 3, 3)
     )
 
-    "能够生成正确的排序" - {
+    "能够生成正确的排序" {
         val orderedVectorTableModel = OrderedVectorTableModel.fromVectorTableModel(vectorTableModel)
 
         orderedVectorTableModel.vectorTableModel shouldBe arrayListOf(
@@ -34,5 +34,12 @@ class OrderedVectorTableModelTest : FreeSpec({
                 VectorTableModelRecord(8, 2, 0, 1, 6)
         )
 
+    }
+
+    "能够正确划分集合" {
+        val orderedVectorTableModel = OrderedVectorTableModel.fromVectorTableModel(vectorTableModel)
+
+        orderedVectorTableModel.iIset1BeginPosition shouldBe 4
+        orderedVectorTableModel.iIset2BeginPosition shouldBe 8
     }
 })
