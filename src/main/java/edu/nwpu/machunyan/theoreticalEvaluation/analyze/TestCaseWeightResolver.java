@@ -28,20 +28,20 @@ public class TestCaseWeightResolver {
         for (int i = 0; i < runResults.size(); i++) {
             final Stream<SingleRunResult> skippedStream = ofStreamSkipAtIndex(runResults, i);
             final double averagePerformance = resolveAveragePerformance(skippedStream, statementCount);
-            result.add(averagePerformance);
+            result.add(averagePerformance - overall);
         }
 
-        final Double improvedAverage = result.stream().filter(a -> a - overall < 0).reduce(0.0, Double::sum);
-        final Double reducedAverage = result.stream().filter(a -> a - overall > 0).reduce(0.0, Double::sum);
+        final Double improvedAverage = result.stream().filter(a -> a < 0).reduce(0.0, Double::sum);
+        final Double reducedAverage = result.stream().filter(a -> a > 0).reduce(0.0, Double::sum);
 
         for (int i = 0; i < result.size(); i++) {
-            final Double a = result.get(i) - overall;
+            final double a = result.get(i);
             if (a < 0) {
-                result.set(i, a / improvedAverage);
+                result.set(i, -1 * a / improvedAverage);
             } else if (a > 0) {
                 result.set(i, a / reducedAverage + 1);
             } else {
-                result.set(i, 0.0);
+                result.set(i, 1.0);
             }
         }
 
