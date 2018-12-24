@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorGenerator;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorRecord;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelGenerator;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelRecord;
@@ -40,11 +40,11 @@ public class CalcTcasSuspiciousnessFactor {
             final ArrayList<VectorTableModelRecord> vectorTableModel = VectorTableModelGenerator.generateVectorTableModelFromRunResult(runResults);
 
             // 某行代码的错误率（排序过的）
-            final ArrayList<SuspiciousnessFactorRecord> factorOfO = SuspiciousnessFactorGenerator.getSuspiciousnessFactorMatrixOrdered(
+            final ArrayList<SuspiciousnessFactorRecord> factorOfO = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(
                     vectorTableModel,
                     record -> (double) record.calculateSuspiciousnessFactorAsO()
             );
-            final ArrayList<SuspiciousnessFactorRecord> factorOfOp = SuspiciousnessFactorGenerator.getSuspiciousnessFactorMatrixOrdered(
+            final ArrayList<SuspiciousnessFactorRecord> factorOfOp = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(
                     vectorTableModel,
                     record -> record.calculateSuspiciousnessFactorAsOp(runResults.size(), (int) passedCount)
             );

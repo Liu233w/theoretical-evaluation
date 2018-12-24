@@ -7,7 +7,7 @@ import java.util.function.Function;
 /**
  * 统计一次运行中所有语句的错误率指数
  */
-public class SuspiciousnessFactorGenerator {
+public class SuspiciousnessFactorResolver {
 
     /**
      * 使用指定的公式从 vector table model 生成错误率指数。指数按从大到小的顺序排列。

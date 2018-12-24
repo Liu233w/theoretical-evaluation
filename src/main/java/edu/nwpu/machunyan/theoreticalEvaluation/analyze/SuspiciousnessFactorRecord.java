@@ -3,7 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import lombok.Data;
 
 /**
- * {@link SuspiciousnessFactorGenerator} 中的一条记录
+ * {@link SuspiciousnessFactorResolver} 中的一条记录
  */
 @Data
 public class SuspiciousnessFactorRecord {
