@@ -13,7 +13,7 @@ public class VectorTableModelGenerator {
      * @param runResults
      * @return vector table model，对应一个矩阵。第 0 个元素为 null，从第一个元素开始每个元素表示一行。
      */
-    public static ArrayList<VectorTableModelRecord> generateVectorTableModelFromRunResult(List<SingleRunResult> runResults) {
+    public static ArrayList<VectorTableModelRecord> generateFromRunResult(List<SingleRunResult> runResults) {
 
         final int statementCount = runResults.get(0).getStatementMap().getStatementCount();
 

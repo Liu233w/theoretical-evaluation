@@ -37,7 +37,7 @@ public class CalcTcasSuspiciousnessFactor {
             final ArrayList<SingleRunResult> runResults = runResultsForVersion.get(versionNumStr);
 
             final long passedCount = runResults.stream().filter(SingleRunResult::isCorrect).count();
-            final ArrayList<VectorTableModelRecord> vectorTableModel = VectorTableModelGenerator.generateVectorTableModelFromRunResult(runResults);
+            final ArrayList<VectorTableModelRecord> vectorTableModel = VectorTableModelGenerator.generateFromRunResult(runResults);
 
             // 某行代码的错误率（排序过的）
             final ArrayList<SuspiciousnessFactorRecord> factorOfO = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(

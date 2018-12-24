@@ -6,7 +6,7 @@ import io.kotlintest.specs.FreeSpec
 
 class VectorTableModelGeneratorTest : FreeSpec({
 
-    "generateVectorTableModelFromRunResult" - {
+    "generateFromRunResult" - {
 
         "能得到正确结果" {
             val input = buildRunResultsFromMatrix(arrayOf(
@@ -22,7 +22,7 @@ class VectorTableModelGeneratorTest : FreeSpec({
                     arrayOf(0, 0, 1, 1, 0, 1, 1, 1, 1)
             ), arrayOf(1, 1, 1, 1, 1, 1, 0, 0, 0))
 
-            val vectorTableModel = VectorTableModelGenerator.generateVectorTableModelFromRunResult(input)
+            val vectorTableModel = VectorTableModelGenerator.generateFromRunResult(input)
 
             vectorTableModel shouldBe buildVectorModelTableFromMatrix(
                     arrayOf(0, 0, 3, 6),
