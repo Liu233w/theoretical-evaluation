@@ -1,11 +1,8 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Coverage
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.StatementMap
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.*
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
-
 
 /**
  * 从论文中表示的矩阵中生成 RunResults，输入的第一个维度表示行，第二个维度表示列。
@@ -72,3 +69,6 @@ class AnalyzeUtilsTest : FreeSpec({
         }
     }
 })
+
+private val mockProgramInput = IProgramInput { "mock ProgramInput" }
+private val mockProgram = Program("mock program", "...")

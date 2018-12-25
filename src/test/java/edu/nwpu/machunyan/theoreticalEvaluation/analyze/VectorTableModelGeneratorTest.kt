@@ -1,6 +1,5 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.*
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
@@ -40,6 +39,3 @@ class VectorTableModelGeneratorTest : FreeSpec({
 
     }
 })
-
-val mockProgramInput = IProgramInput { "mock ProgramInput" }
-val mockProgram = Program("mock program", "...")
