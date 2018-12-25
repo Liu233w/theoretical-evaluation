@@ -9,24 +9,34 @@ import lombok.Data;
 @Data
 public class GccReadFromStdIoInput implements IProgramInput {
 
-    private final String[] input;
+    private final String[] inputFromCommand;
+
+    private final String inputFromStdIn;
 
     private final String shouldOutputFromStdOut;
 
-    public GccReadFromStdIoInput(String[] input, String shouldOutputFromStdOut) {
-        this.input = input;
+    public GccReadFromStdIoInput(String[] inputFromCommand, String shouldOutputFromStdOut) {
+        this(inputFromCommand, "", shouldOutputFromStdOut);
+    }
+
+    public GccReadFromStdIoInput(String[] inputFromCommand, String inputFromStdIn, String shouldOutputFromStdOut) {
+        this.inputFromCommand = inputFromCommand;
+        this.inputFromStdIn = inputFromStdIn;
         this.shouldOutputFromStdOut = shouldOutputFromStdOut;
     }
 
     @Override
     public String getInputDescription() {
         final StringBuilder stringBuilder = new StringBuilder();
-        stringBuilder.append("input: ");
+        stringBuilder.append("inputFromCommand: ");
         for (String str :
-                input) {
+                inputFromCommand) {
             stringBuilder.append(str);
             stringBuilder.append(", ");
         }
+        stringBuilder.append(";");
+        stringBuilder.append("input: ");
+        stringBuilder.append(inputFromStdIn, 0, 10);
         return stringBuilder.toString();
     }
 }

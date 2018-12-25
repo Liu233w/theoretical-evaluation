@@ -6,6 +6,7 @@ import lombok.NonNull;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -59,7 +60,7 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
             final String compiler = decideCompilerFromFileExtension(program.getPath());
 
             waitToRunCommandAndGetProcess(new String[]{
-                    compiler, "-fprofile-arcs", "-ftest-coverage", filePath.toString()
+                    compiler, "-I.", "-fprofile-arcs", "-ftest-coverage", filePath.toString()
             });
 
             executable = directoryPath.resolve("a");
@@ -81,9 +82,9 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
         }
         final GccReadFromStdIoInput typedInput = (GccReadFromStdIoInput) programInput;
 
-        final String[] command = new String[typedInput.getInput().length + 1];
+        final String[] command = new String[typedInput.getInputFromCommand().length + 1];
         command[0] = executable.toString();
-        System.arraycopy(typedInput.getInput(), 0, command, 1, typedInput.getInput().length);
+        System.arraycopy(typedInput.getInputFromCommand(), 0, command, 1, typedInput.getInputFromCommand().length);
 
         try {
 
@@ -92,7 +93,7 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
 
             // run program and get output
             // 返回非 0 值也是测试的一部分，这里不应该抛出异常
-            final Process process = waitToRunCommandAndGetProcess(command, false);
+            final Process process = waitToRunCommandAndGetProcess(command, typedInput.getInputFromStdIn(), false);
             final InputStream inputStream = process.getInputStream();
             final String output = StreamUtils.convertStreamToString(inputStream);
 
@@ -114,12 +115,16 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
     }
 
     private Process waitToRunCommandAndGetProcess(String[] command) throws InterruptedException, IOException, CoverageRunnerException {
-        return waitToRunCommandAndGetProcess(command, true);
+        return waitToRunCommandAndGetProcess(command, "", true);
     }
 
-    private Process waitToRunCommandAndGetProcess(String[] command, boolean throwWhenNotExitWithZero) throws InterruptedException, IOException, CoverageRunnerException {
+    private Process waitToRunCommandAndGetProcess(String[] command, String input, boolean throwWhenNotExitWithZero) throws InterruptedException, IOException, CoverageRunnerException {
 
         Process process = Runtime.getRuntime().exec(command, null, directoryPath.toFile());
+        final OutputStream outputStream = process.getOutputStream();
+        outputStream.write(input.getBytes());
+        outputStream.flush();
+        outputStream.close();
 
         int returnCode = process.waitFor();
 

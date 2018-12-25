@@ -88,6 +88,47 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
                     }
             )
         }
+
+        "从 stdio 输入" {
+            // arrange
+            val runner = GccReadFromStdIoRunner()
+            val testFilePath = getTestFilePath("2.cpp").toString()
+
+            // act
+            runner.prepare(Program("test cpp: 2.cpp", testFilePath))
+
+            val singleRunResult = runner.runWithInput(
+                    GccReadFromStdIoInput(
+                            arrayOf(),
+                            "1",
+                            "input 1\n"))
+
+            runner.cleanUp()
+
+            // assert
+            singleRunResult shouldBe SingleRunResult(
+                    Program("test cpp: 2.cpp", testFilePath),
+                    GccReadFromStdIoInput(arrayOf(), "1", "input 1\n"),
+                    true,
+                    Coverage(hashMapOf(
+                            6 to 1,
+                            10 to 1,
+                            12 to 1,
+                            15 to 1,
+                            16 to 1,
+                            17 to 1,
+                            22 to 1,
+                            24 to 1,
+                            25 to 3
+                    )),
+                    StatementMap(StatementMapType.LINE_BASED).apply {
+                        mapList.add(null)
+                        for (i in 1..25) {
+                            mapList.add(StatementInfo(i, testFilePath, i, i))
+                        }
+                    }
+            )
+        }
     }
 
     "runWithInput" - {
