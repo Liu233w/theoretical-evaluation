@@ -116,3 +116,6 @@ buildNumber.properties
 .mvn/wrapper/maven-wrapper.jar
 
 # End of https://www.gitignore.io/api/java,maven,intellij+iml
+
+# test cases for tot_info
+/src/main/resources/tot_info/testplans/cases.json
