@@ -30,6 +30,8 @@ class TestCaseWeightResolverTest : FreeSpec({
             result[4 - 1] shouldBe (1.09 plusOrMinus 0.000001)
             result[5 - 1] shouldBe 1.0
             result[6 - 1] shouldBe (1.09 plusOrMinus 0.000001)
+            result[7 - 1] shouldBe 1.0
+            result[8 - 1] shouldBe 1.0
             result[9 - 1] shouldBe (1.73 plusOrMinus 0.000001)
         }
     }
