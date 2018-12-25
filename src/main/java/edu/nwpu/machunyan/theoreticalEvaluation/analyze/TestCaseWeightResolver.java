@@ -37,7 +37,7 @@ public class TestCaseWeightResolver {
         for (int i = 0; i < result.size(); i++) {
             final double a = result.get(i);
             if (a < 0) {
-                result.set(i, -1 * a / improvedAverage);
+                result.set(i, a / improvedAverage);
             } else if (a > 0) {
                 result.set(i, a / reducedAverage + 1);
             } else {
