@@ -34,6 +34,19 @@ public class VectorTableModelRecord implements Comparable {
 
     private final boolean useWeight;
 
+    /**
+     * 使用四个数值和加权之后的四个数值初始化
+     *
+     * @param statementIndex
+     * @param anf
+     * @param anp
+     * @param aef
+     * @param aep
+     * @param weightedAnf
+     * @param weightedAnp
+     * @param weightedAef
+     * @param weightedAep
+     */
     public VectorTableModelRecord(int statementIndex, int anf, int anp, int aef, int aep, double weightedAnf, double weightedAnp, double weightedAef, double weightedAep) {
         this.useWeight = true;
 
@@ -48,6 +61,15 @@ public class VectorTableModelRecord implements Comparable {
         this.weightedAep = weightedAep;
     }
 
+    /**
+     * 使用四个数值初始化。不采用加权。
+     *
+     * @param statementIndex
+     * @param anf
+     * @param anp
+     * @param aef
+     * @param aep
+     */
     public VectorTableModelRecord(int statementIndex, int anf, int anp, int aef, int aep) {
         this.useWeight = false;
 
@@ -95,18 +117,38 @@ public class VectorTableModelRecord implements Comparable {
         }
     }
 
+    /**
+     * 获取未加权的对应数值
+     *
+     * @return
+     */
     public int getUnWeightedAnf() {
         return anf;
     }
 
+    /**
+     * 获取未加权的对应数值
+     *
+     * @return
+     */
     public int getUnWeightedAnp() {
         return anp;
     }
 
+    /**
+     * 获取未加权的对应数值
+     *
+     * @return
+     */
     public int getUnWeightedAef() {
         return aef;
     }
 
+    /**
+     * 获取未加权的对应数值
+     *
+     * @return
+     */
     public int getUnWeightedAep() {
         return aep;
     }
