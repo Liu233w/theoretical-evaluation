@@ -206,12 +206,12 @@ public class VectorTableModelRecord implements Comparable {
      *
      * @return
      */
-    public int calculateSuspiciousnessFactorAsO() {
+    public double calculateSuspiciousnessFactorAsO() {
         if (getType() == Type.TypeOne) {
             return 0;
         } else {
-            if (anf == 0) { // 表示 anp != 0
-                return anp;
+            if (getAnf() == 0) { // 表示 anp != 0
+                return getAnp();
             } else {
                 return -1;
             }
@@ -233,10 +233,10 @@ public class VectorTableModelRecord implements Comparable {
         if (getType() == Type.TypeOne) {
             return t - p - (p / (p + 1));
         } else {
-            if (anf == 0) {
-                return t - p - ((p - anp) / (p + 1));
+            if (getAnf() == 0) {
+                return t - p - ((p - getAnp()) / (p + 1));
             } else {
-                return t - p - (anf * (p + 1) + p - anp) / (p + 1);
+                return t - p - (getAnf() * (p + 1) + p - getAnp()) / (p + 1);
             }
         }
     }
