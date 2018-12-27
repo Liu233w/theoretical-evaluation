@@ -18,10 +18,10 @@ public class AveragePerformanceResolver {
     public static ArrayList<Integer> resolvePartition(OrderedVectorTableModel vtm) {
         final ArrayList<Integer> result = new ArrayList<>();
 
-        int lastMatchedAnp = -1;
+        double lastMatchedAnp = -1;
         int partitionDegree = 0;
         for (int i = vtm.getIIset1BeginPosition(); i < vtm.getIIset2BeginPosition(); i++) {
-            final int thisAnp = vtm.getVectorTableModel().get(i).getAnp();
+            final double thisAnp = vtm.getVectorTableModel().get(i).getAnp();
             if (thisAnp == lastMatchedAnp) {
                 ++partitionDegree;
             } else {
