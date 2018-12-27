@@ -7,7 +7,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestCaseWeightResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -22,8 +21,7 @@ public class ResolveTcasTestCaseWeight {
     public static void main(String[] args) throws IOException {
 
         final HashMap<String, ArrayList<SingleRunResult>> runResultsForVersion = RunTcas.getRunResultsFromSavedFile();
-//        final int versionCount = runResultsForVersion.size();
-        final int versionCount = 2;
+        final int versionCount = runResultsForVersion.size();
 
         final JsonArray result = IntStream.range(1, versionCount)
                 .mapToObj(i -> runResultsForVersion.get("v" + i))
