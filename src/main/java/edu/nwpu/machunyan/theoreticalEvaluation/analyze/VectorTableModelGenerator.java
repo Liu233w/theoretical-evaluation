@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.StatementMap;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +17,36 @@ public class VectorTableModelGenerator {
      */
     public static ArrayList<VectorTableModelRecord> generateFromRunResult(List<SingleRunResult> runResults) {
         return generateFromStream(runResults.stream(), runResults.get(0).getStatementMap().getStatementCount());
+    }
+
+    /**
+     * 从运行结果和权重中得出加权之后的 vector table model。运行结果和权重必须一一对应。每个运行结果的 statementMap 必须一致。
+     *
+     * @param runResults
+     * @param weights
+     * @return
+     */
+    public static ArrayList<VectorTableModelRecord> generateFromRunResultWithWeight(List<SingleRunResult> runResults, List<Double> weights) {
+
+        if (runResults.size() != weights.size()) {
+            throw new IllegalArgumentException("runResults 必须和 weights 一一对应。");
+        }
+
+        final int statementCount = runResults.get(0).getStatementMap().getStatementCount();
+        final ArrayList<VectorTableModelRecordBuilder> builders = new ArrayList<>(statementCount);
+        for (int i = 0; i < statementCount; i++) {
+            builders.add(new VectorTableModelRecordBuilder(i + 1, true));
+        }
+
+        for (int i = 0; i < runResults.size(); i++) {
+            final SingleRunResult runResult = runResults.get(i);
+            final double weight = weights.get(i);
+            for (int j = 0; j < statementCount; j++) {
+                builders.get(j).processSingleRunResult(runResult, weight);
+            }
+        }
+
+        return collectVectorTableModelFromBuilder(statementCount, builders);
     }
 
     /**
@@ -40,13 +70,18 @@ public class VectorTableModelGenerator {
             }
         });
 
+        return collectVectorTableModelFromBuilder(statementCount, builders);
+    }
+
+    @NotNull
+    private static ArrayList<VectorTableModelRecord> collectVectorTableModelFromBuilder(int statementCount, ArrayList<VectorTableModelRecordBuilder> builders) {
+
         final ArrayList<VectorTableModelRecord> result = new ArrayList<>(statementCount + 1);
         result.add(null);
         for (VectorTableModelRecordBuilder builder :
                 builders) {
             result.add(builder.build());
         }
-
         return result;
     }
 }
