@@ -90,8 +90,7 @@ public class RunTotInfo {
     }
 
     public static Map<String, ArrayList<SingleRunResult>> getRunResultsFromSavedFile() throws FileNotFoundException {
-        final File file = Paths.get(resultOutputPath).toFile();
-        final JsonArray jsonArray = new JsonParser().parse(new FileReader(file)).getAsJsonArray();
+        final JsonArray jsonArray = FileUtils.getJsonFromFile(resultOutputPath).getAsJsonArray();
 
         return StreamUtils.asStream(jsonArray.iterator())
                 .map(JsonElement::getAsJsonObject)

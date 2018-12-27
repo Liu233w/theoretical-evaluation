@@ -47,8 +47,7 @@ public class RunTcas {
      */
     public static HashMap<String, ArrayList<SingleRunResult>> getRunResultsFromSavedFile() throws FileNotFoundException {
 
-        final File file = Paths.get(resultOutputPath).toFile();
-        final JsonObject jsonObject = new JsonParser().parse(new FileReader(file)).getAsJsonObject();
+        final JsonObject jsonObject = FileUtils.getJsonFromFile(resultOutputPath).getAsJsonObject();
 
         final HashMap<String, ArrayList<SingleRunResult>> result = new HashMap<>();
 

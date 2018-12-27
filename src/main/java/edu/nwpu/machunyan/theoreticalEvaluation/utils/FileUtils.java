@@ -1,12 +1,8 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
+import com.google.gson.*;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -37,5 +33,17 @@ public class FileUtils {
         try (FileWriter fileWriter = new FileWriter(outputFile)) {
             gson.toJson(json, fileWriter);
         }
+    }
+
+    /**
+     * 从路径中读取json
+     *
+     * @param path
+     * @return
+     * @throws FileNotFoundException
+     */
+    public static JsonElement getJsonFromFile(String path) throws FileNotFoundException {
+        final File file = Paths.get(path).toFile();
+        return new JsonParser().parse(new FileReader(file));
     }
 }
