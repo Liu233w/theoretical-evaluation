@@ -1,17 +1,18 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestCaseWeightResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.interData.TestCaseWeightJsonProcessor;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.IntStream;
+import java.util.stream.Collectors;
 
 public class ResolveTotInfoTestCaseWeight {
 
@@ -22,25 +23,23 @@ public class ResolveTotInfoTestCaseWeight {
 
         final Map<String, ArrayList<SingleRunResult>> imports = RunTotInfo.getRunResultsFromSavedFile();
 
-        final JsonArray result = imports.entrySet().stream()
+        final Map<String, List<Double>> result = imports.entrySet().stream()
                 .parallel()
-                .map(entry -> {
-                    final ArrayList<Double> weight = TestCaseWeightResolver.resolveTestCaseWeight(entry.getValue());
-                    final JsonArray weights = IntStream.range(0, weight.size())
-                            .mapToObj(i -> {
-                                final JsonObject jsonObject = new JsonObject();
-                                jsonObject.add("testcase-index", new JsonPrimitive(i));
-                                jsonObject.add("testcase-weight", new JsonPrimitive(weight.get(i)));
-                                return jsonObject;
-                            })
-                            .collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
-                    final JsonObject recordForVersion = new JsonObject();
-                    recordForVersion.add("version", new JsonPrimitive(entry.getKey()));
-                    recordForVersion.add("weight-for-testcases", weights);
-                    return recordForVersion;
-                })
-                .collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        entry -> TestCaseWeightResolver.resolveTestCaseWeight(entry.getValue())
+                ));
 
-        FileUtils.printJsonToFile(Paths.get(resultOutputPath), result);
+        FileUtils.printJsonToFile(Paths.get(resultOutputPath), TestCaseWeightJsonProcessor.dumpToJson(result));
+    }
+
+    /**
+     * 从运行结果读取数据，必须已经存在
+     *
+     * @return
+     */
+    public static Map<String, List<Double>> loadFromFile() throws FileNotFoundException {
+        final JsonArray jsonArray = FileUtils.getJsonFromFile(resultOutputPath).getAsJsonArray();
+        return TestCaseWeightJsonProcessor.loadAllFromJson(jsonArray);
     }
 }
