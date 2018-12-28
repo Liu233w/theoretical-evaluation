@@ -2,16 +2,29 @@
 
 import json
 
-with open('tcas-testcase-weight - 副本.json', 'r') as fr:
+with open('tot_info-testcase-weight.json', 'r') as fr:
     results = json.load(fr)
+with open('totInfoRunningResult.json') as fr:
+    versionToCases = {
+            item['program']['title']: item['runCases']
+            for item in json.load(fr)
+    }
 output = []
+
+#print(versionToCases['v1'][:5])
 
 for record in results:
     for item in record['weight-for-testcases']:
         if item['testcase-weight'] != 1.0:
-            output.append({
-                'index': record['version']+'-'+str(item['testcase-index']),
-                'weight': item['testcase-weight'],
-            })
+            versionStr = record['version']
+            testCaseIndex = item['testcase-index']
+            try:
+                output.append({
+                    'index': versionStr+'-'+str(testCaseIndex),
+                    'weight': item['testcase-weight'],
+                    'correct': versionToCases[versionStr][testCaseIndex]['correct']
+                })
+            except:
+                print('out of range {}-{}'.format(versionStr, testCaseIndex))
 
 print(json.dumps(output, indent=2))
