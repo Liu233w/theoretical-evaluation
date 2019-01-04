@@ -20,11 +20,11 @@ public class ResolveTotInfoTestCaseWeight {
 
     public static void main(String[] args) throws IOException {
 
-        final Map<String, ArrayList<RunResultFromRunner>> runResultsForVersion = RunTotInfo.getRunResultsFromSavedFile();
-        final TestCaseWeightJam testCaseWeightJam = TestCaseWeightResolver.resolveFromRunResults(runResultsForVersion, true);
-        final JsonElement result = TestCaseWeightJsonProcessor.dumpToJson(testCaseWeightJam);
-
-        FileUtils.printJsonToFile(Paths.get(resultOutputPath), result);
+//        final Map<String, ArrayList<RunResultFromRunner>> runResultsForVersion = RunTotInfo.getRunResultsFromSavedFile();
+//        final TestCaseWeightJam testCaseWeightJam = TestCaseWeightResolver.resolveFromRunResults(runResultsForVersion, true);
+//        final JsonElement result = TestCaseWeightJsonProcessor.dumpToJson(testCaseWeightJam);
+//
+//        FileUtils.printJsonToFile(Paths.get(resultOutputPath), result);
     }
 
     /**
