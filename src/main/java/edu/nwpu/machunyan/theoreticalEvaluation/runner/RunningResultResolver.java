@@ -31,7 +31,7 @@ public class RunningResultResolver {
 
         final ProgressBar progressBar = new ProgressBar("", inputs.size() * programs.size());
 
-        return new ProgramRunResultJam(programs.stream()
+        final List<ProgramRunResult> result = programs.stream()
                 .parallel()
                 .map(program -> new RunningScheduler(program, runnerFactory, inputs, progressBar))
                 .map(scheduler -> {
@@ -44,7 +44,11 @@ public class RunningResultResolver {
                 })
                 .filter(Objects::nonNull)
                 .map(RunningResultResolver::mapFromRunResult)
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
+
+        progressBar.close();
+
+        return new ProgramRunResultJam(result);
     }
 
     /**
