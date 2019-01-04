@@ -4,35 +4,41 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
+import lombok.Getter;
 import me.tongfei.progressbar.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class RunningScheduler {
 
+    @Getter
     private final ICoverageRunner runner;
+    @Getter
     private final List<IProgramInput> inputs;
+    @Getter
     private final Program program;
 
     private ArrayList<RunResultFromRunner> runResults;
 
+    @Getter
     private final ProgressBar progressBar;
 
-    public RunningScheduler(Program program, ICoverageRunner runner, List<IProgramInput> inputs) {
-        this(program, runner, inputs, null);
+    public RunningScheduler(Program program, Supplier<ICoverageRunner> runnerFactory, List<IProgramInput> inputs) {
+        this(program, runnerFactory, inputs, null);
     }
 
     /**
      * 构造函数。
      *
      * @param program
-     * @param runner
+     * @param runnerFactory runner 的工厂函数
      * @param inputs
-     * @param progressBar 进度条信息。如果为 null （省略），将不会汇报进度条信息。
+     * @param progressBar   进度条信息。如果为 null （省略），将不会汇报进度条信息。
      */
-    public RunningScheduler(Program program, ICoverageRunner runner, List<IProgramInput> inputs, ProgressBar progressBar) {
-        this.runner = runner;
+    public RunningScheduler(Program program, Supplier<ICoverageRunner> runnerFactory, List<IProgramInput> inputs, ProgressBar progressBar) {
+        this.runner = runnerFactory.get();
         this.inputs = inputs;
         this.program = program;
         this.progressBar = progressBar;

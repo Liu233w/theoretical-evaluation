@@ -27,6 +27,15 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
     private Path gcdaFile;
 
     /**
+     * 工厂方法
+     *
+     * @return
+     */
+    public static GccReadFromStdIoRunner newInstance() {
+        return new GccReadFromStdIoRunner();
+    }
+
+    /**
      * 根据文件的后缀名来确定要使用的编译器。（cpp和cc使用 g++，c使用 gcc）
      *
      * @param fileName 文件名，可以包含文件的完整路径
@@ -45,7 +54,7 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
     }
 
     @Override
-    public void prepare(@NonNull Program program) throws CoverageRunnerException {
+    public synchronized void prepare(@NonNull Program program) throws CoverageRunnerException {
         this.program = program;
 
         final String[] cmd = {};
@@ -75,7 +84,7 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
     }
 
     @Override
-    public RunResultFromRunner runWithInput(IProgramInput programInput) throws CoverageRunnerException {
+    public synchronized RunResultFromRunner runWithInput(IProgramInput programInput) throws CoverageRunnerException {
 
         if (!(programInput instanceof GccReadFromStdIoInput)) {
             throw new CoverageRunnerException("input should be an instance of GccReadFromStdIoInput");
