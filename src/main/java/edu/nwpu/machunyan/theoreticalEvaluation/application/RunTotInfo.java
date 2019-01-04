@@ -1,104 +1,91 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
-import com.google.gson.JsonArray;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 import edu.nwpu.machunyan.theoreticalEvaluation.interData.RunResultsJsonProcessor;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoRunner;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningScheduler;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningResultResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.StreamUtils;
-import me.tongfei.progressbar.ProgressBar;
+import lombok.Data;
 
-import java.io.*;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 public class RunTotInfo {
 
-    private static Path versionsDir;
-
-    private static final int lastVersionNumber = 23;
     // 结果的输出位置
     private static final String resultOutputPath = "./target/outputs/totInfoRunningResult.json";
 
-    static {
-        try {
-            versionsDir = FileUtils.getFilePathFromResources("tot_info/versions");
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            System.exit(-1);
-        }
-    }
+    public static ProgramRunResultJam runAndGetResult() throws URISyntaxException, IOException {
 
-    public static List<ArrayList<RunResultFromRunner>> runAndGetResult() throws URISyntaxException, IOException {
+        // 最后一个版本编号
+        final int lastVersionNumber = 23;
+        // 存版本的文件夹
+        final Path versionsDir = FileUtils.getFilePathFromResources("tot_info/versions");
 
-        final Path casePath = FileUtils.getFilePathFromResources("tot_info/testplans/cases.json");
-        final InputStreamReader jsonReader = new InputStreamReader(Files.newInputStream(casePath));
-
-        final JsonArray list = new JsonParser().parse(jsonReader).getAsJsonArray();
-        final List<IProgramInput> testCases = StreamUtils.asStream(list.iterator())
-                .map(JsonElement::getAsJsonObject)
+        final List<IProgramInput> inputs = resolveTestCases().stream()
                 .map(a -> new GccReadFromStdIoInput(
                         new String[]{},
-                        a.getAsJsonPrimitive("input").getAsString(),
-                        a.getAsJsonPrimitive("output").getAsString()
+                        a.getInput(),
+                        a.getOutput()
                 ))
                 .map(a -> (IProgramInput) a)
                 .collect(Collectors.toList());
 
-        final ProgressBar progressBar = new ProgressBar("", testCases.size() * lastVersionNumber);
-
-        final List<ArrayList<RunResultFromRunner>> result = IntStream.range(1, lastVersionNumber + 1)
-                .parallel()
+        final List<Program> programs = IntStream.range(1, lastVersionNumber + 1)
                 .mapToObj(i -> "v" + i)
-                .map(versionStr -> new Program(versionStr, versionsDir.resolve(versionStr).resolve("tot_info.c").toString()))
-                .map(program -> new RunningScheduler(program, new GccReadFromStdIoRunner(), testCases, progressBar))
-                .map(runningScheduler -> {
-                    try {
-                        return runningScheduler.runAndGetResults();
-                    } catch (CoverageRunnerException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
+                .map(versionStr -> new Program(
+                        versionStr,
+                        versionsDir.resolve(versionStr).resolve("tot_info.c").toString()))
                 .collect(Collectors.toList());
 
-        progressBar.close();
-
-        return result;
+        return RunningResultResolver.runProgramForAllVersions(programs, inputs, GccReadFromStdIoRunner::newInstance);
     }
 
     public static void runAndSaveResultsAsJson() throws IOException, URISyntaxException {
-        final JsonArray jsonArray = runAndGetResult().stream()
-                .map(results -> RunResultsJsonProcessor.bumpToJson(results, GccReadFromStdIoInput.class))
-                .collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
+        final ProgramRunResultJam result = runAndGetResult();
 
-        FileUtils.printJsonToFile(Paths.get(resultOutputPath), jsonArray);
+        FileUtils.printJsonToFile(Paths.get(resultOutputPath), RunResultsJsonProcessor.bumpToJson(result));
     }
 
-    public static Map<String, ArrayList<RunResultFromRunner>> getRunResultsFromSavedFile() throws FileNotFoundException {
-        final JsonArray jsonArray = FileUtils.getJsonFromFile(resultOutputPath).getAsJsonArray();
+    public static ProgramRunResultJam getRunResultsFromSavedFile() throws FileNotFoundException {
+        final JsonElement jsonFromFile = FileUtils.getJsonFromFile(resultOutputPath);
 
-        return StreamUtils.asStream(jsonArray.iterator())
-                .map(JsonElement::getAsJsonObject)
-                .map(a -> RunResultsJsonProcessor.loadFromJson(a, GccReadFromStdIoInput.class))
-                .collect(Collectors.toMap(a -> a.get(0).getProgram().getTitle(), a -> a));
+        return RunResultsJsonProcessor.loadFromJson(jsonFromFile);
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException {
         runAndSaveResultsAsJson();
     }
+
+    private static List<TestCaseItem> resolveTestCases() throws URISyntaxException, IOException {
+
+        final Path casePath = FileUtils.getFilePathFromResources("tot_info/testplans/cases.json");
+        final InputStreamReader jsonReader = new InputStreamReader(Files.newInputStream(casePath));
+        final Type testcaseType = new TypeToken<List<TestCaseItem>>() {
+        }.getType();
+
+        return new Gson().fromJson(jsonReader, testcaseType);
+    }
+}
+
+@Data
+class TestCaseItem {
+    private String input;
+    private String output;
+    private String name;
 }
