@@ -46,7 +46,7 @@ public class ResolveTcasSuspiciousnessFactor {
             );
             final ArrayList<SuspiciousnessFactorRecord> factorOfOp = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(
                     vectorTableModel,
-                    record -> record.calculateSuspiciousnessFactorAsOp(runResults.size(), (int) passedCount)
+                    record -> record.calculateSuspiciousnessFactorAsOp()
             );
 
             // 记录结果

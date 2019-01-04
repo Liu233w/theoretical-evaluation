@@ -50,7 +50,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
                     );
                     final ArrayList<SuspiciousnessFactorRecord> factorOfOp = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(
                             vectorTableModel,
-                            record -> record.calculateSuspiciousnessFactorAsOp(runResults.size(), (int) passedCount)
+                            record -> record.calculateSuspiciousnessFactorAsOp()
                     );
 
                     resultRecord.add("factors of O", new Gson().toJsonTree(factorOfO));

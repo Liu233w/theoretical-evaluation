@@ -176,29 +176,6 @@ public class VectorTableModelRecord implements Comparable {
         return Double.compare(aep, that.getAep());
     }
 
-    /**
-     * 类型
-     */
-    public static enum Type {
-        /**
-         * 在每个测试用例中都执行过的语句
-         */
-        TypeOne,
-        /**
-         * 不是 {@link Type#TypeOne} 的语句
-         */
-        TypeTwo,
-    }
-
-    /**
-     * 获取当前语句的类型
-     *
-     * @return
-     */
-    public Type getType() {
-        return anf == 0 && anp == 0 ? Type.TypeOne : Type.TypeTwo;
-    }
-
     // anf => m; anp => k
 
     /**
@@ -207,37 +184,19 @@ public class VectorTableModelRecord implements Comparable {
      * @return
      */
     public double calculateSuspiciousnessFactorAsO() {
-        if (getType() == Type.TypeOne) {
-            return 0;
+        if (getAnf() > 0) {
+            return -1;
         } else {
-            if (getAnf() == 0) { // 表示 anp != 0
-                return getAnp();
-            } else {
-                return -1;
-            }
+            return getAnp();
         }
     }
 
     /**
      * 使用 Op 公式来计算当前语句的错误指数
      *
-     * @param testcaseCount   总共的测试用例数量
-     * @param passedTestCount 通过的测试用例数量
      * @return
      */
-    public double calculateSuspiciousnessFactorAsOp(int testcaseCount, int passedTestCount) {
-        final double t = testcaseCount;
-        final double p = passedTestCount;
-
-
-        if (getType() == Type.TypeOne) {
-            return t - p - (p / (p + 1));
-        } else {
-            if (getAnf() == 0) {
-                return t - p - ((p - getAnp()) / (p + 1));
-            } else {
-                return t - p - (getAnf() * (p + 1) + p - getAnp()) / (p + 1);
-            }
-        }
+    public double calculateSuspiciousnessFactorAsOp() {
+        return getAef() - getAep() / (getAep() + getAnp() + 1);
     }
 }
