@@ -1,9 +1,15 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightForProgramItem;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightItem;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -13,12 +19,99 @@ import java.util.stream.Stream;
 public class TestCaseWeightResolver {
 
     /**
+     * 移除所有权重为1的结果
+     *
+     * @param input
+     * @return
+     */
+    public static TestCaseWeightJam simplifyResult(TestCaseWeightJam input) {
+        final List<TestCaseWeightForProgramItem> result = input.getTestCaseWeightForPrograms()
+                .stream()
+                .map(TestCaseWeightResolver::simplifyResult)
+                .collect(Collectors.toList());
+        return new TestCaseWeightJam(result);
+    }
+
+    public static TestCaseWeightForProgramItem simplifyResult(TestCaseWeightForProgramItem input) {
+        final List<TestCaseWeightItem> result = input.getTestCaseWeights()
+                .stream()
+                .filter(item -> item.getTestCaseWeight() != 1.0)
+                .collect(Collectors.toList());
+        return new TestCaseWeightForProgramItem(input.getTitle(), result);
+    }
+
+    /**
+     * 从程序的所有版本计算出测试用例的权重
+     *
+     * @param imports
+     * @return
+     */
+    public static TestCaseWeightJam resolveFromRunResults(Map<String, ArrayList<SingleRunResult>> imports) {
+        return resolveFromRunResults(imports, false);
+    }
+
+    /**
+     * 从程序的所有版本计算出测试用例的权重
+     *
+     * @param imports
+     * @param sort    是否对结果排序
+     * @return
+     */
+    public static TestCaseWeightJam resolveFromRunResults(Map<String, ArrayList<SingleRunResult>> imports, boolean sort) {
+
+        final int versionCount = imports.size();
+        final Function<List<SingleRunResult>, List<TestCaseWeightItem>> resolveFunction;
+
+        final List<TestCaseWeightForProgramItem> collect = IntStream.range(1, versionCount + 1)
+                .mapToObj(i -> imports.get("v" + i))
+                .parallel()
+                .map(runResults -> new TestCaseWeightForProgramItem(
+                        runResults.get(0).getProgram().getTitle(),
+                        TestCaseWeightResolver.resolveTestCaseWeight(runResults, sort))
+                )
+                .collect(Collectors.toList());
+
+        return new TestCaseWeightJam(collect);
+    }
+
+    /**
+     * 从运行结果中得出测试用例的权重
+     *
+     * @param runResults
+     * @return
+     */
+    public static List<TestCaseWeightItem> resolveTestCaseWeight(List<SingleRunResult> runResults) {
+        return resolveTestCaseWeight(runResults, false);
+    }
+
+    /**
+     * 从运行结果中得出测试用例的权重
+     *
+     * @param runResults
+     * @param sort       是否按照从高到低排序
+     * @return
+     */
+    public static List<TestCaseWeightItem> resolveTestCaseWeight(List<SingleRunResult> runResults, boolean sort) {
+
+        final ArrayList<Double> testCaseWeight = doResolveTestCaseWeight(runResults);
+
+        Stream<TestCaseWeightItem> stream = IntStream.range(0, testCaseWeight.size())
+                .mapToObj(i -> new TestCaseWeightItem(i, testCaseWeight.get(i)));
+
+        if (sort) {
+            stream = stream.sorted();
+        }
+
+        return stream.collect(Collectors.toList());
+    }
+
+    /**
      * 从一系列运行结果（测试用例）中计算出测试用例的权重
      *
      * @param runResults
      * @return
      */
-    public static ArrayList<Double> resolveTestCaseWeight(List<SingleRunResult> runResults) {
+    private static ArrayList<Double> doResolveTestCaseWeight(List<SingleRunResult> runResults) {
 
         final int statementCount = runResults.get(0).getStatementMap().getStatementCount();
         final double overall = resolveAveragePerformance(runResults.stream(), statementCount);

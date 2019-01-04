@@ -1,9 +1,9 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonElement;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestCaseWeightResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.interData.TestCaseWeightJsonProcessor;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.stream.IntStream;
 
 public class ResolveTcasTestCaseWeight {
 
@@ -21,27 +20,8 @@ public class ResolveTcasTestCaseWeight {
     public static void main(String[] args) throws IOException {
 
         final HashMap<String, ArrayList<SingleRunResult>> runResultsForVersion = RunTcas.getRunResultsFromSavedFile();
-        final int versionCount = runResultsForVersion.size();
-
-        final JsonArray result = IntStream.range(1, versionCount)
-                .mapToObj(i -> runResultsForVersion.get("v" + i))
-                .parallel()
-                .map(runResults -> {
-                    final ArrayList<Double> testCaseWeight = TestCaseWeightResolver.resolveTestCaseWeight(runResults);
-                    final JsonArray outputWeight = new JsonArray(testCaseWeight.size());
-                    for (int i = 0; i < testCaseWeight.size(); i++) {
-                        final JsonObject jsonObject = new JsonObject();
-                        jsonObject.add("testcase-index", new JsonPrimitive(i));
-                        jsonObject.add("testcase-weight", new JsonPrimitive(testCaseWeight.get(i)));
-                        outputWeight.add(jsonObject);
-                    }
-
-                    final JsonObject singleResult = new JsonObject();
-                    singleResult.add("version", new JsonPrimitive(runResults.get(0).getProgram().getTitle()));
-                    singleResult.add("weight-for-testcases", outputWeight);
-                    return singleResult;
-                })
-                .collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
+        final TestCaseWeightJam testCaseWeightJam = TestCaseWeightResolver.resolveFromRunResults(runResultsForVersion);
+        final JsonElement result = TestCaseWeightJsonProcessor.dumpToJson(testCaseWeightJam);
 
         FileUtils.printJsonToFile(Paths.get(resultOutputPath), result);
     }

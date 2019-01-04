@@ -27,6 +27,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
     private static final String outputFilePath = "./target/outputs/tot_info-suspiciousness-factors-with-weight.json";
 
     public static void main(String[] args) throws IOException {
+        /*
         final Map<String, ArrayList<SingleRunResult>> runResultsFromSavedFile = RunTotInfo.getRunResultsFromSavedFile();
         final Map<String, List<Double>> testCaseWeights = ResolveTotInfoTestCaseWeight.loadFromFile();
 
@@ -60,5 +61,6 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
                 .collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
 
         FileUtils.printJsonToFile(Paths.get(outputFilePath), result);
+        */
     }
 }

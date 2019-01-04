@@ -1,7 +1,8 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
-import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestCaseWeightResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.interData.TestCaseWeightJsonProcessor;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
@@ -10,9 +11,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class ResolveTotInfoTestCaseWeight {
 
@@ -21,16 +20,11 @@ public class ResolveTotInfoTestCaseWeight {
 
     public static void main(String[] args) throws IOException {
 
-        final Map<String, ArrayList<SingleRunResult>> imports = RunTotInfo.getRunResultsFromSavedFile();
+        final Map<String, ArrayList<SingleRunResult>> runResultsForVersion = RunTotInfo.getRunResultsFromSavedFile();
+        final TestCaseWeightJam testCaseWeightJam = TestCaseWeightResolver.resolveFromRunResults(runResultsForVersion, true);
+        final JsonElement result = TestCaseWeightJsonProcessor.dumpToJson(testCaseWeightJam);
 
-        final Map<String, List<Double>> result = imports.entrySet().stream()
-                .parallel()
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        entry -> TestCaseWeightResolver.resolveTestCaseWeight(entry.getValue())
-                ));
-
-        FileUtils.printJsonToFile(Paths.get(resultOutputPath), TestCaseWeightJsonProcessor.dumpToJson(result));
+        FileUtils.printJsonToFile(Paths.get(resultOutputPath), result);
     }
 
     /**
@@ -38,8 +32,8 @@ public class ResolveTotInfoTestCaseWeight {
      *
      * @return
      */
-    public static Map<String, List<Double>> loadFromFile() throws FileNotFoundException {
-        final JsonArray jsonArray = FileUtils.getJsonFromFile(resultOutputPath).getAsJsonArray();
-        return TestCaseWeightJsonProcessor.loadAllFromJson(jsonArray);
+    public static TestCaseWeightJam loadFromFile() throws FileNotFoundException {
+        final JsonElement jsonFromFile = FileUtils.getJsonFromFile(resultOutputPath);
+        return TestCaseWeightJsonProcessor.loadAllFromJson(jsonFromFile);
     }
 }

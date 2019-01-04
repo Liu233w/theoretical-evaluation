@@ -54,15 +54,15 @@ class TestCaseWeightResolverTest : FreeSpec({
                 it.calculateSuspiciousnessFactorAsOp()
             }
 
-            val vtmWeighted = VectorTableModelGenerator.generateFromRunResultWithWeight(testCases, result)
-            val suspiciousnessFactorMatrixOrderedWithWeight = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(vtmWeighted) {
-                it.calculateSuspiciousnessFactorAsOp()
-            }
-
-            println("before weight")
-            println(suspiciousnessFactorMatrixOrdered)
-            println("after weight")
-            println(suspiciousnessFactorMatrixOrderedWithWeight)
+//            val vtmWeighted = VectorTableModelGenerator.generateFromRunResultWithWeight(testCases, result)
+//            val suspiciousnessFactorMatrixOrderedWithWeight = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(vtmWeighted) {
+//                it.calculateSuspiciousnessFactorAsOp()
+//            }
+//
+//            println("before weight")
+//            println(suspiciousnessFactorMatrixOrdered)
+//            println("after weight")
+//            println(suspiciousnessFactorMatrixOrderedWithWeight)
         }
     }
 })
