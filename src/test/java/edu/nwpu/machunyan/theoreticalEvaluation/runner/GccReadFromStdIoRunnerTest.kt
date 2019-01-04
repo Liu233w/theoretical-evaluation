@@ -25,7 +25,7 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
             runner.cleanUp()
 
             // assert
-            singleRunResult shouldBe SingleRunResult(
+            singleRunResult shouldBe RunResultFromRunner(
                     Program("test cpp: 1.cpp", testFilePath),
                     GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),
                     true,
@@ -65,7 +65,7 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
             runner.cleanUp()
 
             // assert
-            singleRunResult shouldBe SingleRunResult(
+            singleRunResult shouldBe RunResultFromRunner(
                     Program("test cpp: 1.cpp", testFilePath),
                     GccReadFromStdIoInput(arrayOf("2"), "else\n"),
                     true,
@@ -106,7 +106,7 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
             runner.cleanUp()
 
             // assert
-            singleRunResult shouldBe SingleRunResult(
+            singleRunResult shouldBe RunResultFromRunner(
                     Program("test cpp: 2.cpp", testFilePath),
                     GccReadFromStdIoInput(arrayOf(), "1", "input 1\n"),
                     true,

@@ -11,13 +11,13 @@ public class RunResultsJsonProcessor {
 
     /**
      * 将一个程序的运行结果导出成 json object。每个结果都必须是相同的程序运行出来的，因此都具有一致的
-     * {@link SingleRunResult#getProgram()} 和 {@link SingleRunResult#getStatementMap()}
+     * {@link RunResultFromRunner#getProgram()} 和 {@link RunResultFromRunner#getStatementMap()}
      *
      * @param runResults 输入。至少要有一个元素
-     * @param inputType  {@link SingleRunResult#getInput()} 得到的对象的实际类型，需要用这个来序列化
+     * @param inputType  {@link RunResultFromRunner#getInput()} 得到的对象的实际类型，需要用这个来序列化
      * @return
      */
-    public static JsonObject bumpToJson(List<SingleRunResult> runResults, Type inputType) {
+    public static JsonObject bumpToJson(List<RunResultFromRunner> runResults, Type inputType) {
 
         final Gson gson = new Gson();
 
@@ -29,13 +29,13 @@ public class RunResultsJsonProcessor {
         result.add("statementMap", gson.toJsonTree(statementMap));
 
         final JsonArray cases = new JsonArray();
-        for (SingleRunResult singleRunResult :
+        for (RunResultFromRunner runResultFromRunner :
                 runResults) {
 
             final JsonObject runCase = new JsonObject();
-            runCase.add("correct", new JsonPrimitive(singleRunResult.isCorrect()));
-            runCase.add("input", gson.toJsonTree(singleRunResult.getInput(), inputType));
-            runCase.add("coverage", gson.toJsonTree(singleRunResult.getCoverage()));
+            runCase.add("correct", new JsonPrimitive(runResultFromRunner.isCorrect()));
+            runCase.add("input", gson.toJsonTree(runResultFromRunner.getInput(), inputType));
+            runCase.add("coverage", gson.toJsonTree(runResultFromRunner.getCoverage()));
 
             cases.add(runCase);
         }
@@ -49,17 +49,17 @@ public class RunResultsJsonProcessor {
      * 从 JsonObject 导入运行数据。
      *
      * @param input     {@link RunResultsJsonProcessor#bumpToJson(List, Type)} 中得到的 json 数据
-     * @param inputType {@link SingleRunResult#getInput()} 得到的对象的实际类型，需要用这个来反序列化
+     * @param inputType {@link RunResultFromRunner#getInput()} 得到的对象的实际类型，需要用这个来反序列化
      * @return
      */
-    public static ArrayList<SingleRunResult> loadFromJson(JsonObject input, Type inputType) {
+    public static ArrayList<RunResultFromRunner> loadFromJson(JsonObject input, Type inputType) {
 
         final Gson gson = new Gson();
 
         final Program program = gson.fromJson(input.get("program"), Program.class);
         final StatementMap statementMap = gson.fromJson(input.get("statementMap"), StatementMap.class);
 
-        final ArrayList<SingleRunResult> result = new ArrayList<>();
+        final ArrayList<RunResultFromRunner> result = new ArrayList<>();
 
         final JsonArray runCases = input.getAsJsonArray("runCases");
         for (JsonElement runCase :
@@ -70,7 +70,7 @@ public class RunResultsJsonProcessor {
             final IProgramInput programInput = gson.fromJson(caseObject.get("input"), inputType);
             final Coverage coverage = gson.fromJson(caseObject.get("coverage"), Coverage.class);
 
-            result.add(new SingleRunResult(program, programInput, correct, coverage, statementMap));
+            result.add(new RunResultFromRunner(program, programInput, correct, coverage, statementMap));
         }
 
         return result;

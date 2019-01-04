@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 
 /**
  * 用于生成 {@link VectorTableModelRecord}
@@ -47,22 +47,22 @@ public class VectorTableModelRecordBuilder {
     /**
      * 根据一次运行结果将 4 个数值中的一个递增
      *
-     * @param singleRunResult
+     * @param runResultFromRunner
      */
-    public void processSingleRunResult(SingleRunResult singleRunResult) {
-        processSingleRunResult(singleRunResult, 1.0);
+    public void processSingleRunResult(RunResultFromRunner runResultFromRunner) {
+        processSingleRunResult(runResultFromRunner, 1.0);
     }
 
     /**
      * 根据一次运行结果将 4 个数值中的一个递增
      *
-     * @param singleRunResult
+     * @param runResultFromRunner
      * @param testCaseWeight
      */
-    public void processSingleRunResult(SingleRunResult singleRunResult, Double testCaseWeight) {
+    public void processSingleRunResult(RunResultFromRunner runResultFromRunner, Double testCaseWeight) {
 
-        final boolean correct = singleRunResult.isCorrect();
-        final boolean hit = singleRunResult.getCoverage()
+        final boolean correct = runResultFromRunner.isCorrect();
+        final boolean hit = runResultFromRunner.getCoverage()
                 .getCoverageForStatement(statementIndex) > 0;
 
         if (correct) {

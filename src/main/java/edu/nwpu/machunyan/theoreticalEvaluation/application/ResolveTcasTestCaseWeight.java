@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestCaseWeightResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.interData.TestCaseWeightJsonProcessor;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.IOException;
@@ -19,7 +19,7 @@ public class ResolveTcasTestCaseWeight {
 
     public static void main(String[] args) throws IOException {
 
-        final HashMap<String, ArrayList<SingleRunResult>> runResultsForVersion = RunTcas.getRunResultsFromSavedFile();
+        final HashMap<String, ArrayList<RunResultFromRunner>> runResultsForVersion = RunTcas.getRunResultsFromSavedFile();
         final TestCaseWeightJam testCaseWeightJam = TestCaseWeightResolver.resolveFromRunResults(runResultsForVersion);
         final JsonElement result = TestCaseWeightJsonProcessor.dumpToJson(testCaseWeightJam);
 

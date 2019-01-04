@@ -5,7 +5,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelGenerato
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelRecord;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightItem;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.GsonUtils;
 
@@ -20,7 +20,7 @@ public class ResolveTotInfoVtm {
 
     public static void main(String[] args) throws IOException {
 
-        final Map<String, ArrayList<SingleRunResult>> imports = RunTotInfo.getRunResultsFromSavedFile();
+        final Map<String, ArrayList<RunResultFromRunner>> imports = RunTotInfo.getRunResultsFromSavedFile();
         final TestCaseWeightJam testCaseWeightJam = ResolveTotInfoTestCaseWeight.loadFromFile();
 
         final HashMap<String, ArrayList<VectorTableModelRecord>> result = new HashMap<>();

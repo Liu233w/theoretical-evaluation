@@ -8,7 +8,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningScheduler;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import me.tongfei.progressbar.ProgressBar;
@@ -45,16 +45,16 @@ public class RunTcas {
      *
      * @return key 为程序的 title（版本），value 为该程序的所有运行结果和覆盖值
      */
-    public static HashMap<String, ArrayList<SingleRunResult>> getRunResultsFromSavedFile() throws FileNotFoundException {
+    public static HashMap<String, ArrayList<RunResultFromRunner>> getRunResultsFromSavedFile() throws FileNotFoundException {
 
         final JsonObject jsonObject = FileUtils.getJsonFromFile(resultOutputPath).getAsJsonObject();
 
-        final HashMap<String, ArrayList<SingleRunResult>> result = new HashMap<>();
+        final HashMap<String, ArrayList<RunResultFromRunner>> result = new HashMap<>();
 
         for (Map.Entry<String, JsonElement> stringJsonElementEntry : jsonObject.entrySet()) {
 
             final JsonObject runResultsJsonObject = stringJsonElementEntry.getValue().getAsJsonObject();
-            final ArrayList<SingleRunResult> runResults = RunResultsJsonProcessor.loadFromJson(runResultsJsonObject, GccReadFromStdIoInput.class);
+            final ArrayList<RunResultFromRunner> runResults = RunResultsJsonProcessor.loadFromJson(runResultsJsonObject, GccReadFromStdIoInput.class);
 
             result.put(stringJsonElementEntry.getKey(), runResults);
         }
@@ -122,8 +122,8 @@ public class RunTcas {
 
         // 使用测试用例运行程序
         LogUtils.logInfo("start running version: " + versionNumString);
-        final ArrayList<SingleRunResult> runResults = runningScheduler.runAndGetResults();
-        final long passedCount = runResults.stream().filter(SingleRunResult::isCorrect).count();
+        final ArrayList<RunResultFromRunner> runResults = runningScheduler.runAndGetResults();
+        final long passedCount = runResults.stream().filter(RunResultFromRunner::isCorrect).count();
 
         LogUtils.logInfo("passed test case count for version " + versionNumString + ": " + passedCount);
 

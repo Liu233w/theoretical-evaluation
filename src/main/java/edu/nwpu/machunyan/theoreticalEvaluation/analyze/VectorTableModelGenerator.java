@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -15,7 +15,7 @@ public class VectorTableModelGenerator {
      * @param runResults
      * @return vector table model，对应一个矩阵。第 0 个元素为 null，从第一个元素开始每个元素表示一行。
      */
-    public static ArrayList<VectorTableModelRecord> generateFromRunResult(List<SingleRunResult> runResults) {
+    public static ArrayList<VectorTableModelRecord> generateFromRunResult(List<RunResultFromRunner> runResults) {
         return generateFromStream(runResults.stream(), runResults.get(0).getStatementMap().getStatementCount());
     }
 
@@ -26,7 +26,7 @@ public class VectorTableModelGenerator {
      * @param weights
      * @return
      */
-    public static ArrayList<VectorTableModelRecord> generateFromRunResultWithWeight(List<SingleRunResult> runResults, List<Double> weights) {
+    public static ArrayList<VectorTableModelRecord> generateFromRunResultWithWeight(List<RunResultFromRunner> runResults, List<Double> weights) {
 
         if (runResults.size() != weights.size()) {
             throw new IllegalArgumentException("runResults 必须和 weights 一一对应。");
@@ -39,7 +39,7 @@ public class VectorTableModelGenerator {
         }
 
         for (int i = 0; i < runResults.size(); i++) {
-            final SingleRunResult runResult = runResults.get(i);
+            final RunResultFromRunner runResult = runResults.get(i);
             final double weight = weights.get(i);
             for (int j = 0; j < statementCount; j++) {
                 builders.get(j).processSingleRunResult(runResult, weight);
@@ -56,7 +56,7 @@ public class VectorTableModelGenerator {
      * @param statementCount 总体的语句数量
      * @return vector table model，对应一个矩阵。第 0 个元素为 null，从第一个元素开始每个元素表示一行。
      */
-    public static ArrayList<VectorTableModelRecord> generateFromStream(Stream<SingleRunResult> stream, int statementCount) {
+    public static ArrayList<VectorTableModelRecord> generateFromStream(Stream<RunResultFromRunner> stream, int statementCount) {
 
         final ArrayList<VectorTableModelRecordBuilder> builders = new ArrayList<>(statementCount);
 

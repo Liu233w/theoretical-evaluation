@@ -10,7 +10,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningScheduler;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.StreamUtils;
 import me.tongfei.progressbar.ProgressBar;
@@ -43,7 +43,7 @@ public class RunTotInfo {
         }
     }
 
-    public static List<ArrayList<SingleRunResult>> runAndGetResult() throws URISyntaxException, IOException {
+    public static List<ArrayList<RunResultFromRunner>> runAndGetResult() throws URISyntaxException, IOException {
 
         final Path casePath = FileUtils.getFilePathFromResources("tot_info/testplans/cases.json");
         final InputStreamReader jsonReader = new InputStreamReader(Files.newInputStream(casePath));
@@ -61,7 +61,7 @@ public class RunTotInfo {
 
         final ProgressBar progressBar = new ProgressBar("", testCases.size() * lastVersionNumber);
 
-        final List<ArrayList<SingleRunResult>> result = IntStream.range(1, lastVersionNumber + 1)
+        final List<ArrayList<RunResultFromRunner>> result = IntStream.range(1, lastVersionNumber + 1)
                 .parallel()
                 .mapToObj(i -> "v" + i)
                 .map(versionStr -> new Program(versionStr, versionsDir.resolve(versionStr).resolve("tot_info.c").toString()))
@@ -89,7 +89,7 @@ public class RunTotInfo {
         FileUtils.printJsonToFile(Paths.get(resultOutputPath), jsonArray);
     }
 
-    public static Map<String, ArrayList<SingleRunResult>> getRunResultsFromSavedFile() throws FileNotFoundException {
+    public static Map<String, ArrayList<RunResultFromRunner>> getRunResultsFromSavedFile() throws FileNotFoundException {
         final JsonArray jsonArray = FileUtils.getJsonFromFile(resultOutputPath).getAsJsonArray();
 
         return StreamUtils.asStream(jsonArray.iterator())

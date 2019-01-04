@@ -3,7 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightForProgramItem;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightItem;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class TestCaseWeightResolver {
      * @param imports
      * @return
      */
-    public static TestCaseWeightJam resolveFromRunResults(Map<String, ArrayList<SingleRunResult>> imports) {
+    public static TestCaseWeightJam resolveFromRunResults(Map<String, ArrayList<RunResultFromRunner>> imports) {
         return resolveFromRunResults(imports, false);
     }
 
@@ -57,10 +57,10 @@ public class TestCaseWeightResolver {
      * @param sort    是否对结果排序
      * @return
      */
-    public static TestCaseWeightJam resolveFromRunResults(Map<String, ArrayList<SingleRunResult>> imports, boolean sort) {
+    public static TestCaseWeightJam resolveFromRunResults(Map<String, ArrayList<RunResultFromRunner>> imports, boolean sort) {
 
         final int versionCount = imports.size();
-        final Function<List<SingleRunResult>, List<TestCaseWeightItem>> resolveFunction;
+        final Function<List<RunResultFromRunner>, List<TestCaseWeightItem>> resolveFunction;
 
         final List<TestCaseWeightForProgramItem> collect = IntStream.range(1, versionCount + 1)
                 .mapToObj(i -> imports.get("v" + i))
@@ -80,7 +80,7 @@ public class TestCaseWeightResolver {
      * @param runResults
      * @return
      */
-    public static List<TestCaseWeightItem> resolveTestCaseWeight(List<SingleRunResult> runResults) {
+    public static List<TestCaseWeightItem> resolveTestCaseWeight(List<RunResultFromRunner> runResults) {
         return resolveTestCaseWeight(runResults, false);
     }
 
@@ -91,7 +91,7 @@ public class TestCaseWeightResolver {
      * @param sort       是否按照从高到低排序
      * @return
      */
-    public static List<TestCaseWeightItem> resolveTestCaseWeight(List<SingleRunResult> runResults, boolean sort) {
+    public static List<TestCaseWeightItem> resolveTestCaseWeight(List<RunResultFromRunner> runResults, boolean sort) {
 
         final ArrayList<Double> testCaseWeight = doResolveTestCaseWeight(runResults);
 
@@ -111,7 +111,7 @@ public class TestCaseWeightResolver {
      * @param runResults
      * @return
      */
-    private static ArrayList<Double> doResolveTestCaseWeight(List<SingleRunResult> runResults) {
+    private static ArrayList<Double> doResolveTestCaseWeight(List<RunResultFromRunner> runResults) {
 
         final int statementCount = runResults.get(0).getStatementMap().getStatementCount();
         final double overall = resolveAveragePerformance(runResults.stream(), statementCount);
@@ -119,7 +119,7 @@ public class TestCaseWeightResolver {
         final ArrayList<Double> result = new ArrayList<>(runResults.size());
 
         for (int i = 0; i < runResults.size(); i++) {
-            final Stream<SingleRunResult> skippedStream = ofStreamSkipAtIndex(runResults, i);
+            final Stream<RunResultFromRunner> skippedStream = ofStreamSkipAtIndex(runResults, i);
             final double averagePerformance = resolveAveragePerformance(skippedStream, statementCount);
             result.add(averagePerformance - overall);
         }
@@ -148,7 +148,7 @@ public class TestCaseWeightResolver {
      * @param index
      * @return
      */
-    private static Stream<SingleRunResult> ofStreamSkipAtIndex(List<SingleRunResult> runResults, int index) {
+    private static Stream<RunResultFromRunner> ofStreamSkipAtIndex(List<RunResultFromRunner> runResults, int index) {
         return IntStream.range(0, runResults.size())
                 .filter(i -> i != index)
                 .mapToObj(runResults::get);
@@ -161,7 +161,7 @@ public class TestCaseWeightResolver {
      * @param statementCount 语句数量
      * @return
      */
-    private static double resolveAveragePerformance(Stream<SingleRunResult> testCases, int statementCount) {
+    private static double resolveAveragePerformance(Stream<RunResultFromRunner> testCases, int statementCount) {
         final ArrayList<VectorTableModelRecord> vtm = VectorTableModelGenerator.generateFromStream(testCases, statementCount);
         final OrderedVectorTableModel orderedVtm = OrderedVectorTableModel.fromVectorTableModel(vtm);
         return AveragePerformanceResolver.resolveAveragePerformance(orderedVtm);

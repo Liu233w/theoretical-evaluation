@@ -2,7 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import me.tongfei.progressbar.ProgressBar;
 
@@ -15,7 +15,7 @@ public class RunningScheduler {
     private final List<IProgramInput> inputs;
     private final Program program;
 
-    private ArrayList<SingleRunResult> runResults;
+    private ArrayList<RunResultFromRunner> runResults;
 
     private final ProgressBar progressBar;
 
@@ -44,7 +44,7 @@ public class RunningScheduler {
      * @return
      * @throws CoverageRunnerException 运行中出现的所有错误
      */
-    public ArrayList<SingleRunResult> runAndGetResults() throws CoverageRunnerException {
+    public ArrayList<RunResultFromRunner> runAndGetResults() throws CoverageRunnerException {
 
         runResults = new ArrayList<>(inputs.size());
 
@@ -54,7 +54,7 @@ public class RunningScheduler {
 
             for (IProgramInput input :
                     inputs) {
-                final SingleRunResult result = runner.runWithInput(input);
+                final RunResultFromRunner result = runner.runWithInput(input);
                 runResults.add(result);
                 stepProgressBar();
             }

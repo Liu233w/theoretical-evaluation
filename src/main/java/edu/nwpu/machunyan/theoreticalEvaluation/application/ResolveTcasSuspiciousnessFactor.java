@@ -8,7 +8,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorReso
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorRecord;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelGenerator;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelRecord;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.IOException;
@@ -26,7 +26,7 @@ public class ResolveTcasSuspiciousnessFactor {
 
     public static void main(String[] args) throws IOException {
 
-        final HashMap<String, ArrayList<SingleRunResult>> runResultsForVersion = RunTcas.getRunResultsFromSavedFile();
+        final HashMap<String, ArrayList<RunResultFromRunner>> runResultsForVersion = RunTcas.getRunResultsFromSavedFile();
 
         final int versionCount = runResultsForVersion.size();
 
@@ -34,9 +34,9 @@ public class ResolveTcasSuspiciousnessFactor {
         for (int i = 1; i <= versionCount; i++) {
 
             final String versionNumStr = "v" + i;
-            final ArrayList<SingleRunResult> runResults = runResultsForVersion.get(versionNumStr);
+            final ArrayList<RunResultFromRunner> runResults = runResultsForVersion.get(versionNumStr);
 
-            final long passedCount = runResults.stream().filter(SingleRunResult::isCorrect).count();
+            final long passedCount = runResults.stream().filter(RunResultFromRunner::isCorrect).count();
             final ArrayList<VectorTableModelRecord> vectorTableModel = VectorTableModelGenerator.generateFromRunResult(runResults);
 
             // 某行代码的错误率（排序过的）

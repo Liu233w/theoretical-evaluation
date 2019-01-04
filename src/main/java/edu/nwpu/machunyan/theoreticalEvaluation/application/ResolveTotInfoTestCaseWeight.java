@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestCaseWeightResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.interData.TestCaseWeightJsonProcessor;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.FileNotFoundException;
@@ -20,7 +20,7 @@ public class ResolveTotInfoTestCaseWeight {
 
     public static void main(String[] args) throws IOException {
 
-        final Map<String, ArrayList<SingleRunResult>> runResultsForVersion = RunTotInfo.getRunResultsFromSavedFile();
+        final Map<String, ArrayList<RunResultFromRunner>> runResultsForVersion = RunTotInfo.getRunResultsFromSavedFile();
         final TestCaseWeightJam testCaseWeightJam = TestCaseWeightResolver.resolveFromRunResults(runResultsForVersion, true);
         final JsonElement result = TestCaseWeightJsonProcessor.dumpToJson(testCaseWeightJam);
 

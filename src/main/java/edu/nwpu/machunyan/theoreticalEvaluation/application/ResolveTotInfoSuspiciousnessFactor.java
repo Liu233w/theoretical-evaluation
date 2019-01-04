@@ -8,7 +8,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorReco
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelGenerator;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelRecord;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.SingleRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.IOException;
@@ -23,7 +23,7 @@ public class ResolveTotInfoSuspiciousnessFactor {
     private static final String outputFilePath = "./target/outputs/tot_info-suspiciousness-factors.json";
 
     public static void main(String[] args) throws IOException {
-        final Map<String, ArrayList<SingleRunResult>> runResultsFromSavedFile = RunTotInfo.getRunResultsFromSavedFile();
+        final Map<String, ArrayList<RunResultFromRunner>> runResultsFromSavedFile = RunTotInfo.getRunResultsFromSavedFile();
 
         final JsonArray result = IntStream.range(1, runResultsFromSavedFile.size() + 1)
                 .parallel()
@@ -32,9 +32,9 @@ public class ResolveTotInfoSuspiciousnessFactor {
                     final JsonObject resultRecord = new JsonObject();
                     resultRecord.add("version", new JsonPrimitive(versionStr));
 
-                    final ArrayList<SingleRunResult> runResults = runResultsFromSavedFile.get(versionStr);
+                    final ArrayList<RunResultFromRunner> runResults = runResultsFromSavedFile.get(versionStr);
 
-                    final long passedCount = runResults.stream().filter(SingleRunResult::isCorrect).count();
+                    final long passedCount = runResults.stream().filter(RunResultFromRunner::isCorrect).count();
                     final ArrayList<VectorTableModelRecord> vectorTableModel = VectorTableModelGenerator.generateFromRunResult(runResults);
 
                     // 某行代码的错误率（排序过的）

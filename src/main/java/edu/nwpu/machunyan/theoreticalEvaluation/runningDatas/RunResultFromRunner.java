@@ -3,10 +3,10 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runningDatas;
 import lombok.Data;
 
 /**
- * 程序的单次运行结果
+ * 程序的单次运行结果，采用了适合 runner 的抽象
  */
 @Data
-public class SingleRunResult {
+public class RunResultFromRunner {
 
     /**
      * 程序信息

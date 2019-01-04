@@ -75,7 +75,7 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
     }
 
     @Override
-    public SingleRunResult runWithInput(IProgramInput programInput) throws CoverageRunnerException {
+    public RunResultFromRunner runWithInput(IProgramInput programInput) throws CoverageRunnerException {
 
         if (!(programInput instanceof GccReadFromStdIoInput)) {
             throw new CoverageRunnerException("input should be an instance of GccReadFromStdIoInput");
@@ -102,7 +102,7 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
 
             final Coverage coverage = GcovParser.generateCoverageFromFile(gcovFile);
 
-            return new SingleRunResult(
+            return new RunResultFromRunner(
                     program,
                     programInput,
                     output.equals(typedInput.getShouldOutputFromStdOut()),
