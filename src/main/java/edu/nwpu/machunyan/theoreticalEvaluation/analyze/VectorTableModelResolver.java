@@ -1,5 +1,9 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultItem;
 
 import java.util.ArrayList;
@@ -31,6 +35,32 @@ public class VectorTableModelResolver {
                         builder.processSingleRunResult(runResultItem)));
 
         return buildVtm(builders);
+    }
+
+    /**
+     * 从 {@link ProgramRunResult} 批量生成
+     *
+     * @param programRunResult
+     * @return
+     */
+    public static VectorTableModel fromProgramResults(ProgramRunResult programRunResult) {
+        final int statementCount = programRunResult.getStatementMap().getStatementCount();
+        final Stream<RunResultItem> stream = programRunResult.getRunResults().stream();
+        final List<VectorTableModelRecord> vectorTableModelRecords = fromRunResults(stream, statementCount);
+        return new VectorTableModel(programRunResult.getProgramTitle(), vectorTableModelRecords);
+    }
+
+    /**
+     * 从 programResultJam 批量生成
+     *
+     * @param programRunResultJam
+     * @return
+     */
+    public static VectorTableModelJam fromProgramResultJam(ProgramRunResultJam programRunResultJam) {
+        final List<VectorTableModel> vectorTableModels = programRunResultJam.getProgramRunResults().stream()
+                .map(VectorTableModelResolver::fromProgramResults)
+                .collect(Collectors.toList());
+        return new VectorTableModelJam(vectorTableModels);
     }
 
     private static List<VectorTableModelRecord> buildVtm(List<VectorTableModelRecordBuilder> builders) {
