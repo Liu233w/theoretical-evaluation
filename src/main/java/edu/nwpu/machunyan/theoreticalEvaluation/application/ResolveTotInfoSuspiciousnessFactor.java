@@ -29,7 +29,7 @@ public class ResolveTotInfoSuspiciousnessFactor {
             put("Op", SuspiciousnessFactorFormulas::op);
         }});
 
-        final VectorTableModelJam vtm = VectorTableModelResolver.fromProgramResultJam(jam);
+        final VectorTableModelJam vtm = VectorTableModelResolver.resolve(jam);
 
         final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorResolver.runAll(vtm, resolvers);
 

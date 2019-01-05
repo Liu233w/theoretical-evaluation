@@ -15,7 +15,7 @@ public class ResolveTotInfoVtm {
     public static void main(String[] args) throws IOException {
 
         final ProgramRunResultJam results = RunTotInfo.getRunResultsFromSavedFile();
-        final VectorTableModelJam vectorTableModelJam = VectorTableModelResolver.fromProgramResultJam(results);
+        final VectorTableModelJam vectorTableModelJam = VectorTableModelResolver.resolve(results);
         final String csvString = CsvExporter.toCsvString(vectorTableModelJam);
         FileUtils.saveString(outputPath, csvString);
     }

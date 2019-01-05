@@ -24,7 +24,7 @@ public class VectorTableModelResolver {
      * @param statementCount
      * @return
      */
-    public static List<VectorTableModelRecord> fromRunResults(Stream<RunResultItem> runResult, int statementCount) {
+    public static List<VectorTableModelRecord> resolve(Stream<RunResultItem> runResult, int statementCount) {
 
         final List<VectorTableModelRecordBuilder> builders = IntStream.range(0, statementCount)
             .mapToObj(i -> new VectorTableModelRecordBuilder(i + 1))
@@ -43,10 +43,10 @@ public class VectorTableModelResolver {
      * @param programRunResult
      * @return
      */
-    public static VectorTableModel fromProgramResults(ProgramRunResult programRunResult) {
+    public static VectorTableModel resolve(ProgramRunResult programRunResult) {
         final int statementCount = programRunResult.getStatementMap().getStatementCount();
         final Stream<RunResultItem> stream = programRunResult.getRunResults().stream();
-        final List<VectorTableModelRecord> vectorTableModelRecords = fromRunResults(stream, statementCount);
+        final List<VectorTableModelRecord> vectorTableModelRecords = resolve(stream, statementCount);
         return new VectorTableModel(programRunResult.getProgramTitle(), vectorTableModelRecords);
     }
 
@@ -56,9 +56,9 @@ public class VectorTableModelResolver {
      * @param programRunResultJam
      * @return
      */
-    public static VectorTableModelJam fromProgramResultJam(ProgramRunResultJam programRunResultJam) {
+    public static VectorTableModelJam resolve(ProgramRunResultJam programRunResultJam) {
         final List<VectorTableModel> vectorTableModels = programRunResultJam.getProgramRunResults().stream()
-            .map(VectorTableModelResolver::fromProgramResults)
+            .map(VectorTableModelResolver::resolve)
             .collect(Collectors.toList());
         return new VectorTableModelJam(vectorTableModels);
     }
