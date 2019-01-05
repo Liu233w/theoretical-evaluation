@@ -1,17 +1,12 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import com.google.gson.JsonElement;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestCaseWeightResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.interData.TestCaseWeightJsonProcessor;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Map;
 
 public class ResolveTotInfoTestCaseWeight {
 

@@ -1,21 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorRecord;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorResolver;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelGenerator;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelRecord;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
-
 import java.io.IOException;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.stream.IntStream;
 
 public class ResolveTotInfoSuspiciousnessFactor {
 

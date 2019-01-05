@@ -1,30 +1,5 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
-import com.google.gson.*;
-import edu.nwpu.machunyan.theoreticalEvaluation.interData.RunResultsJsonProcessor;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoInput;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoRunner;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningScheduler;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
-import me.tongfei.progressbar.ProgressBar;
-
-import java.io.*;
-import java.net.URISyntaxException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
-
 public class RunTcas {
 
 //    // 准备好的测试用例

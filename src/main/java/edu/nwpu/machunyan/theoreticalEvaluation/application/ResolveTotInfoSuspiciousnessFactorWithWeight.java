@@ -1,7 +1,5 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
-import java.io.IOException;
-
 /**
  * 用权重来解决 suspiciousness factor
  */
