@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class TestCaseWeightJam {
+public class TestcaseWeightJam {
 
-    List<TestCaseWeightForProgramItem> testCaseWeightForPrograms;
+    List<TestcaseWeightForProgramItem> testCaseWeightForPrograms;
 }

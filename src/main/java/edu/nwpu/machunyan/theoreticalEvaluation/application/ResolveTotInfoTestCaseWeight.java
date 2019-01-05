@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import com.google.gson.JsonElement;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestCaseWeightJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.interData.TestCaseWeightJsonProcessor;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
@@ -16,7 +16,7 @@ public class ResolveTotInfoTestCaseWeight {
     public static void main(String[] args) throws IOException {
 
 //        final Map<String, ArrayList<RunResultFromRunner>> runResultsForVersion = RunTotInfo.getRunResultsFromSavedFile();
-//        final TestCaseWeightJam testCaseWeightJam = TestCaseWeightResolver.resolveFromRunResults(runResultsForVersion, true);
+//        final TestcaseWeightJam testCaseWeightJam = TestCaseWeightResolver.resolveFromRunResults(runResultsForVersion, true);
 //        final JsonElement result = TestCaseWeightJsonProcessor.dumpToJson(testCaseWeightJam);
 //
 //        FileUtils.printJsonToFile(Paths.get(resultOutputPath), result);
@@ -27,7 +27,7 @@ public class ResolveTotInfoTestCaseWeight {
      *
      * @return
      */
-    public static TestCaseWeightJam loadFromFile() throws FileNotFoundException {
+    public static TestcaseWeightJam loadFromFile() throws FileNotFoundException {
         final JsonElement jsonFromFile = FileUtils.getJsonFromFile(resultOutputPath);
         return TestCaseWeightJsonProcessor.loadAllFromJson(jsonFromFile);
     }

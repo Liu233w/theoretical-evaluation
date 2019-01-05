@@ -10,9 +10,11 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class TestCaseWeightForProgramItem {
+public class TestcaseWeightForProgramItem {
 
     String title;
 
-    List<TestCaseWeightItem> testCaseWeights;
+    String formulaTitle;
+
+    List<TestcaseWeightItem> testCaseWeights;
 }
