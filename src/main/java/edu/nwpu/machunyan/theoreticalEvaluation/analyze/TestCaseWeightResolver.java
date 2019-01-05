@@ -162,8 +162,9 @@ public class TestCaseWeightResolver {
      * @return
      */
     private static double resolveAveragePerformance(Stream<RunResultFromRunner> testCases, int statementCount) {
-        final ArrayList<VectorTableModelRecord> vtm = VectorTableModelGenerator.generateFromStream(testCases, statementCount);
-        final OrderedVectorTableModel orderedVtm = OrderedVectorTableModel.fromVectorTableModel(vtm);
-        return AveragePerformanceResolver.resolveAveragePerformance(orderedVtm);
+//        final ArrayList<VectorTableModelRecord> vtm = VectorTableModelGenerator.generateFromStream(testCases, statementCount);
+//        final OrderedVectorTableModel orderedVtm = OrderedVectorTableModel.fromVectorTableModel(vtm);
+//        return AveragePerformanceResolver.resolveAveragePerformance(orderedVtm);
+        throw new RuntimeException("TODO");
     }
 }

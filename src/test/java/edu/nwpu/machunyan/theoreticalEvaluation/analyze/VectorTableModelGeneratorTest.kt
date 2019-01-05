@@ -3,6 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
+/*
 class VectorTableModelGeneratorTest : FreeSpec({
 
     "generateFromRunResult" - {
@@ -39,3 +40,4 @@ class VectorTableModelGeneratorTest : FreeSpec({
 
     }
 })
+*/

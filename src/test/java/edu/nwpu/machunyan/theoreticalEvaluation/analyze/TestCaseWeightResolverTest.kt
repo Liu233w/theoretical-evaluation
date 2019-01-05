@@ -4,6 +4,7 @@ import io.kotlintest.matchers.plusOrMinus
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
+/*
 class TestCaseWeightResolverTest : FreeSpec({
 
     "resolveTestCaseWeight" - {
@@ -66,3 +67,4 @@ class TestCaseWeightResolverTest : FreeSpec({
         }
     }
 })
+*/
