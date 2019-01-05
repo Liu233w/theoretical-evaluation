@@ -5,8 +5,18 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
  */
 public class SuspiciousnessFactorFormulas {
 
+    private static double resolveP(VectorTableModelRecord record) {
+        // 通过的测试用例
+        return record.getAep() + record.getAnp();
+    }
+
+    private static double resolveF(VectorTableModelRecord record) {
+        // 失败的测试用例
+        return record.getAef() + record.getAnf();
+    }
+
     /**
-     * 公式 O
+     * O
      *
      * @param record
      * @return
@@ -27,6 +37,6 @@ public class SuspiciousnessFactorFormulas {
      * @return
      */
     public static double op(VectorTableModelRecord record) {
-        return record.getAef() - record.getAep() / (record.getAep() + record.getAnp() + 1);
+        return record.getAef() - record.getAep() / (resolveP(record) + 1);
     }
 }
