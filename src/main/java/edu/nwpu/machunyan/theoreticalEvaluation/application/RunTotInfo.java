@@ -1,9 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.reflect.TypeToken;
-import edu.nwpu.machunyan.theoreticalEvaluation.interData.RunResultsJsonProcessor;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningResultResolver;
@@ -20,7 +18,6 @@ import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -59,13 +56,11 @@ public class RunTotInfo {
     public static void runAndSaveResultsAsJson() throws IOException, URISyntaxException {
         final ProgramRunResultJam result = runAndGetResult();
 
-        FileUtils.printJsonToFile(Paths.get(resultOutputPath), RunResultsJsonProcessor.bumpToJson(result));
+        FileUtils.saveObject(resultOutputPath, result);
     }
 
     public static ProgramRunResultJam getRunResultsFromSavedFile() throws FileNotFoundException {
-        final JsonElement jsonFromFile = FileUtils.getJsonFromFile(resultOutputPath);
-
-        return RunResultsJsonProcessor.loadFromJson(jsonFromFile);
+        return FileUtils.loadObject(resultOutputPath, ProgramRunResultJam.class);
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException {

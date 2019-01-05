@@ -3,6 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 import com.google.gson.*;
 
 import java.io.*;
+import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -45,5 +46,53 @@ public class FileUtils {
     public static JsonElement getJsonFromFile(String path) throws FileNotFoundException {
         final File file = Paths.get(path).toFile();
         return new JsonParser().parse(new FileReader(file));
+    }
+
+    /**
+     * 从路径读取指定类型的对象
+     *
+     * @param path
+     * @param type
+     * @param <T>
+     * @return
+     * @throws FileNotFoundException
+     */
+    public static <T> T loadObject(Path path, Type type) throws FileNotFoundException {
+        return JsonUtils.fromJson(new FileReader(path.toFile()), type);
+    }
+
+    /**
+     * 从路径读取指定类型的对象
+     *
+     * @param <T>
+     * @param path
+     * @param type
+     * @return
+     * @throws FileNotFoundException
+     */
+    public static <T> T loadObject(String path, Type type) throws FileNotFoundException {
+        return loadObject(Paths.get(path), type);
+    }
+
+    /**
+     * 将对象转换成 json 并保存到指定路径
+     *
+     * @param path
+     * @param obj
+     * @throws IOException
+     */
+    public static void saveObject(Path path, Object obj) throws IOException {
+        printJsonToFile(path, JsonUtils.toJson(obj));
+    }
+
+    /**
+     * 将对象转换成 json 并保存到指定路径
+     *
+     * @param path
+     * @param obj
+     * @throws IOException
+     */
+    public static void saveObject(String path, Object obj) throws IOException {
+        saveObject(Paths.get(path), obj);
     }
 }
