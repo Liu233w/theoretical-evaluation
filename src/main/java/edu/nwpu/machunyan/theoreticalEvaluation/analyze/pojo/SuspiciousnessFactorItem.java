@@ -1,12 +1,15 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
+package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorResolver;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
  * {@link SuspiciousnessFactorResolver} 中的一条记录
  */
 @Data
-public class SuspiciousnessFactorRecord {
+@AllArgsConstructor
+public class SuspiciousnessFactorItem {
 
     /**
      * 语句序号

@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.interData;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,14 +29,36 @@ public class CsvExporter {
             "Unweighted Anf", "Unweighted Anp", "Unweighted Aef", "Unweighted Aep"
         }));
 
-        jam.getVectorTableModels().forEach(vtm ->
+        for (VectorTableModel vtm : jam.getVectorTableModels()) {
             vtm.getRecords().stream()
                 .skip(1)
                 .map(record -> new CsvLine(new Object[]{
                     vtm.getProgramTitle(), record.isUseWeight(),
                     record.getAnf(), record.getAnp(), record.getAef(), record.getAep(),
                     record.getUnWeightedAnf(), record.getUnWeightedAnp(), record.getUnWeightedAef(), record.getUnWeightedAep(),
-                })).forEach(csvLines::add));
+                }))
+                .forEach(csvLines::add);
+        }
+
+        return toCsvString(csvLines);
+    }
+
+    public static String toCsvString(SuspiciousnessFactorJam jam) {
+
+        final ArrayList<CsvLine> csvLines = new ArrayList<>();
+
+        csvLines.add(new CsvLine(new Object[]{
+            "program title", "formula", "statement index", "suspiciousness factor"
+        }));
+
+        for (SuspiciousnessFactor program : jam.getFactorInPrograms()) {
+            for (SuspiciousnessFactorItem item : program.getSuspiciousnessFactors()) {
+                csvLines.add(new CsvLine(new Object[]{
+                    program.getProgramTitle(), program.getFormula(),
+                    item.getStatementIndex(), item.getSuspiciousnessFactor(),
+                }));
+            }
+        }
 
         return toCsvString(csvLines);
     }

@@ -13,6 +13,7 @@ public class VectorTableModelRecord implements Comparable {
     /**
      * 语句的序号
      */
+    @Getter
     private final int statementIndex;
 
     // 4 个数据
@@ -176,29 +177,5 @@ public class VectorTableModelRecord implements Comparable {
             return Double.compare(aef, that.getAef());
         }
         return Double.compare(aep, that.getAep());
-    }
-
-    // anf => m; anp => k
-
-    /**
-     * 使用 O 公式来计算当前语句的错误指数
-     *
-     * @return
-     */
-    public double calculateSuspiciousnessFactorAsO() {
-        if (getAnf() > 0) {
-            return -1;
-        } else {
-            return getAnp();
-        }
-    }
-
-    /**
-     * 使用 Op 公式来计算当前语句的错误指数
-     *
-     * @return
-     */
-    public double calculateSuspiciousnessFactorAsOp() {
-        return getAef() - getAep() / (getAep() + getAnp() + 1);
     }
 }
