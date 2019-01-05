@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.*
 import edu.nwpu.machunyan.theoreticalEvaluation.getTestFilePath
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.*
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
@@ -18,34 +18,34 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
             runner.prepare(Program("test cpp: 1.cpp", testFilePath))
 
             val singleRunResult = runner.runWithInput(
-                    GccReadFromStdIoInput(
-                            arrayOf("1"),
-                            "input 1\n"))
+                GccReadFromStdIoInput(
+                    arrayOf("1"),
+                    "input 1\n"))
 
             runner.cleanUp()
 
             // assert
             singleRunResult shouldBe RunResultFromRunner(
-                    Program("test cpp: 1.cpp", testFilePath),
-                    GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),
-                    true,
-                    Coverage(hashMapOf(
-                            6 to 1,
-                            10 to 1,
-                            12 to 1,
-                            14 to 1,
-                            15 to 1,
-                            16 to 1,
-                            21 to 1,
-                            23 to 1,
-                            24 to 3
-                    )),
-                    StatementMap(StatementMapType.LINE_BASED).apply {
-                        mapList.add(null)
-                        for (i in 1..24) {
-                            mapList.add(StatementInfo(i, testFilePath, i, i))
-                        }
+                Program("test cpp: 1.cpp", testFilePath),
+                GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),
+                true,
+                Coverage(hashMapOf(
+                    6 to 1,
+                    10 to 1,
+                    12 to 1,
+                    14 to 1,
+                    15 to 1,
+                    16 to 1,
+                    21 to 1,
+                    23 to 1,
+                    24 to 3
+                )),
+                StatementMap(StatementMapType.LINE_BASED).apply {
+                    mapList.add(null)
+                    for (i in 1..24) {
+                        mapList.add(StatementInfo(i, testFilePath, i, i))
                     }
+                }
             )
         }
 
@@ -58,34 +58,34 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
             runner.prepare(Program("test cpp: 1.cpp", testFilePath))
 
             val singleRunResult = runner.runWithInput(
-                    GccReadFromStdIoInput(
-                            arrayOf("2"),
-                            "else\n"))
+                GccReadFromStdIoInput(
+                    arrayOf("2"),
+                    "else\n"))
 
             runner.cleanUp()
 
             // assert
             singleRunResult shouldBe RunResultFromRunner(
-                    Program("test cpp: 1.cpp", testFilePath),
-                    GccReadFromStdIoInput(arrayOf("2"), "else\n"),
-                    true,
-                    Coverage(hashMapOf(
-                            6 to 1,
-                            10 to 1,
-                            12 to 1,
-                            14 to 1,
-                            15 to 1,
-                            18 to 1,
-                            21 to 1,
-                            23 to 1,
-                            24 to 3
-                    )),
-                    StatementMap(StatementMapType.LINE_BASED).apply {
-                        mapList.add(null)
-                        for (i in 1..24) {
-                            mapList.add(StatementInfo(i, testFilePath, i, i))
-                        }
+                Program("test cpp: 1.cpp", testFilePath),
+                GccReadFromStdIoInput(arrayOf("2"), "else\n"),
+                true,
+                Coverage(hashMapOf(
+                    6 to 1,
+                    10 to 1,
+                    12 to 1,
+                    14 to 1,
+                    15 to 1,
+                    18 to 1,
+                    21 to 1,
+                    23 to 1,
+                    24 to 3
+                )),
+                StatementMap(StatementMapType.LINE_BASED).apply {
+                    mapList.add(null)
+                    for (i in 1..24) {
+                        mapList.add(StatementInfo(i, testFilePath, i, i))
                     }
+                }
             )
         }
 
@@ -98,35 +98,35 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
             runner.prepare(Program("test cpp: 2.cpp", testFilePath))
 
             val singleRunResult = runner.runWithInput(
-                    GccReadFromStdIoInput(
-                            arrayOf(),
-                            "1",
-                            "input 1\n"))
+                GccReadFromStdIoInput(
+                    arrayOf(),
+                    "1",
+                    "input 1\n"))
 
             runner.cleanUp()
 
             // assert
             singleRunResult shouldBe RunResultFromRunner(
-                    Program("test cpp: 2.cpp", testFilePath),
-                    GccReadFromStdIoInput(arrayOf(), "1", "input 1\n"),
-                    true,
-                    Coverage(hashMapOf(
-                            6 to 1,
-                            10 to 1,
-                            12 to 1,
-                            15 to 1,
-                            16 to 1,
-                            17 to 1,
-                            22 to 1,
-                            24 to 1,
-                            25 to 3
-                    )),
-                    StatementMap(StatementMapType.LINE_BASED).apply {
-                        mapList.add(null)
-                        for (i in 1..25) {
-                            mapList.add(StatementInfo(i, testFilePath, i, i))
-                        }
+                Program("test cpp: 2.cpp", testFilePath),
+                GccReadFromStdIoInput(arrayOf(), "1", "input 1\n"),
+                true,
+                Coverage(hashMapOf(
+                    6 to 1,
+                    10 to 1,
+                    12 to 1,
+                    15 to 1,
+                    16 to 1,
+                    17 to 1,
+                    22 to 1,
+                    24 to 1,
+                    25 to 3
+                )),
+                StatementMap(StatementMapType.LINE_BASED).apply {
+                    mapList.add(null)
+                    for (i in 1..25) {
+                        mapList.add(StatementInfo(i, testFilePath, i, i))
                     }
+                }
             )
         }
     }
@@ -142,11 +142,11 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
 
             // 第一次运行
             runner.runWithInput(input).coverage
-                    .getCoverageForStatement(14) shouldBe 1
+                .getCoverageForStatement(14) shouldBe 1
 
             // 第二次运行
             runner.runWithInput(input).coverage
-                    .getCoverageForStatement(14) shouldBe 1
+                .getCoverageForStatement(14) shouldBe 1
         }
 
     }
@@ -155,17 +155,17 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
 
         "cpp" {
             GccReadFromStdIoRunner.decideCompilerFromFileExtension("a.cpp")
-                    .shouldBe("g++")
+                .shouldBe("g++")
         }
 
         "cc" {
             GccReadFromStdIoRunner.decideCompilerFromFileExtension("a.cc")
-                    .shouldBe("g++")
+                .shouldBe("g++")
         }
 
         "c" {
             GccReadFromStdIoRunner.decideCompilerFromFileExtension("a.c")
-                    .shouldBe("gcc")
+                .shouldBe("gcc")
         }
     }
 })

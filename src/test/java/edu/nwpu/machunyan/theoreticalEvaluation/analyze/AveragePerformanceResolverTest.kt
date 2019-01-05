@@ -7,16 +7,16 @@ import io.kotlintest.specs.FreeSpec
 class AveragePerformanceResolverTest : FreeSpec({
 
     val vectorTableModel = buildVectorModelTableFromMatrix(
-            arrayOf(0, 0, 3, 6),
-            arrayOf(1, 0, 2, 6),
-            arrayOf(0, 4, 3, 2),
-            arrayOf(0, 0, 3, 6),
-            arrayOf(0, 3, 3, 3),
-            arrayOf(0, 3, 3, 3),
-            arrayOf(0, 0, 3, 6),
-            arrayOf(2, 0, 1, 6),
-            arrayOf(0, 0, 3, 6),
-            arrayOf(0, 3, 3, 3)
+        arrayOf(0, 0, 3, 6),
+        arrayOf(1, 0, 2, 6),
+        arrayOf(0, 4, 3, 2),
+        arrayOf(0, 0, 3, 6),
+        arrayOf(0, 3, 3, 3),
+        arrayOf(0, 3, 3, 3),
+        arrayOf(0, 0, 3, 6),
+        arrayOf(2, 0, 1, 6),
+        arrayOf(0, 0, 3, 6),
+        arrayOf(0, 3, 3, 3)
     )
     val orderedVectorTableModel = OrderedVectorTableModel.fromVectorTableModel(vectorTableModel)
 
@@ -28,15 +28,15 @@ class AveragePerformanceResolverTest : FreeSpec({
 
         "在 II-set1 只有一个分区（且所有元素都是分区元素）时，能够得到正确结果" {
             val input = OrderedVectorTableModel.fromVectorTableModel(buildVectorModelTableFromMatrix(
-                    arrayOf(0, 0, 3, 6),
-                    arrayOf(0, 0, 3, 6),
-                    arrayOf(0, 0, 3, 6),
-                    arrayOf(0, 0, 3, 6),
-                    arrayOf(0, 3, 3, 3), // II-set1 begin
-                    arrayOf(0, 3, 3, 3),
-                    arrayOf(0, 3, 3, 3), // II-set1 end
-                    arrayOf(1, 0, 2, 6),
-                    arrayOf(2, 0, 1, 6)
+                arrayOf(0, 0, 3, 6),
+                arrayOf(0, 0, 3, 6),
+                arrayOf(0, 0, 3, 6),
+                arrayOf(0, 0, 3, 6),
+                arrayOf(0, 3, 3, 3), // II-set1 begin
+                arrayOf(0, 3, 3, 3),
+                arrayOf(0, 3, 3, 3), // II-set1 end
+                arrayOf(1, 0, 2, 6),
+                arrayOf(2, 0, 1, 6)
             ))
 
             AveragePerformanceResolver.resolvePartition(input) shouldBe arrayListOf(3)

@@ -27,12 +27,12 @@ public class VectorTableModelResolver {
     public static List<VectorTableModelRecord> fromRunResults(Stream<RunResultItem> runResult, int statementCount) {
 
         final List<VectorTableModelRecordBuilder> builders = IntStream.range(0, statementCount)
-                .mapToObj(i -> new VectorTableModelRecordBuilder(i + 1))
-                .collect(Collectors.toList());
+            .mapToObj(i -> new VectorTableModelRecordBuilder(i + 1))
+            .collect(Collectors.toList());
 
         runResult.forEach(runResultItem ->
-                builders.stream().forEach(builder ->
-                        builder.processSingleRunResult(runResultItem)));
+            builders.stream().forEach(builder ->
+                builder.processSingleRunResult(runResultItem)));
 
         return buildVtm(builders);
     }
@@ -58,8 +58,8 @@ public class VectorTableModelResolver {
      */
     public static VectorTableModelJam fromProgramResultJam(ProgramRunResultJam programRunResultJam) {
         final List<VectorTableModel> vectorTableModels = programRunResultJam.getProgramRunResults().stream()
-                .map(VectorTableModelResolver::fromProgramResults)
-                .collect(Collectors.toList());
+            .map(VectorTableModelResolver::fromProgramResults)
+            .collect(Collectors.toList());
         return new VectorTableModelJam(vectorTableModels);
     }
 
@@ -67,7 +67,7 @@ public class VectorTableModelResolver {
         final ArrayList<VectorTableModelRecord> result = new ArrayList<>(builders.size() + 1);
         result.add(null);
         for (VectorTableModelRecordBuilder builder :
-                builders) {
+            builders) {
             result.add(builder.build());
         }
         return result;

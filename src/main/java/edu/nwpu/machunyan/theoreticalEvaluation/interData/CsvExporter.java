@@ -1,7 +1,5 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.interData;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelRecord;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
 
 import java.util.ArrayList;
@@ -27,18 +25,18 @@ public class CsvExporter {
         final ArrayList<CsvLine> csvLines = new ArrayList<>();
 
         csvLines.add(new CsvLine(new Object[]{
-                "program title", "use weight", "Anf", "Anp", "Aef", "Aep",
-                "Unweighted Anf", "Unweighted Anp", "Unweighted Aef", "Unweighted Aep"
+            "program title", "use weight", "Anf", "Anp", "Aef", "Aep",
+            "Unweighted Anf", "Unweighted Anp", "Unweighted Aef", "Unweighted Aep"
         }));
 
         jam.getVectorTableModels().forEach(vtm ->
-                vtm.getRecords().stream()
-                        .skip(1)
-                        .map(record -> new CsvLine(new Object[]{
-                                vtm.getProgramTitle(), record.isUseWeight(),
-                                record.getAnf(), record.getAnp(), record.getAef(), record.getAep(),
-                                record.getUnWeightedAnf(), record.getUnWeightedAnp(), record.getUnWeightedAef(), record.getUnWeightedAep(),
-                        })).forEach(csvLines::add));
+            vtm.getRecords().stream()
+                .skip(1)
+                .map(record -> new CsvLine(new Object[]{
+                    vtm.getProgramTitle(), record.isUseWeight(),
+                    record.getAnf(), record.getAnp(), record.getAef(), record.getAep(),
+                    record.getUnWeightedAnf(), record.getUnWeightedAnp(), record.getUnWeightedAef(), record.getUnWeightedAep(),
+                })).forEach(csvLines::add));
 
         return toCsvString(csvLines);
     }

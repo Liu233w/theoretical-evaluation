@@ -10,6 +10,12 @@ import java.util.ArrayList;
 @Data
 public class StatementMap {
 
+    /**
+     * 语句编号同语句信息的对应，编号从 1 开始
+     */
+    private final ArrayList<StatementInfo> mapList;
+    private final StatementMapType type;
+
     public StatementMap(StatementMapType type) {
 
         this.type = type;
@@ -19,23 +25,6 @@ public class StatementMap {
     public StatementMap(StatementMapType type, ArrayList<StatementInfo> mapList) {
         this.mapList = mapList;
         this.type = type;
-    }
-
-    /**
-     * 语句编号同语句信息的对应，编号从 1 开始
-     */
-    private final ArrayList<StatementInfo> mapList;
-
-    private final StatementMapType type;
-
-    /**
-     * 获取总共的语句数量
-     *
-     * @return
-     */
-    public int getStatementCount() {
-        // 除去第一个位置的 null
-        return mapList.size() - 1;
     }
 
     /**
@@ -57,5 +46,15 @@ public class StatementMap {
         }
 
         return statementMap;
+    }
+
+    /**
+     * 获取总共的语句数量
+     *
+     * @return
+     */
+    public int getStatementCount() {
+        // 除去第一个位置的 null
+        return mapList.size() - 1;
     }
 }

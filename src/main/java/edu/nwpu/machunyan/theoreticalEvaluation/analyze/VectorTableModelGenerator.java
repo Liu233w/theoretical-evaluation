@@ -1,12 +1,5 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
-import org.jetbrains.annotations.NotNull;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Stream;
-
 public class VectorTableModelGenerator {
 
 //    /**

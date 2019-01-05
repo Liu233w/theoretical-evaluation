@@ -13,27 +13,18 @@ public class VectorTableModelRecordBuilder {
     private final int statementIndex;
 
     // 4 个数据
-
-    private int anf;
-
-    private int anp;
-
-    private int aef;
-
-    private int aep;
-
-    private double weightedAnf;
-
-    private double weightedAnp;
-
-    private double weightedAef;
-
-    private double weightedAep;
-
     /**
      * 是否使用权重
      */
     private final boolean useWeight;
+    private int anf;
+    private int anp;
+    private int aef;
+    private int aep;
+    private double weightedAnf;
+    private double weightedAnp;
+    private double weightedAef;
+    private double weightedAep;
 
     public VectorTableModelRecordBuilder(int statementIndex) {
         this(statementIndex, false);
@@ -63,7 +54,7 @@ public class VectorTableModelRecordBuilder {
 
         final boolean correct = runResultItem.isCorrect();
         final boolean hit = runResultItem.getCoverage()
-                .getCoverageForStatement(statementIndex) > 0;
+            .getCoverageForStatement(statementIndex) > 0;
 
         if (correct) {
 

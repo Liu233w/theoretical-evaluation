@@ -17,8 +17,8 @@ public class SuspiciousnessFactorResolver {
      * @return
      */
     public static ArrayList<SuspiciousnessFactorRecord> getSuspiciousnessFactorMatrixOrdered(
-            List<VectorTableModelRecord> vectorTableModel,
-            Function<VectorTableModelRecord, Double> suspiciousnessFactorFunc) {
+        List<VectorTableModelRecord> vectorTableModel,
+        Function<VectorTableModelRecord, Double> suspiciousnessFactorFunc) {
 
         final ArrayList<SuspiciousnessFactorRecord> results = new ArrayList<>(vectorTableModel.size() - 1);
         for (int i = 1; i < vectorTableModel.size(); ++i) {

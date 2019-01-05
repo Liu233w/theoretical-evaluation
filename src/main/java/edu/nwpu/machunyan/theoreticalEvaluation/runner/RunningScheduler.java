@@ -19,11 +19,9 @@ public class RunningScheduler {
     private final List<IProgramInput> inputs;
     @Getter
     private final Program program;
-
-    private ArrayList<RunResultFromRunner> runResults;
-
     @Getter
     private final ProgressBar progressBar;
+    private ArrayList<RunResultFromRunner> runResults;
 
     public RunningScheduler(Program program, Supplier<ICoverageRunner> runnerFactory, List<IProgramInput> inputs) {
         this(program, runnerFactory, inputs, null);
@@ -59,7 +57,7 @@ public class RunningScheduler {
             runner.prepare(program);
 
             for (IProgramInput input :
-                    inputs) {
+                inputs) {
                 final RunResultFromRunner result = runner.runWithInput(input);
                 runResults.add(result);
                 stepProgressBar();

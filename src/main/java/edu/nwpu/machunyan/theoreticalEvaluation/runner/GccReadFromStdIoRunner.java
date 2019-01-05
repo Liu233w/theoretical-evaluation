@@ -69,7 +69,7 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
             final String compiler = decideCompilerFromFileExtension(program.getPath());
 
             waitToRunCommandAndGetProcess(new String[]{
-                    compiler, "-I.", "-fprofile-arcs", "-ftest-coverage", filePath.toString()
+                compiler, "-I.", "-fprofile-arcs", "-ftest-coverage", filePath.toString()
             });
 
             executable = directoryPath.resolve("a");
@@ -112,11 +112,11 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
             final Coverage coverage = GcovParser.generateCoverageFromFile(gcovFile);
 
             return new RunResultFromRunner(
-                    program,
-                    programInput,
-                    output.equals(typedInput.getShouldOutputFromStdOut()),
-                    coverage,
-                    statementMap);
+                program,
+                programInput,
+                output.equals(typedInput.getShouldOutputFromStdOut()),
+                coverage,
+                statementMap);
 
         } catch (IOException | InterruptedException e) {
             throw new CoverageRunnerException(e);
@@ -139,9 +139,9 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
 
         if (returnCode != 0 && throwWhenNotExitWithZero) {
             throw new CoverageRunnerException("execution failed with return code : " + returnCode + "\n" +
-                    "Outputs: \n" +
-                    "std out: \n" + StreamUtils.convertStreamToString(process.getInputStream()) + "\n" +
-                    "std err: \n" + StreamUtils.convertStreamToString(process.getErrorStream()));
+                "Outputs: \n" +
+                "std out: \n" + StreamUtils.convertStreamToString(process.getInputStream()) + "\n" +
+                "std err: \n" + StreamUtils.convertStreamToString(process.getErrorStream()));
         }
 
         return process;

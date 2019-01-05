@@ -14,6 +14,13 @@ import java.util.Optional;
  */
 public class GcovParser {
 
+    private Coverage coverage = new Coverage();
+
+    // ----------------------------------------------------
+
+    private GcovParser() {
+    }
+
     /**
      * 基于行的覆盖信息生成器，返回每一行的执行次数
      *
@@ -30,17 +37,10 @@ public class GcovParser {
         return gcovParser.coverage;
     }
 
-    // ----------------------------------------------------
-
-    private Coverage coverage = new Coverage();
-
-    private GcovParser() {
-    }
-
     private void doParse(List<String> lines) {
 
         for (String line :
-                lines) {
+            lines) {
 
             String[] parts = line.trim().split("[\\s:]+", 3);
 

@@ -26,17 +26,17 @@ public class TestCaseWeightResolver {
      */
     public static TestCaseWeightJam simplifyResult(TestCaseWeightJam input) {
         final List<TestCaseWeightForProgramItem> result = input.getTestCaseWeightForPrograms()
-                .stream()
-                .map(TestCaseWeightResolver::simplifyResult)
-                .collect(Collectors.toList());
+            .stream()
+            .map(TestCaseWeightResolver::simplifyResult)
+            .collect(Collectors.toList());
         return new TestCaseWeightJam(result);
     }
 
     public static TestCaseWeightForProgramItem simplifyResult(TestCaseWeightForProgramItem input) {
         final List<TestCaseWeightItem> result = input.getTestCaseWeights()
-                .stream()
-                .filter(item -> item.getTestCaseWeight() != 1.0)
-                .collect(Collectors.toList());
+            .stream()
+            .filter(item -> item.getTestCaseWeight() != 1.0)
+            .collect(Collectors.toList());
         return new TestCaseWeightForProgramItem(input.getTitle(), result);
     }
 
@@ -63,13 +63,13 @@ public class TestCaseWeightResolver {
         final Function<List<RunResultFromRunner>, List<TestCaseWeightItem>> resolveFunction;
 
         final List<TestCaseWeightForProgramItem> collect = IntStream.range(1, versionCount + 1)
-                .mapToObj(i -> imports.get("v" + i))
-                .parallel()
-                .map(runResults -> new TestCaseWeightForProgramItem(
-                        runResults.get(0).getProgram().getTitle(),
-                        TestCaseWeightResolver.resolveTestCaseWeight(runResults, sort))
-                )
-                .collect(Collectors.toList());
+            .mapToObj(i -> imports.get("v" + i))
+            .parallel()
+            .map(runResults -> new TestCaseWeightForProgramItem(
+                runResults.get(0).getProgram().getTitle(),
+                TestCaseWeightResolver.resolveTestCaseWeight(runResults, sort))
+            )
+            .collect(Collectors.toList());
 
         return new TestCaseWeightJam(collect);
     }
@@ -96,7 +96,7 @@ public class TestCaseWeightResolver {
         final ArrayList<Double> testCaseWeight = doResolveTestCaseWeight(runResults);
 
         Stream<TestCaseWeightItem> stream = IntStream.range(0, testCaseWeight.size())
-                .mapToObj(i -> new TestCaseWeightItem(i, testCaseWeight.get(i)));
+            .mapToObj(i -> new TestCaseWeightItem(i, testCaseWeight.get(i)));
 
         if (sort) {
             stream = stream.sorted();
@@ -150,8 +150,8 @@ public class TestCaseWeightResolver {
      */
     private static Stream<RunResultFromRunner> ofStreamSkipAtIndex(List<RunResultFromRunner> runResults, int index) {
         return IntStream.range(0, runResults.size())
-                .filter(i -> i != index)
-                .mapToObj(runResults::get);
+            .filter(i -> i != index)
+            .mapToObj(runResults::get);
     }
 
     /**

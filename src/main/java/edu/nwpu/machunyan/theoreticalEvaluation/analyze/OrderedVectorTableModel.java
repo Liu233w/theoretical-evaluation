@@ -42,9 +42,9 @@ public class OrderedVectorTableModel {
     public static OrderedVectorTableModel fromVectorTableModel(List<VectorTableModelRecord> vectorTableModel) {
 
         final ArrayList<VectorTableModelRecord> result = vectorTableModel.stream()
-                .skip(vectorTableModel.get(0) == null ? 1 : 0)
-                .sorted()
-                .collect(Collectors.toCollection(ArrayList::new));
+            .skip(vectorTableModel.get(0) == null ? 1 : 0)
+            .sorted()
+            .collect(Collectors.toCollection(ArrayList::new));
 
         int i = 0;
         for (; i < result.size(); ++i) {

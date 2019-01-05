@@ -51,8 +51,8 @@ public class AveragePerformanceResolver {
         int sumPartitions = partitions.stream().reduce(0, Integer::sum);
 
         final double result = (Math.pow(x + z, 2) - z + sumPartitions)
-                /
-                (2 * n * (x + z));
+            /
+            (2 * n * (x + z));
 
         return result;
     }

@@ -32,19 +32,19 @@ public class RunningResultResolver {
         final ProgressBar progressBar = new ProgressBar("", inputs.size() * programs.size());
 
         final List<ProgramRunResult> result = programs.stream()
-                .parallel()
-                .map(program -> new RunningScheduler(program, runnerFactory, inputs, progressBar))
-                .map(scheduler -> {
-                    try {
-                        return scheduler.runAndGetResults();
-                    } catch (CoverageRunnerException e) {
-                        e.printStackTrace();
-                        return null;
-                    }
-                })
-                .filter(Objects::nonNull)
-                .map(RunningResultResolver::mapFromRunResult)
-                .collect(Collectors.toList());
+            .parallel()
+            .map(program -> new RunningScheduler(program, runnerFactory, inputs, progressBar))
+            .map(scheduler -> {
+                try {
+                    return scheduler.runAndGetResults();
+                } catch (CoverageRunnerException e) {
+                    e.printStackTrace();
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
+            .map(RunningResultResolver::mapFromRunResult)
+            .collect(Collectors.toList());
 
         progressBar.close();
 
@@ -86,8 +86,8 @@ public class RunningResultResolver {
         final String title = runResults.get(0).getProgram().getTitle();
         final StatementMap defaultStatememtMap = runResults.get(0).getStatementMap();
         final List<RunResultItem> runResultItems = runResults.stream()
-                .map(item -> mapFromRunResult(item, defaultStatememtMap))
-                .collect(Collectors.toList());
+            .map(item -> mapFromRunResult(item, defaultStatememtMap))
+            .collect(Collectors.toList());
         return new ProgramRunResult(title, defaultStatememtMap, runResultItems);
     }
 }

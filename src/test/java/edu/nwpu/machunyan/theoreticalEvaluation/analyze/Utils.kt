@@ -42,14 +42,14 @@ class AnalyzeUtilsTest : FreeSpec({
 
         "buildVectorModelTableFromMatrix" {
             buildVectorModelTableFromMatrix(
-                    arrayOf(1, 2, 3, 4),
-                    arrayOf(5, 6, 7, 8),
-                    arrayOf(9, 10, 11, 12)
+                arrayOf(1, 2, 3, 4),
+                arrayOf(5, 6, 7, 8),
+                arrayOf(9, 10, 11, 12)
             ) shouldBe arrayListOf(
-                    null,
-                    VectorTableModelRecord(1, 1, 2, 3, 4),
-                    VectorTableModelRecord(2, 5, 6, 7, 8),
-                    VectorTableModelRecord(3, 9, 10, 11, 12)
+                null,
+                VectorTableModelRecord(1, 1, 2, 3, 4),
+                VectorTableModelRecord(2, 5, 6, 7, 8),
+                VectorTableModelRecord(3, 9, 10, 11, 12)
             )
         }
 
@@ -58,13 +58,13 @@ class AnalyzeUtilsTest : FreeSpec({
             val mockStatementMap = StatementMap.ofLineBasedStatementMap(3, "don't need file path")
 
             buildRunResultsFromMatrix(arrayOf(
-                    arrayOf(0, 0, 0),
-                    arrayOf(1, 1, 1),
-                    arrayOf(0, 0, 0)
+                arrayOf(0, 0, 0),
+                arrayOf(1, 1, 1),
+                arrayOf(0, 0, 0)
             ), arrayOf(1, 0, 0)) shouldBe arrayListOf(
-                    RunResultFromRunner(mockProgram, mockProgramInput, true, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), mockStatementMap),
-                    RunResultFromRunner(mockProgram, mockProgramInput, false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), mockStatementMap),
-                    RunResultFromRunner(mockProgram, mockProgramInput, false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), mockStatementMap)
+                RunResultFromRunner(mockProgram, mockProgramInput, true, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), mockStatementMap),
+                RunResultFromRunner(mockProgram, mockProgramInput, false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), mockStatementMap),
+                RunResultFromRunner(mockProgram, mockProgramInput, false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), mockStatementMap)
             )
         }
     }

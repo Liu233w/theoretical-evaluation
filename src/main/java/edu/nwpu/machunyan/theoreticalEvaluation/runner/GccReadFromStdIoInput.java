@@ -30,7 +30,7 @@ public class GccReadFromStdIoInput implements IProgramInput {
         final StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append("inputFromCommand: ");
         for (String str :
-                inputFromCommand) {
+            inputFromCommand) {
             stringBuilder.append(str);
             stringBuilder.append(", ");
         }

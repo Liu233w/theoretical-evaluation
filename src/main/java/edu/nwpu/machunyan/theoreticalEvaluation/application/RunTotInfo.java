@@ -35,20 +35,20 @@ public class RunTotInfo {
         final Path versionsDir = FileUtils.getFilePathFromResources("tot_info/versions");
 
         final List<IProgramInput> inputs = resolveTestCases().stream()
-                .map(a -> new GccReadFromStdIoInput(
-                        new String[]{},
-                        a.getInput(),
-                        a.getOutput()
-                ))
-                .map(a -> (IProgramInput) a)
-                .collect(Collectors.toList());
+            .map(a -> new GccReadFromStdIoInput(
+                new String[]{},
+                a.getInput(),
+                a.getOutput()
+            ))
+            .map(a -> (IProgramInput) a)
+            .collect(Collectors.toList());
 
         final List<Program> programs = IntStream.range(1, lastVersionNumber + 1)
-                .mapToObj(i -> "v" + i)
-                .map(versionStr -> new Program(
-                        versionStr,
-                        versionsDir.resolve(versionStr).resolve("tot_info.c").toString()))
-                .collect(Collectors.toList());
+            .mapToObj(i -> "v" + i)
+            .map(versionStr -> new Program(
+                versionStr,
+                versionsDir.resolve(versionStr).resolve("tot_info.c").toString()))
+            .collect(Collectors.toList());
 
         return RunningResultResolver.runProgramForAllVersions(programs, inputs, GccReadFromStdIoRunner::newInstance);
     }

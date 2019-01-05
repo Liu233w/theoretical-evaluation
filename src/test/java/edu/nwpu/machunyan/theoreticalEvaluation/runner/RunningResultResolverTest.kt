@@ -12,12 +12,12 @@ class RunningResultResolverTest : FreeSpec({
         "能输出正确结果" {
 
             val programs = listOf(
-                    Program("1.cpp", getTestFilePath("1.cpp").toString())
+                Program("1.cpp", getTestFilePath("1.cpp").toString())
             )
             val inputs = listOf(
-                    GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),
-                    GccReadFromStdIoInput(arrayOf("2"), "else\n"),
-                    GccReadFromStdIoInput(arrayOf("2"), "wrong\n")
+                GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),
+                GccReadFromStdIoInput(arrayOf("2"), "else\n"),
+                GccReadFromStdIoInput(arrayOf("2"), "wrong\n")
             )
 
             val result = RunningResultResolver.runProgramForAllVersions(programs, inputs, GccReadFromStdIoRunner::newInstance)
