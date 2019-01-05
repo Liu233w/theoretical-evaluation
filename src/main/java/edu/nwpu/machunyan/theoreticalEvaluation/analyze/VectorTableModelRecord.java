@@ -1,6 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -32,6 +33,7 @@ public class VectorTableModelRecord implements Comparable {
 
     private final double weightedAep;
 
+    @Getter
     private final boolean useWeight;
 
     /**

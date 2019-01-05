@@ -1,12 +1,17 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import com.google.gson.*;
+import edu.nwpu.machunyan.theoreticalEvaluation.interData.CsvExporter;
+import edu.nwpu.machunyan.theoreticalEvaluation.interData.CsvLine;
 
 import java.io.*;
 import java.lang.reflect.Type;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
+import java.util.stream.Stream;
 
 public class FileUtils {
 
@@ -94,5 +99,16 @@ public class FileUtils {
      */
     public static void saveObject(String path, Object obj) throws IOException {
         saveObject(Paths.get(path), obj);
+    }
+
+    /**
+     * 将 string 保存到指定路径中
+     *
+     * @param path
+     * @param str
+     * @throws IOException
+     */
+    public static void saveString(String path, String str) throws IOException {
+        Files.write(Paths.get(path), str.getBytes());
     }
 }
