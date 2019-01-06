@@ -53,11 +53,15 @@ public class SuspiciousnessFactorBatchRunner {
         final List<MultipleFormulaSuspiciousnessFactorForProgram> collect = programTitles.stream()
             .map(programTitle -> {
 
-                final long statementCount = prevResult.stream()
+                @SuppressWarnings("OptionalGetWithoutIsPresent") final int
+                    statementCount = prevResult.stream()
                     .filter(a -> a.getProgramTitle().equals(programTitle))
-                    .count();
+                    .findAny()
+                    .get()
+                    .getResultForStatements().size();
+
                 final List<MultipleFormulaSuspiciousnessFactorItem> result = IntStream
-                    .range(1, (int) statementCount + 1)
+                    .range(1, statementCount + 1)
                     .mapToObj(i -> new MultipleFormulaSuspiciousnessFactorItem(i, new HashMap<>()))
                     .collect(Collectors.toList());
 
