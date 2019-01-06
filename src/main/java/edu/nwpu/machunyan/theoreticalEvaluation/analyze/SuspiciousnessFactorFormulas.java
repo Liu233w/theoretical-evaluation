@@ -30,17 +30,11 @@ public class SuspiciousnessFactorFormulas {
             .filter(item -> item.getAnnotation(Formula.class) != null)
             .collect(Collectors.toMap(
                 Method::getName,
-                method ->
-                    (Function<VectorTableModelRecord, Double>)
-                        (VectorTableModelRecord input) -> {
-                            try {
-                                return (double) method.invoke(null, input);
-                            } catch (IllegalAccessException | InvocationTargetException e) {
-                                throw Lombok.sneakyThrow(e);
-                            }
-                        }
+                SuspiciousnessFactorFormulas::toFunctionInterface
             ));
     }
+
+    // ============= 公式 ===========================
 
     private static double resolveP(VectorTableModelRecord record) {
         // 通过的测试用例
@@ -419,9 +413,28 @@ public class SuspiciousnessFactorFormulas {
 
         return aef / (2 * f - aef + p + aep);
     }
-}
 
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@interface Formula {
+    // ===== meta programming utils ======================================================
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @interface Formula {
+    }
+
+    /**
+     * 从表示公式的 {@link Method} 得到调用它的函数接口
+     *
+     * @param formula
+     * @return
+     */
+    private static Function<VectorTableModelRecord, Double> toFunctionInterface(Method formula) {
+        final Function<VectorTableModelRecord, Double> function = (VectorTableModelRecord input) -> {
+            try {
+                return (double) formula.invoke(null, input);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw Lombok.sneakyThrow(e);
+            }
+        };
+        return function;
+    }
 }
