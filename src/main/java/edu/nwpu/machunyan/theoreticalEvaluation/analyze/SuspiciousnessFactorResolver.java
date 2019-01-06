@@ -70,24 +70,6 @@ public class SuspiciousnessFactorResolver {
     }
 
     /**
-     * 在vtm上运行每个 resolver，将结果收集到一起
-     *
-     * @param jam
-     * @param resolvers
-     * @return
-     */
-    public static SuspiciousnessFactorJam runAll(VectorTableModelJam jam, List<SuspiciousnessFactorResolver> resolvers) {
-        final List<SuspiciousnessFactor> collect = resolvers.stream()
-            .map(resolver -> resolver.resolve(jam))
-            .map(SuspiciousnessFactorJam::getFactorInPrograms)
-            .map(Collection::stream)
-            .reduce(Stream::concat)
-            .orElseGet(Stream::empty)
-            .collect(Collectors.toList());
-        return new SuspiciousnessFactorJam(collect);
-    }
-
-    /**
      * 从参数中生成一系列指定公式的 resolver
      *
      * @param map key 为公式名， value 为公式
