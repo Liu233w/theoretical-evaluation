@@ -1,6 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.interData;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,34 @@ public class CsvExporter {
                     program.getProgramTitle(), program.getFormula(),
                     item.getStatementIndex(), item.getSuspiciousnessFactor(),
                 }));
+            }
+        }
+
+        return toCsvString(csvLines);
+    }
+
+    public static String toCsvString(MultipleFormulaSuspiciousnessFactorJam jam) {
+
+        final Object[] formulaTitles = jam.getAllFormulaTitle().toArray();
+
+        final ArrayList<CsvLine> csvLines = new ArrayList<>();
+
+        csvLines.add(new CsvLine(ArrayUtils.concat(new Object[]{
+            "program title", "statement index"
+        }, formulaTitles)));
+
+        final int formulaOffset = 2;
+
+        for (MultipleFormulaSuspiciousnessFactorForProgram resultForProgram : jam.getResultForPrograms()) {
+            for (MultipleFormulaSuspiciousnessFactorItem resultForStatement : resultForProgram.getResultForStatements()) {
+                final Object[] line = new Object[formulaOffset + formulaTitles.length];
+                line[0] = resultForProgram.getProgramTitle();
+                line[1] = resultForStatement.getStatementIndex();
+                for (int i = 0; i < formulaTitles.length; i++) {
+                    final Object formulaTitle = formulaTitles[i];
+                    line[formulaOffset + i] = resultForStatement.getFormulaTitleToResult().get(formulaTitle);
+                }
+                csvLines.add(new CsvLine(line));
             }
         }
 

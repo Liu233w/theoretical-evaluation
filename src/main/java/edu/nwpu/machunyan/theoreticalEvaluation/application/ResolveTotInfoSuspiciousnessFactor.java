@@ -34,7 +34,7 @@ public class ResolveTotInfoSuspiciousnessFactor {
         final MultipleFormulaSuspiciousnessFactorJam result = SuspiciousnessFactorBatchRunner.collectAsMultipleFormula(suspiciousnessFactorJam);
 
         FileUtils.saveObject(jsonOutputPath, result);
-        FileUtils.saveString(csvOutputPath, CsvExporter.toCsvString(suspiciousnessFactorJam));
+        FileUtils.saveString(csvOutputPath, CsvExporter.toCsvString(result));
     }
 }
 
