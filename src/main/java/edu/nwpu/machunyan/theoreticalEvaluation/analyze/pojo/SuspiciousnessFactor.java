@@ -19,5 +19,5 @@ public class SuspiciousnessFactor {
      */
     String formula;
 
-    List<SuspiciousnessFactorItem> suspiciousnessFactors;
+    List<SuspiciousnessFactorItem> resultForStatements;
 }

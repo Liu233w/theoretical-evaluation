@@ -8,5 +8,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 public class SuspiciousnessFactorJam {
-    List<SuspiciousnessFactor> factorInPrograms;
+
+    List<SuspiciousnessFactor> resultForPrograms;
 }

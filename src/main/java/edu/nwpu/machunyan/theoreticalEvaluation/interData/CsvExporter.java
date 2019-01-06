@@ -51,8 +51,8 @@ public class CsvExporter {
             "program title", "formula", "statement index", "suspiciousness factor"
         }));
 
-        for (SuspiciousnessFactor program : jam.getFactorInPrograms()) {
-            for (SuspiciousnessFactorItem item : program.getSuspiciousnessFactors()) {
+        for (SuspiciousnessFactor program : jam.getResultForPrograms()) {
+            for (SuspiciousnessFactorItem item : program.getResultForStatements()) {
                 csvLines.add(new CsvLine(new Object[]{
                     program.getProgramTitle(), program.getFormula(),
                     item.getStatementIndex(), item.getSuspiciousnessFactor(),
