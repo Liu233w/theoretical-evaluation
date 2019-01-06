@@ -9,5 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 public class SuspiciousnessFactorJam {
 
-    List<SuspiciousnessFactor> resultForPrograms;
+    List<SuspiciousnessFactorForProgram> resultForPrograms;
 }

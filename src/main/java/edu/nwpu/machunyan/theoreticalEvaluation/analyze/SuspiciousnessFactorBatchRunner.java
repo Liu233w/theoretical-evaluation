@@ -21,7 +21,7 @@ public class SuspiciousnessFactorBatchRunner {
      * @return
      */
     public static SuspiciousnessFactorJam runAll(VectorTableModelJam jam, List<SuspiciousnessFactorResolver> resolvers) {
-        final List<SuspiciousnessFactor> collect = resolvers.stream()
+        final List<SuspiciousnessFactorForProgram> collect = resolvers.stream()
             .map(resolver -> resolver.resolve(jam))
             .map(SuspiciousnessFactorJam::getResultForPrograms)
             .map(Collection::stream)

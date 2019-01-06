@@ -6,13 +6,11 @@ import lombok.Builder;
 import lombok.Data;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 统计一次运行中所有语句的错误率指数
@@ -59,14 +57,14 @@ public class SuspiciousnessFactorResolver {
     }
 
     public SuspiciousnessFactorJam resolve(VectorTableModelJam jam) {
-        final List<SuspiciousnessFactor> collect = jam.getVectorTableModels().stream()
+        final List<SuspiciousnessFactorForProgram> collect = jam.getVectorTableModels().stream()
             .map(this::resolve)
             .collect(Collectors.toList());
         return new SuspiciousnessFactorJam(collect);
     }
 
-    public SuspiciousnessFactor resolve(VectorTableModel vtm) {
-        return new SuspiciousnessFactor(vtm.getProgramTitle(), formulaTitle, resolve(vtm.getRecords()));
+    public SuspiciousnessFactorForProgram resolve(VectorTableModel vtm) {
+        return new SuspiciousnessFactorForProgram(vtm.getProgramTitle(), formulaTitle, resolve(vtm.getRecords()));
     }
 
     /**

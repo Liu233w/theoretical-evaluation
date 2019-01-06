@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class SuspiciousnessFactor {
+public class SuspiciousnessFactorForProgram {
 
     String programTitle;
 
