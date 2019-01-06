@@ -1,6 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import java.io.Reader;
@@ -15,7 +16,10 @@ public class JsonUtils {
      * @return
      */
     public static JsonElement toJson(Object obj) {
-        return new Gson().toJsonTree(obj);
+        return new GsonBuilder()
+            .serializeSpecialFloatingPointValues()
+            .create()
+            .toJsonTree(obj);
     }
 
     /**
