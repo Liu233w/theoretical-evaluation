@@ -2,12 +2,8 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -53,31 +49,36 @@ public class SuspiciousnessFactorBatchRunner {
         final List<MultipleFormulaSuspiciousnessFactorForProgram> collect = programTitles.stream()
             .map(programTitle -> {
 
-                @SuppressWarnings("OptionalGetWithoutIsPresent") final int
-                    statementCount = prevResult.stream()
+                // 同一个程序得到的 vtm 是一样的。因此执行的语句也是一样的。
+                @SuppressWarnings("OptionalGetWithoutIsPresent") final Map<Integer, MultipleFormulaSuspiciousnessFactorItem>
+                    idxToItemMap = prevResult.stream()
                     .filter(a -> a.getProgramTitle().equals(programTitle))
                     .findAny()
                     .get()
-                    .getResultForStatements().size();
-
-                final List<MultipleFormulaSuspiciousnessFactorItem> result = IntStream
-                    .range(1, statementCount + 1)
-                    .mapToObj(i -> new MultipleFormulaSuspiciousnessFactorItem(i, new HashMap<>()))
-                    .collect(Collectors.toList());
+                    .getResultForStatements()
+                    .stream()
+                    .map(SuspiciousnessFactorItem::getStatementIndex)
+                    .collect(Collectors.toMap(
+                        i -> i,
+                        i -> new MultipleFormulaSuspiciousnessFactorItem(i, new HashMap<>())
+                    ));
 
                 prevResult.stream()
                     .filter(a -> a.getProgramTitle().equals(programTitle))
-                    .forEach(suspiciousnessFactorForProgram -> {
+                    .forEach(sfForProgram -> {
 
-                        suspiciousnessFactorForProgram
+                        sfForProgram
                             .getResultForStatements()
                             .forEach(statement -> {
-                                result.get(statement.getStatementIndex() - 1)
+                                idxToItemMap.get(statement.getStatementIndex())
                                     .getFormulaTitleToResult()
-                                    .put(suspiciousnessFactorForProgram.getFormula(), statement.getSuspiciousnessFactor());
+                                    .put(sfForProgram.getFormula(), statement.getSuspiciousnessFactor());
                             });
                     });
 
+                final List<MultipleFormulaSuspiciousnessFactorItem> result = idxToItemMap.values().stream()
+                    .sorted(Comparator.comparingInt(MultipleFormulaSuspiciousnessFactorItem::getStatementIndex))
+                    .collect(Collectors.toList());
                 return new MultipleFormulaSuspiciousnessFactorForProgram(programTitle, result);
             })
             .collect(Collectors.toList());

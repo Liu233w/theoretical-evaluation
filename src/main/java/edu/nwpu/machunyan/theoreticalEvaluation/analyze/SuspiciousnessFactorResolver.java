@@ -13,7 +13,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 统计一次运行中所有语句的错误率指数
+ * 统计一次运行中所有语句的错误率指数，忽略从来没有运行过的语句 (aep+aef==0)
  */
 @Data
 @Builder
@@ -44,6 +44,7 @@ public class SuspiciousnessFactorResolver {
 
         final List<SuspiciousnessFactorItem> result = records.stream()
             .filter(Objects::nonNull)
+            .filter(SuspiciousnessFactorResolver::isStatementEvaluated)
             .map(item -> new SuspiciousnessFactorItem(
                 item.getStatementIndex(),
                 formula.apply(item)
@@ -92,6 +93,16 @@ public class SuspiciousnessFactorResolver {
                 .build()
             )
             .collect(Collectors.toList());
+    }
+
+    /**
+     * 返回 {@link VectorTableModelRecord} 代表的语句是否执行过
+     *
+     * @param record
+     * @return
+     */
+    private static boolean isStatementEvaluated(VectorTableModelRecord record) {
+        return record.getUnWeightedAep() + record.getUnWeightedAef() > 0;
     }
 }
 
