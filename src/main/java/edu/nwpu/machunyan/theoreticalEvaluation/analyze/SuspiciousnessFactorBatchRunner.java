@@ -50,17 +50,17 @@ public class SuspiciousnessFactorBatchRunner {
             .map(programTitle -> {
 
                 // 同一个程序得到的 vtm 是一样的。因此执行的语句也是一样的。
-                @SuppressWarnings("OptionalGetWithoutIsPresent") final Map<Integer, MultipleFormulaSuspiciousnessFactorItem>
+                @SuppressWarnings("OptionalGetWithoutIsPresent") final Map<Integer, MultipleFormulaSuspiciousnessFactorForStatement>
                     idxToItemMap = prevResult.stream()
                     .filter(a -> a.getProgramTitle().equals(programTitle))
                     .findAny()
                     .get()
                     .getResultForStatements()
                     .stream()
-                    .map(SuspiciousnessFactorItem::getStatementIndex)
+                    .map(SuspiciousnessFactorForStatement::getStatementIndex)
                     .collect(Collectors.toMap(
                         i -> i,
-                        i -> new MultipleFormulaSuspiciousnessFactorItem(i, new HashMap<>())
+                        i -> new MultipleFormulaSuspiciousnessFactorForStatement(i, new HashMap<>())
                     ));
 
                 prevResult.stream()
@@ -76,8 +76,8 @@ public class SuspiciousnessFactorBatchRunner {
                             });
                     });
 
-                final List<MultipleFormulaSuspiciousnessFactorItem> result = idxToItemMap.values().stream()
-                    .sorted(Comparator.comparingInt(MultipleFormulaSuspiciousnessFactorItem::getStatementIndex))
+                final List<MultipleFormulaSuspiciousnessFactorForStatement> result = idxToItemMap.values().stream()
+                    .sorted(Comparator.comparingInt(MultipleFormulaSuspiciousnessFactorForStatement::getStatementIndex))
                     .collect(Collectors.toList());
                 return new MultipleFormulaSuspiciousnessFactorForProgram(programTitle, result);
             })

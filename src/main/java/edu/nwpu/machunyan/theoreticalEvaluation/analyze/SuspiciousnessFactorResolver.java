@@ -40,12 +40,12 @@ public class SuspiciousnessFactorResolver {
         this.formula = formula;
     }
 
-    public List<SuspiciousnessFactorItem> resolve(List<VectorTableModelRecord> records) {
+    public List<SuspiciousnessFactorForStatement> resolve(List<VectorTableModelRecord> records) {
 
-        final List<SuspiciousnessFactorItem> result = records.stream()
+        final List<SuspiciousnessFactorForStatement> result = records.stream()
             .filter(Objects::nonNull)
             .filter(SuspiciousnessFactorResolver::isStatementEvaluated)
-            .map(item -> new SuspiciousnessFactorItem(
+            .map(item -> new SuspiciousnessFactorForStatement(
                 item.getStatementIndex(),
                 formula.apply(item)
             ))

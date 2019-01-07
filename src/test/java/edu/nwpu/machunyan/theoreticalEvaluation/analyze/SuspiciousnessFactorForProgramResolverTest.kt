@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForProgram
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorItem
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForStatement
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
@@ -20,9 +20,9 @@ class SuspiciousnessFactorForProgramResolverTest : FreeSpec({
 
             val result = SuspiciousnessFactorResolver(SuspiciousnessFactorFormulas::op).resolve(vtm)
             result shouldBe SuspiciousnessFactorForProgram("program", "", arrayListOf(
-                SuspiciousnessFactorItem(1, 0.6666666666666667),
-                SuspiciousnessFactorItem(2, 1.3333333333333335),
-                SuspiciousnessFactorItem(3, 0.6666666666666667)
+                SuspiciousnessFactorForStatement(1, 0.6666666666666667),
+                SuspiciousnessFactorForStatement(2, 1.3333333333333335),
+                SuspiciousnessFactorForStatement(3, 0.6666666666666667)
             ))
         }
     }

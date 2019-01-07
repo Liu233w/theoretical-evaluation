@@ -15,32 +15,32 @@ class SuspiciousnessFactorBatchRunnerTest : FreeSpec({
                     "v1",
                     "f1",
                     listOf(
-                        SuspiciousnessFactorItem(1, 0.1),
-                        SuspiciousnessFactorItem(2, 0.2)
+                        SuspiciousnessFactorForStatement(1, 0.1),
+                        SuspiciousnessFactorForStatement(2, 0.2)
                     )
                 ),
                 SuspiciousnessFactorForProgram(
                     "v1",
                     "f2",
                     listOf(
-                        SuspiciousnessFactorItem(1, 1.1),
-                        SuspiciousnessFactorItem(2, 1.2)
+                        SuspiciousnessFactorForStatement(1, 1.1),
+                        SuspiciousnessFactorForStatement(2, 1.2)
                     )
                 ),
                 SuspiciousnessFactorForProgram(
                     "v2",
                     "f1",
                     listOf(
-                        SuspiciousnessFactorItem(1, 2.1),
-                        SuspiciousnessFactorItem(2, 2.2)
+                        SuspiciousnessFactorForStatement(1, 2.1),
+                        SuspiciousnessFactorForStatement(2, 2.2)
                     )
                 ),
                 SuspiciousnessFactorForProgram(
                     "v2",
                     "f2",
                     listOf(
-                        SuspiciousnessFactorItem(1, 3.1),
-                        SuspiciousnessFactorItem(2, 3.2)
+                        SuspiciousnessFactorForStatement(1, 3.1),
+                        SuspiciousnessFactorForStatement(2, 3.2)
                     )
                 )
             ))
@@ -51,14 +51,14 @@ class SuspiciousnessFactorBatchRunnerTest : FreeSpec({
                 MultipleFormulaSuspiciousnessFactorForProgram(
                     "v1",
                     listOf(
-                        MultipleFormulaSuspiciousnessFactorItem(
+                        MultipleFormulaSuspiciousnessFactorForStatement(
                             1,
                             mapOf(
                                 "f1" to 0.1,
                                 "f2" to 1.1
                             )
                         ),
-                        MultipleFormulaSuspiciousnessFactorItem(
+                        MultipleFormulaSuspiciousnessFactorForStatement(
                             2,
                             mapOf(
                                 "f1" to 0.2,
@@ -70,14 +70,14 @@ class SuspiciousnessFactorBatchRunnerTest : FreeSpec({
                 MultipleFormulaSuspiciousnessFactorForProgram(
                     "v2",
                     listOf(
-                        MultipleFormulaSuspiciousnessFactorItem(
+                        MultipleFormulaSuspiciousnessFactorForStatement(
                             1,
                             mapOf(
                                 "f1" to 2.1,
                                 "f2" to 3.1
                             )
                         ),
-                        MultipleFormulaSuspiciousnessFactorItem(
+                        MultipleFormulaSuspiciousnessFactorForStatement(
                             2,
                             mapOf(
                                 "f1" to 2.2,
@@ -96,32 +96,32 @@ class SuspiciousnessFactorBatchRunnerTest : FreeSpec({
                     "v1",
                     "f1",
                     listOf(
-                        SuspiciousnessFactorItem(2, 0.2),
-                        SuspiciousnessFactorItem(1, 0.1)
+                        SuspiciousnessFactorForStatement(2, 0.2),
+                        SuspiciousnessFactorForStatement(1, 0.1)
                     )
                 ),
                 SuspiciousnessFactorForProgram(
                     "v1",
                     "f2",
                     listOf(
-                        SuspiciousnessFactorItem(1, 1.1),
-                        SuspiciousnessFactorItem(2, 1.2)
+                        SuspiciousnessFactorForStatement(1, 1.1),
+                        SuspiciousnessFactorForStatement(2, 1.2)
                     )
                 ),
                 SuspiciousnessFactorForProgram(
                     "v2",
                     "f1",
                     listOf(
-                        SuspiciousnessFactorItem(1, 2.1),
-                        SuspiciousnessFactorItem(2, 2.2)
+                        SuspiciousnessFactorForStatement(1, 2.1),
+                        SuspiciousnessFactorForStatement(2, 2.2)
                     )
                 ),
                 SuspiciousnessFactorForProgram(
                     "v2",
                     "f2",
                     listOf(
-                        SuspiciousnessFactorItem(2, 3.2),
-                        SuspiciousnessFactorItem(1, 3.1)
+                        SuspiciousnessFactorForStatement(2, 3.2),
+                        SuspiciousnessFactorForStatement(1, 3.1)
                     )
                 )
             ))
@@ -132,14 +132,14 @@ class SuspiciousnessFactorBatchRunnerTest : FreeSpec({
                 MultipleFormulaSuspiciousnessFactorForProgram(
                     "v1",
                     listOf(
-                        MultipleFormulaSuspiciousnessFactorItem(
+                        MultipleFormulaSuspiciousnessFactorForStatement(
                             1,
                             mapOf(
                                 "f1" to 0.1,
                                 "f2" to 1.1
                             )
                         ),
-                        MultipleFormulaSuspiciousnessFactorItem(
+                        MultipleFormulaSuspiciousnessFactorForStatement(
                             2,
                             mapOf(
                                 "f1" to 0.2,
@@ -151,14 +151,14 @@ class SuspiciousnessFactorBatchRunnerTest : FreeSpec({
                 MultipleFormulaSuspiciousnessFactorForProgram(
                     "v2",
                     listOf(
-                        MultipleFormulaSuspiciousnessFactorItem(
+                        MultipleFormulaSuspiciousnessFactorForStatement(
                             1,
                             mapOf(
                                 "f1" to 2.1,
                                 "f2" to 3.1
                             )
                         ),
-                        MultipleFormulaSuspiciousnessFactorItem(
+                        MultipleFormulaSuspiciousnessFactorForStatement(
                             2,
                             mapOf(
                                 "f1" to 2.2,

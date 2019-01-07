@@ -53,7 +53,7 @@ public class CsvExporter {
         }));
 
         for (SuspiciousnessFactorForProgram program : jam.getResultForPrograms()) {
-            for (SuspiciousnessFactorItem item : program.getResultForStatements()) {
+            for (SuspiciousnessFactorForStatement item : program.getResultForStatements()) {
                 csvLines.add(new CsvLine(new Object[]{
                     program.getProgramTitle(), program.getFormula(),
                     item.getStatementIndex(), item.getSuspiciousnessFactor(),
@@ -77,7 +77,7 @@ public class CsvExporter {
         final int formulaOffset = 2;
 
         for (MultipleFormulaSuspiciousnessFactorForProgram resultForProgram : jam.getResultForPrograms()) {
-            for (MultipleFormulaSuspiciousnessFactorItem resultForStatement : resultForProgram.getResultForStatements()) {
+            for (MultipleFormulaSuspiciousnessFactorForStatement resultForStatement : resultForProgram.getResultForStatements()) {
                 final Object[] line = new Object[formulaOffset + formulaTitles.length];
                 line[0] = resultForProgram.getProgramTitle();
                 line[1] = resultForStatement.getStatementIndex();

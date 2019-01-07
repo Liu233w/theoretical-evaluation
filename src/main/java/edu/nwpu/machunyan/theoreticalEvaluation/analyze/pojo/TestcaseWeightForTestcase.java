@@ -8,7 +8,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class TestcaseWeightItem {
+public class TestcaseWeightForTestcase {
 
     /**
      * 测试用例序号

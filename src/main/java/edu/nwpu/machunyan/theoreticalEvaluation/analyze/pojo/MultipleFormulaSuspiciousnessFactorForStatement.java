@@ -10,7 +10,7 @@ import java.util.Map;
  */
 @Data
 @AllArgsConstructor
-public class MultipleFormulaSuspiciousnessFactorItem {
+public class MultipleFormulaSuspiciousnessFactorForStatement {
 
     int statementIndex;
 

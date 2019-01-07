@@ -9,7 +9,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class SuspiciousnessFactorItem {
+public class SuspiciousnessFactorForStatement {
 
     /**
      * 语句序号
