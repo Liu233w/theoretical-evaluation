@@ -2,7 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import java.io.IOException;
 
-public class SimplifyTotInfoTestCaseWeight {
+public class SimplifyTotInfoTestcaseWeight {
 
     private static String outputPath = "./target/outputs/tot_info-testcase-weight-simplified.json";
 
