@@ -4,7 +4,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import org.jetbrains.annotations.NotNull;
+import lombok.NonNull;
 
 import java.util.List;
 import java.util.Map;
@@ -23,20 +23,22 @@ public class SuspiciousnessFactorResolver {
     /**
      * 是否对运行结果排序
      */
+    @Builder.Default
     private boolean sort = false;
 
     /**
      * 输出时在公式位置显示的内容
      */
+    @Builder.Default
     private String formulaTitle = "";
 
     /**
      * 用来计算可疑指数的公式
      */
-    @NotNull
-    private Function<VectorTableModelRecord, Double> formula = SuspiciousnessFactorFormulas::o;
+    @NonNull
+    private Function<VectorTableModelRecord, Double> formula;
 
-    public SuspiciousnessFactorResolver(@NotNull Function<VectorTableModelRecord, Double> formula) {
+    public SuspiciousnessFactorResolver(@NonNull Function<VectorTableModelRecord, Double> formula) {
         this.formula = formula;
     }
 
