@@ -6,7 +6,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
-class SuspiciousnessFactorForProgramResolverTest : FreeSpec({
+class SuspiciousnessFactorResolverTest : FreeSpec({
 
     "resolve" - {
 
