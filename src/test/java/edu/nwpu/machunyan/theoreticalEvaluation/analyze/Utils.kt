@@ -1,21 +1,25 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.*
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResult
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultItem
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Coverage
+import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.StatementMap
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
+import java.util.stream.Collectors
+import java.util.stream.IntStream
 
 /**
  * 从论文中表示的矩阵中生成 RunResults，输入的第一个维度表示行，第二个维度表示列。
  * oc 表示正确与否。
  */
-fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): ArrayList<RunResultFromRunner> {
+fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): ProgramRunResult {
 
     val mockStatementMap = StatementMap.ofLineBasedStatementMap(matrix.size, "don't need file path")
 
-    val result = ArrayList<RunResultFromRunner>(matrix[0].size)
-    for (i in 0 until matrix[0].size) {
-        result.add(RunResultFromRunner(mockProgram, mockProgramInput, oc[i] == 1, Coverage(), mockStatementMap))
-    }
+    val result = IntStream.range(0, matrix[0].size)
+        .mapToObj { i -> RunResultItem(oc[i] == 1, Coverage(), null) }
+        .collect(Collectors.toList())
 
     // row: s -- statement; column: t -- singleRun
     matrix.forEachIndexed { row, line ->
@@ -24,7 +28,7 @@ fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): ArrayL
         }
     }
 
-    return result
+    return ProgramRunResult("mock program", mockStatementMap, result)
 }
 
 /**
@@ -61,14 +65,15 @@ class AnalyzeUtilsTest : FreeSpec({
                 arrayOf(0, 0, 0),
                 arrayOf(1, 1, 1),
                 arrayOf(0, 0, 0)
-            ), arrayOf(1, 0, 0)) shouldBe arrayListOf(
-                RunResultFromRunner(mockProgram, mockProgramInput, true, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), mockStatementMap),
-                RunResultFromRunner(mockProgram, mockProgramInput, false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), mockStatementMap),
-                RunResultFromRunner(mockProgram, mockProgramInput, false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), mockStatementMap)
+            ), arrayOf(1, 0, 0)) shouldBe ProgramRunResult(
+                "mock program",
+                mockStatementMap,
+                arrayListOf(
+                    RunResultItem(true, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null),
+                    RunResultItem(false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null),
+                    RunResultItem(false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null)
+                )
             )
         }
     }
 })
-
-private val mockProgramInput = IProgramInput { "mock ProgramInput" }
-private val mockProgram = Program("mock program", "...")
