@@ -50,7 +50,7 @@ public class VectorTableModelRecordBuilder {
      * @param runResultForTestcase
      * @param testcaseWeight
      */
-    public void processRunResultForTestcase(RunResultForTestcase runResultForTestcase, Double testcaseWeight) {
+    public void processRunResultForTestcase(RunResultForTestcase runResultForTestcase, double testcaseWeight) {
 
         final boolean correct = runResultForTestcase.isCorrect();
         final boolean hit = runResultForTestcase.getCoverage()
