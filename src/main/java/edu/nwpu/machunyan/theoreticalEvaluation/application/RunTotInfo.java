@@ -76,11 +76,11 @@ public class RunTotInfo {
 
         return new Gson().fromJson(jsonReader, testcaseType);
     }
-}
 
-@Data
-class TestcaseItem {
-    private String input;
-    private String output;
-    private String name;
+    @Data
+    private static class TestcaseItem {
+        private String input;
+        private String output;
+        private String name;
+    }
 }
