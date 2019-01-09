@@ -10,7 +10,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class TestcaseWeightForProgramItem {
+public class TestcaseWeightForProgram {
 
     String title;
 

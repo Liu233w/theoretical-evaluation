@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgramItem;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
@@ -37,13 +37,13 @@ public class TestcaseWeightResolver {
     }
 
     public TestcaseWeightJam resolve(RunResultJam jam) {
-        final List<TestcaseWeightForProgramItem> collect = jam.getRunResultForPrograms().stream()
+        final List<TestcaseWeightForProgram> collect = jam.getRunResultForPrograms().stream()
             .map(this::resolve)
             .collect(Collectors.toList());
         return new TestcaseWeightJam(collect);
     }
 
-    public TestcaseWeightForProgramItem resolve(RunResultForProgram runResultForProgram) {
+    public TestcaseWeightForProgram resolve(RunResultForProgram runResultForProgram) {
 
         // 1. prepare
         final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
@@ -86,7 +86,7 @@ public class TestcaseWeightResolver {
             .range(0, result.length)
             .mapToObj(i -> new TestcaseWeightForTestcase(i, result[i]))
             .collect(Collectors.toList());
-        return new TestcaseWeightForProgramItem(
+        return new TestcaseWeightForProgram(
             runResultForProgram.getProgramTitle(),
             formulaTitle,
             testcaseWeights);
