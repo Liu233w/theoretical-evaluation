@@ -4,7 +4,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForPr
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +36,7 @@ public class TestcaseWeightResolver {
         this.sfFormula = sfFormula;
     }
 
-    public TestcaseWeightJam resolve(ProgramRunResultJam jam) {
+    public TestcaseWeightJam resolve(RunResultJam jam) {
         final List<TestcaseWeightForProgramItem> collect = jam.getRunResultForPrograms().stream()
             .map(this::resolve)
             .collect(Collectors.toList());

@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
@@ -27,7 +27,7 @@ public class RunningResultResolver {
      * @param runnerFactory
      * @return
      */
-    public static ProgramRunResultJam runProgramForAllVersions(List<Program> programs, List<IProgramInput> inputs, Supplier<ICoverageRunner> runnerFactory) {
+    public static RunResultJam runProgramForAllVersions(List<Program> programs, List<IProgramInput> inputs, Supplier<ICoverageRunner> runnerFactory) {
 
         final ProgressBar progressBar = new ProgressBar("", inputs.size() * programs.size());
 
@@ -48,7 +48,7 @@ public class RunningResultResolver {
 
         progressBar.close();
 
-        return new ProgramRunResultJam(result);
+        return new RunResultJam(result);
     }
 
     /**

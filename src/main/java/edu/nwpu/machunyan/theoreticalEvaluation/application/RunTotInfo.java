@@ -5,7 +5,7 @@ import com.google.gson.reflect.TypeToken;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningResultResolver;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
@@ -27,7 +27,7 @@ public class RunTotInfo {
     // 结果的输出位置
     private static final String resultOutputPath = "./target/outputs/totInfoRunningResult.json";
 
-    public static ProgramRunResultJam runAndGetResult() throws URISyntaxException, IOException {
+    public static RunResultJam runAndGetResult() throws URISyntaxException, IOException {
 
         // 最后一个版本编号
         final int lastVersionNumber = 23;
@@ -54,13 +54,13 @@ public class RunTotInfo {
     }
 
     public static void runAndSaveResultsAsJson() throws IOException, URISyntaxException {
-        final ProgramRunResultJam result = runAndGetResult();
+        final RunResultJam result = runAndGetResult();
 
         FileUtils.saveObject(resultOutputPath, result);
     }
 
-    public static ProgramRunResultJam getRunResultsFromSavedFile() throws FileNotFoundException {
-        return FileUtils.loadObject(resultOutputPath, ProgramRunResultJam.class);
+    public static RunResultJam getRunResultsFromSavedFile() throws FileNotFoundException {
+        return FileUtils.loadObject(resultOutputPath, RunResultJam.class);
     }
 
     public static void main(String[] args) throws IOException, URISyntaxException {

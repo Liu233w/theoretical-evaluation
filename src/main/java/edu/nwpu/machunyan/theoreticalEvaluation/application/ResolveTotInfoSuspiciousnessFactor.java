@@ -8,7 +8,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.MultipleFormulaSusp
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.interData.CsvExporter;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.IOException;
@@ -22,7 +22,7 @@ public class ResolveTotInfoSuspiciousnessFactor {
 
     public static void main(String[] args) throws IOException {
 
-        final ProgramRunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
+        final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
 
         final List<SuspiciousnessFactorResolver> resolvers = SuspiciousnessFactorResolver.of(
             SuspiciousnessFactorFormulas.getAllFormulas()

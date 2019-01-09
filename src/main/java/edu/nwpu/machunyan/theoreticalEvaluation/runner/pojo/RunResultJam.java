@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @AllArgsConstructor
-public class ProgramRunResultJam {
+public class RunResultJam {
 
     List<RunResultForProgram> runResultForPrograms;
 }

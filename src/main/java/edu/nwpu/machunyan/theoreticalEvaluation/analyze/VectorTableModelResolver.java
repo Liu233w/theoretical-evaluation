@@ -3,7 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 
 import java.util.ArrayList;
@@ -53,11 +53,11 @@ public class VectorTableModelResolver {
     /**
      * 从 programResultJam 批量生成
      *
-     * @param programRunResultJam
+     * @param runResultJam
      * @return
      */
-    public static VectorTableModelJam resolve(ProgramRunResultJam programRunResultJam) {
-        final List<VectorTableModel> vectorTableModels = programRunResultJam.getRunResultForPrograms().stream()
+    public static VectorTableModelJam resolve(RunResultJam runResultJam) {
+        final List<VectorTableModel> vectorTableModels = runResultJam.getRunResultForPrograms().stream()
             .map(VectorTableModelResolver::resolve)
             .collect(Collectors.toList());
         return new VectorTableModelJam(vectorTableModels);
