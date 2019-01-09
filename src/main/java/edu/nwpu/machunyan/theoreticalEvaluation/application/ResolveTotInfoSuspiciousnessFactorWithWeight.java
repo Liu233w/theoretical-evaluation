@@ -10,7 +10,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 //
 //    public static void main(String[] args) throws IOException {
 //        final Map<String, ArrayList<RunResultFromRunner>> runResultsFromSavedFile = RunTotInfo.getRunResultsFromSavedFile();
-//        final Map<String, List<Double>> testCaseWeights = ResolveTotInfoTestcaseWeight.loadFromFile();
+//        final Map<String, List<Double>> testcaseWeights = ResolveTotInfoTestcaseWeight.loadFromFile();
 //
 //        final JsonArray result = IntStream.range(1, runResultsFromSavedFile.size() + 1)
 //                .parallel()
@@ -23,7 +23,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 //
 //                    final long passedCount = runResults.stream().filter(RunResultFromRunner::isCorrect).count();
 //                    final ArrayList<VectorTableModelRecord> vectorTableModel = VectorTableModelGenerator
-//                            .generateFromRunResultWithWeight(runResults, testCaseWeights.get(versionStr));
+//                            .generateFromRunResultWithWeight(runResults, testcaseWeights.get(versionStr));
 //
 //                    // 某行代码的错误率（排序过的）
 //                    final ArrayList<SuspiciousnessFactorRecord> factorOfO = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(

@@ -34,7 +34,7 @@ public class RunTotInfo {
         // 存版本的文件夹
         final Path versionsDir = FileUtils.getFilePathFromResources("tot_info/versions");
 
-        final List<IProgramInput> inputs = resolveTestCases().stream()
+        final List<IProgramInput> inputs = resolveTestcases().stream()
             .map(a -> new GccReadFromStdIoInput(
                 new String[]{},
                 a.getInput(),
@@ -67,11 +67,11 @@ public class RunTotInfo {
         runAndSaveResultsAsJson();
     }
 
-    private static List<TestCaseItem> resolveTestCases() throws URISyntaxException, IOException {
+    private static List<TestcaseItem> resolveTestcases() throws URISyntaxException, IOException {
 
         final Path casePath = FileUtils.getFilePathFromResources("tot_info/testplans/cases.json");
         final InputStreamReader jsonReader = new InputStreamReader(Files.newInputStream(casePath));
-        final Type testcaseType = new TypeToken<List<TestCaseItem>>() {
+        final Type testcaseType = new TypeToken<List<TestcaseItem>>() {
         }.getType();
 
         return new Gson().fromJson(jsonReader, testcaseType);
@@ -79,7 +79,7 @@ public class RunTotInfo {
 }
 
 @Data
-class TestCaseItem {
+class TestcaseItem {
     private String input;
     private String output;
     private String name;

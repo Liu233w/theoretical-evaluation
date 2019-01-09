@@ -48,9 +48,9 @@ public class VectorTableModelRecordBuilder {
      * 根据一次运行结果将 4 个数值中的一个递增
      *
      * @param runResultForTestcase
-     * @param testCaseWeight
+     * @param testcaseWeight
      */
-    public void processRunResultForTestcase(RunResultForTestcase runResultForTestcase, Double testCaseWeight) {
+    public void processRunResultForTestcase(RunResultForTestcase runResultForTestcase, Double testcaseWeight) {
 
         final boolean correct = runResultForTestcase.isCorrect();
         final boolean hit = runResultForTestcase.getCoverage()
@@ -60,19 +60,19 @@ public class VectorTableModelRecordBuilder {
 
             if (hit) {
                 ++aep;
-                weightedAep += testCaseWeight;
+                weightedAep += testcaseWeight;
             } else {
                 ++anp;
-                weightedAnp += testCaseWeight;
+                weightedAnp += testcaseWeight;
             }
         } else {
 
             if (hit) {
                 ++aef;
-                weightedAef += testCaseWeight;
+                weightedAef += testcaseWeight;
             } else {
                 ++anf;
-                weightedAnf += testCaseWeight;
+                weightedAnf += testcaseWeight;
             }
         }
     }

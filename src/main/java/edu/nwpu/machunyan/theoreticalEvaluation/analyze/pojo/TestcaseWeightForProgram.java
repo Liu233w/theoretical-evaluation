@@ -16,5 +16,5 @@ public class TestcaseWeightForProgram {
 
     String formulaTitle;
 
-    List<TestcaseWeightForTestcase> testCaseWeights;
+    List<TestcaseWeightForTestcase> testcaseWeights;
 }

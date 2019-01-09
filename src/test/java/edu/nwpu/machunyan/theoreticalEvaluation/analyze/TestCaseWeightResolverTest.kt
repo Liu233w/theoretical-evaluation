@@ -1,12 +1,12 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
 /*
-class TestCaseWeightResolverTest : FreeSpec({
+class TestcaseWeightResolverTest : FreeSpec({
 
-    "resolveTestCaseWeight" - {
+    "resolveTestcaseWeight" - {
         "能通过论文上的测试" {
 
-            val testCases = buildRunResultsFromMatrix(arrayOf(
+            val testcases = buildRunResultsFromMatrix(arrayOf(
                     arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1),
                     arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 0),
                     arrayOf(1, 1, 0, 0, 0, 0, 1, 1, 1),
@@ -19,7 +19,7 @@ class TestCaseWeightResolverTest : FreeSpec({
                     arrayOf(0, 0, 1, 1, 0, 1, 1, 1, 1)
             ), arrayOf(1, 1, 1, 1, 1, 1, 0, 0, 0))
 
-            val result = TestCaseWeightResolver.resolveTestCaseWeight(testCases)
+            val result = TestcaseWeightResolver.resolveTestcaseWeight(testcases)
 
             result[1 - 1] shouldBe 1.0
             result[2 - 1] shouldBe 1.0
@@ -33,7 +33,7 @@ class TestCaseWeightResolverTest : FreeSpec({
         }
 
         "能通过另一篇论文上的测试" - {
-            val testCases = buildRunResultsFromMatrix(
+            val testcases = buildRunResultsFromMatrix(
                     arrayOf(
                             arrayOf(1, 0, 1, 0),
                             arrayOf(1, 1, 1, 1),
@@ -42,16 +42,16 @@ class TestCaseWeightResolverTest : FreeSpec({
                     arrayOf(0, 0, 1, 1)
             )
 
-            val result = TestCaseWeightResolver.resolveTestCaseWeight(testCases)
+            val result = TestcaseWeightResolver.resolveTestcaseWeight(testcases)
 
             println(result)
 
-            val vtm = VectorTableModelGenerator.generateFromRunResult(testCases)
+            val vtm = VectorTableModelGenerator.generateFromRunResult(testcases)
             val suspiciousnessFactorMatrixOrdered = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(vtm) {
                 it.calculateSuspiciousnessFactorAsOp()
             }
 
-//            val vtmWeighted = VectorTableModelGenerator.generateFromRunResultWithWeight(testCases, result)
+//            val vtmWeighted = VectorTableModelGenerator.generateFromRunResultWithWeight(testcases, result)
 //            val suspiciousnessFactorMatrixOrderedWithWeight = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(vtmWeighted) {
 //                it.calculateSuspiciousnessFactorAsOp()
 //            }

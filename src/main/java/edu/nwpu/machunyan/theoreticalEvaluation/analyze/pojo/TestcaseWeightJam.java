@@ -12,5 +12,5 @@ import java.util.List;
 @AllArgsConstructor
 public class TestcaseWeightJam {
 
-    List<TestcaseWeightForProgram> testCaseWeightForPrograms;
+    List<TestcaseWeightForProgram> testcaseWeightForPrograms;
 }

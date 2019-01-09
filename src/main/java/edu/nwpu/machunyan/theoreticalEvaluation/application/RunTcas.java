@@ -3,7 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application;
 public class RunTcas {
 
 //    // 准备好的测试用例
-//    private final ArrayList<IProgramInput> testCases = buildTestCasesObject();
+//    private final ArrayList<IProgramInput> testcases = buildTestcasesObject();
 //    // 程序文件夹
 //    private final Path versionsDir = FileUtils.getFilePathFromResources("tcas/versions");
 //    // 一共多少个版本
@@ -47,7 +47,7 @@ public class RunTcas {
 //        final ExecutorService threadPool = Executors.newFixedThreadPool(availableProcessors);
 //
 //        //初始化进度条
-//        progressBar = new ProgressBar("", testCases.size() * lastVersionNum);
+//        progressBar = new ProgressBar("", testcases.size() * lastVersionNum);
 //
 //        // 填充任务
 //        final JsonObject result = new JsonObject();
@@ -92,7 +92,7 @@ public class RunTcas {
 //        final RunningScheduler runningScheduler = new RunningScheduler(
 //                new Program(versionNumString, sourceFilePath.toString()),
 //                new GccReadFromStdIoRunner(),
-//                testCases,
+//                testcases,
 //                progressBar);
 //
 //        // 使用测试用例运行程序
@@ -105,7 +105,7 @@ public class RunTcas {
 //        return RunResultsJsonProcessor.bumpToJson(runResults, GccReadFromStdIoInput.class);
 //    }
 //
-//    private ArrayList<IProgramInput> buildTestCasesObject() throws URISyntaxException, IOException {
+//    private ArrayList<IProgramInput> buildTestcasesObject() throws URISyntaxException, IOException {
 //
 //        final Path casePath = FileUtils.getFilePathFromResources("tcas/testplans/cases.json");
 //        final InputStreamReader jsonReader = new InputStreamReader(Files.newInputStream(casePath));
@@ -116,9 +116,9 @@ public class RunTcas {
 //        final ArrayList<IProgramInput> result = new ArrayList<>(list.size());
 //        for (JsonElement item :
 //                list) {
-//            final JsonObject testCase = item.getAsJsonObject();
-//            final String[] input = new Gson().fromJson(testCase.get("input"), String[].class);
-//            final String output = testCase.get("output").getAsString();
+//            final JsonObject testcase = item.getAsJsonObject();
+//            final String[] input = new Gson().fromJson(testcase.get("input"), String[].class);
+//            final String output = testcase.get("output").getAsString();
 //
 //            result.add(new GccReadFromStdIoInput(input, output));
 //        }

@@ -17,7 +17,7 @@ public class TestcaseWeightHelper {
      */
     public static List<TestcaseWeightForTestcase> simplifyTestcaseWeights(List<TestcaseWeightForTestcase> input) {
         return input.stream()
-            .filter(a -> a.getTestCaseWeight() != 1.0)
+            .filter(a -> a.getTestcaseWeight() != 1.0)
             .collect(Collectors.toList());
     }
 
@@ -31,7 +31,7 @@ public class TestcaseWeightHelper {
         return new TestcaseWeightForProgram(
             input.getTitle(),
             input.getFormulaTitle(),
-            simplifyTestcaseWeights(input.getTestCaseWeights())
+            simplifyTestcaseWeights(input.getTestcaseWeights())
         );
     }
 
@@ -42,7 +42,7 @@ public class TestcaseWeightHelper {
      * @return
      */
     public static TestcaseWeightJam simplifyTestcaseWeights(TestcaseWeightJam input) {
-        final List<TestcaseWeightForProgram> collect = input.getTestCaseWeightForPrograms().stream()
+        final List<TestcaseWeightForProgram> collect = input.getTestcaseWeightForPrograms().stream()
             .map(TestcaseWeightHelper::simplifyTestcaseWeights)
             .collect(Collectors.toList());
         return new TestcaseWeightJam(collect);

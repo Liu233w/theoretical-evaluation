@@ -13,10 +13,10 @@ public class TestcaseWeightForTestcase {
     /**
      * 测试用例序号
      */
-    int testCaseIndex;
+    int testcaseIndex;
 
     /**
      * 测试用例权重
      */
-    double testCaseWeight;
+    double testcaseWeight;
 }
