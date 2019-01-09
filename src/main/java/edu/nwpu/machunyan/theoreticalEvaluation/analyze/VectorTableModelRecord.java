@@ -2,12 +2,14 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.ToString;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * 表示 vector table model 中的一行
  */
 @EqualsAndHashCode
+@ToString
 public class VectorTableModelRecord implements Comparable {
 
     /**
