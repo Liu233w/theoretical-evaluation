@@ -416,11 +416,6 @@ public class SuspiciousnessFactorFormulas {
 
     // ===== meta programming utils ======================================================
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.METHOD)
-    @interface Formula {
-    }
-
     /**
      * 从表示公式的 {@link Method} 得到调用它的函数接口
      *
@@ -436,5 +431,10 @@ public class SuspiciousnessFactorFormulas {
             }
         };
         return function;
+    }
+
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.METHOD)
+    @interface Formula {
     }
 }

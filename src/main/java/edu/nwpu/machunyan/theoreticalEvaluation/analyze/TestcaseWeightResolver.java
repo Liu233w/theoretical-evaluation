@@ -4,8 +4,8 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForPr
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -34,6 +34,12 @@ public class TestcaseWeightResolver {
 
     public TestcaseWeightResolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula) {
         this.sfFormula = sfFormula;
+    }
+
+    private static Stream<RunResultForTestcase> buildStreamSkipAt(List<RunResultForTestcase> runResults, int index) {
+        return IntStream.range(0, runResults.size())
+            .filter(i -> i != index)
+            .mapToObj(runResults::get);
     }
 
     public TestcaseWeightJam resolve(RunResultJam jam) {
@@ -90,11 +96,5 @@ public class TestcaseWeightResolver {
             runResultForProgram.getProgramTitle(),
             formulaTitle,
             testcaseWeights);
-    }
-
-    private static Stream<RunResultForTestcase> buildStreamSkipAt(List<RunResultForTestcase> runResults, int index) {
-        return IntStream.range(0, runResults.size())
-            .filter(i -> i != index)
-            .mapToObj(runResults::get);
     }
 }

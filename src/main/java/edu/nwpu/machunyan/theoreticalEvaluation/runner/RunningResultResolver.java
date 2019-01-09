@@ -1,8 +1,8 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;

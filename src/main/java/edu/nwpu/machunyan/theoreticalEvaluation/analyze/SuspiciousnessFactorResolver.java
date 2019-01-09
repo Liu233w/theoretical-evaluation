@@ -42,34 +42,6 @@ public class SuspiciousnessFactorResolver {
         this.formula = formula;
     }
 
-    public List<SuspiciousnessFactorForStatement> resolve(List<VectorTableModelRecord> records) {
-
-        final List<SuspiciousnessFactorForStatement> result = records.stream()
-            .filter(Objects::nonNull)
-            .filter(SuspiciousnessFactorResolver::isStatementEvaluated)
-            .map(item -> new SuspiciousnessFactorForStatement(
-                item.getStatementIndex(),
-                formula.apply(item)
-            ))
-            .collect(Collectors.toList());
-
-        if (sort) {
-            result.sort((l, r) -> -Double.compare(l.getSuspiciousnessFactor(), r.getSuspiciousnessFactor()));
-        }
-        return result;
-    }
-
-    public SuspiciousnessFactorJam resolve(VectorTableModelJam jam) {
-        final List<SuspiciousnessFactorForProgram> collect = jam.getVectorTableModels().stream()
-            .map(this::resolve)
-            .collect(Collectors.toList());
-        return new SuspiciousnessFactorJam(collect);
-    }
-
-    public SuspiciousnessFactorForProgram resolve(VectorTableModel vtm) {
-        return new SuspiciousnessFactorForProgram(vtm.getProgramTitle(), formulaTitle, resolve(vtm.getRecords()));
-    }
-
     /**
      * 从参数中生成一系列指定公式的 resolver
      *
@@ -105,6 +77,34 @@ public class SuspiciousnessFactorResolver {
      */
     private static boolean isStatementEvaluated(VectorTableModelRecord record) {
         return record.getUnWeightedAep() + record.getUnWeightedAef() > 0;
+    }
+
+    public List<SuspiciousnessFactorForStatement> resolve(List<VectorTableModelRecord> records) {
+
+        final List<SuspiciousnessFactorForStatement> result = records.stream()
+            .filter(Objects::nonNull)
+            .filter(SuspiciousnessFactorResolver::isStatementEvaluated)
+            .map(item -> new SuspiciousnessFactorForStatement(
+                item.getStatementIndex(),
+                formula.apply(item)
+            ))
+            .collect(Collectors.toList());
+
+        if (sort) {
+            result.sort((l, r) -> -Double.compare(l.getSuspiciousnessFactor(), r.getSuspiciousnessFactor()));
+        }
+        return result;
+    }
+
+    public SuspiciousnessFactorJam resolve(VectorTableModelJam jam) {
+        final List<SuspiciousnessFactorForProgram> collect = jam.getVectorTableModels().stream()
+            .map(this::resolve)
+            .collect(Collectors.toList());
+        return new SuspiciousnessFactorJam(collect);
+    }
+
+    public SuspiciousnessFactorForProgram resolve(VectorTableModel vtm) {
+        return new SuspiciousnessFactorForProgram(vtm.getProgramTitle(), formulaTitle, resolve(vtm.getRecords()));
     }
 }
 
