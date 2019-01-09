@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResult
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultItem
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Coverage
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.StatementMap
 import io.kotlintest.shouldBe
@@ -18,7 +18,7 @@ fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): Progra
     val mockStatementMap = StatementMap.ofLineBasedStatementMap(matrix.size, "don't need file path")
 
     val result = IntStream.range(0, matrix[0].size)
-        .mapToObj { i -> RunResultItem(oc[i] == 1, Coverage(), null) }
+        .mapToObj { i -> RunResultForTestcase(oc[i] == 1, Coverage(), null) }
         .collect(Collectors.toList())
 
     // row: s -- statement; column: t -- singleRun
@@ -69,9 +69,9 @@ class AnalyzeUtilsTest : FreeSpec({
                 "mock program",
                 mockStatementMap,
                 arrayListOf(
-                    RunResultItem(true, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null),
-                    RunResultItem(false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null),
-                    RunResultItem(false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null)
+                    RunResultForTestcase(true, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null),
+                    RunResultForTestcase(false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null),
+                    RunResultForTestcase(false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null)
                 )
             )
         }

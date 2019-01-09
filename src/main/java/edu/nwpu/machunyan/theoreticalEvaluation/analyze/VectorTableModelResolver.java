@@ -4,7 +4,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResult;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultItem;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ public class VectorTableModelResolver {
      * @param statementCount
      * @return
      */
-    public static List<VectorTableModelRecord> resolve(Stream<RunResultItem> runResult, int statementCount) {
+    public static List<VectorTableModelRecord> resolve(Stream<RunResultForTestcase> runResult, int statementCount) {
 
         final List<VectorTableModelRecordBuilder> builders = IntStream.range(0, statementCount)
             .mapToObj(i -> new VectorTableModelRecordBuilder(i + 1))
@@ -45,7 +45,7 @@ public class VectorTableModelResolver {
      */
     public static VectorTableModel resolve(ProgramRunResult programRunResult) {
         final int statementCount = programRunResult.getStatementMap().getStatementCount();
-        final Stream<RunResultItem> stream = programRunResult.getRunResults().stream();
+        final Stream<RunResultForTestcase> stream = programRunResult.getRunResults().stream();
         final List<VectorTableModelRecord> vectorTableModelRecords = resolve(stream, statementCount);
         return new VectorTableModel(programRunResult.getProgramTitle(), vectorTableModelRecords);
     }

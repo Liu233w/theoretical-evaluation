@@ -10,7 +10,7 @@ import lombok.Data;
  */
 @Data
 @AllArgsConstructor
-public class RunResultItem {
+public class RunResultForTestcase {
 
     /**
      * 当前运行（测试用例）是否得到了正确的结果

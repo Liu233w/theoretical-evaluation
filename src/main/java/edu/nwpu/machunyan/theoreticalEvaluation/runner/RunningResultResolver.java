@@ -2,7 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResult;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultItem;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
@@ -57,8 +57,8 @@ public class RunningResultResolver {
      * @param runResultFromRunner
      * @return
      */
-    public static RunResultItem mapFromRunResult(RunResultFromRunner runResultFromRunner) {
-        return new RunResultItem(runResultFromRunner.isCorrect(), runResultFromRunner.getCoverage(), runResultFromRunner.getStatementMap());
+    public static RunResultForTestcase mapFromRunResult(RunResultFromRunner runResultFromRunner) {
+        return new RunResultForTestcase(runResultFromRunner.isCorrect(), runResultFromRunner.getCoverage(), runResultFromRunner.getStatementMap());
     }
 
     /**
@@ -70,10 +70,10 @@ public class RunningResultResolver {
      * @param defaultStatememtMap
      * @return
      */
-    public static RunResultItem mapFromRunResult(RunResultFromRunner runResultFromRunner, StatementMap defaultStatememtMap) {
+    public static RunResultForTestcase mapFromRunResult(RunResultFromRunner runResultFromRunner, StatementMap defaultStatememtMap) {
         final StatementMap thatStatementMap = runResultFromRunner.getStatementMap();
         final StatementMap statementMap = thatStatementMap.equals(defaultStatememtMap) ? null : thatStatementMap;
-        return new RunResultItem(runResultFromRunner.isCorrect(), runResultFromRunner.getCoverage(), statementMap);
+        return new RunResultForTestcase(runResultFromRunner.isCorrect(), runResultFromRunner.getCoverage(), statementMap);
     }
 
     /**
@@ -85,9 +85,9 @@ public class RunningResultResolver {
     public static ProgramRunResult mapFromRunResult(List<RunResultFromRunner> runResults) {
         final String title = runResults.get(0).getProgram().getTitle();
         final StatementMap defaultStatememtMap = runResults.get(0).getStatementMap();
-        final List<RunResultItem> runResultItems = runResults.stream()
+        final List<RunResultForTestcase> runResultForTestcases = runResults.stream()
             .map(item -> mapFromRunResult(item, defaultStatememtMap))
             .collect(Collectors.toList());
-        return new ProgramRunResult(title, defaultStatememtMap, runResultItems);
+        return new ProgramRunResult(title, defaultStatememtMap, runResultForTestcases);
     }
 }

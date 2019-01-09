@@ -5,7 +5,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTe
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResult;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultItem;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -46,7 +46,7 @@ public class TestcaseWeightResolver {
     public TestcaseWeightForProgramItem resolve(ProgramRunResult programRunResult) {
 
         // 1. prepare
-        final List<RunResultItem> runResults = programRunResult.getRunResults();
+        final List<RunResultForTestcase> runResults = programRunResult.getRunResults();
         final int statementCount = programRunResult.getStatementMap().getStatementCount();
 
         // 2. resolve average performance
@@ -92,7 +92,7 @@ public class TestcaseWeightResolver {
             testcaseWeights);
     }
 
-    private static Stream<RunResultItem> buildStreamSkipAt(List<RunResultItem> runResults, int index) {
+    private static Stream<RunResultForTestcase> buildStreamSkipAt(List<RunResultForTestcase> runResults, int index) {
         return IntStream.range(0, runResults.size())
             .filter(i -> i != index)
             .mapToObj(runResults::get);

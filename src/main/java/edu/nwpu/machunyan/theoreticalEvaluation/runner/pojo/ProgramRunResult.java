@@ -23,5 +23,5 @@ public class ProgramRunResult {
      */
     StatementMap statementMap;
 
-    List<RunResultItem> runResults;
+    List<RunResultForTestcase> runResults;
 }
