@@ -9,7 +9,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-public class ResolveTotInfoTestCaseWeight {
+public class ResolveTotInfoTestcaseWeight {
 
     // 结果的输出路径
     private static final String resultOutputPath = "./target/outputs/tot_info-testcase-weight.json";

@@ -10,7 +10,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 //
 //    public static void main(String[] args) throws IOException {
 //        final Map<String, ArrayList<RunResultFromRunner>> runResultsFromSavedFile = RunTotInfo.getRunResultsFromSavedFile();
-//        final Map<String, List<Double>> testCaseWeights = ResolveTotInfoTestCaseWeight.loadFromFile();
+//        final Map<String, List<Double>> testCaseWeights = ResolveTotInfoTestcaseWeight.loadFromFile();
 //
 //        final JsonArray result = IntStream.range(1, runResultsFromSavedFile.size() + 1)
 //                .parallel()
