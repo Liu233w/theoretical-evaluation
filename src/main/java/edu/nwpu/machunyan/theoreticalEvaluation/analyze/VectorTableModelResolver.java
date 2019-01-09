@@ -32,7 +32,7 @@ public class VectorTableModelResolver {
 
         runResult.forEach(runResultItem ->
             builders.stream().forEach(builder ->
-                builder.processSingleRunResult(runResultItem)));
+                builder.processRunResultForTestcase(runResultItem)));
 
         return buildVtm(builders);
     }
