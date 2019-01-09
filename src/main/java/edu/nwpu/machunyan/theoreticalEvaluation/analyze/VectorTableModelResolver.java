@@ -3,8 +3,8 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,6 +33,34 @@ public class VectorTableModelResolver {
         runResult.forEach(runResultItem ->
             builders.forEach(builder ->
                 builder.processRunResultForTestcase(runResultItem)));
+
+        return buildVtm(builders);
+    }
+
+    /**
+     * 从一个程序的运行结果中生成 vtm，使用权重
+     *
+     * @param runResultForProgram
+     * @param testcaseWeights     测试用例的权重，和运行结果一一对应
+     * @return
+     */
+    public static List<VectorTableModelRecord> resolveWithWeights(RunResultForProgram runResultForProgram, double[] testcaseWeights) {
+
+        if (runResultForProgram.getRunResults().size() != testcaseWeights.length) {
+            throw new IllegalArgumentException("运行结果和权重必须一一对应（一个 RunResultForTestcase 对应一个 testcaseWeight）");
+        }
+
+        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
+        final List<VectorTableModelRecordBuilder> builders = IntStream.range(0, statementCount)
+            .mapToObj(i -> new VectorTableModelRecordBuilder(i + 1, true))
+            .collect(Collectors.toList());
+
+        final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
+        for (int i = 0; i < runResults.size(); i++) {
+            for (VectorTableModelRecordBuilder builder : builders) {
+                builder.processRunResultForTestcase(runResults.get(i), testcaseWeights[i]);
+            }
+        }
 
         return buildVtm(builders);
     }
