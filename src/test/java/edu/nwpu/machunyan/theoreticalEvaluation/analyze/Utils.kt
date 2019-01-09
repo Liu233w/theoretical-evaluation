@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResult
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Coverage
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.StatementMap
@@ -13,7 +13,7 @@ import java.util.stream.IntStream
  * 从论文中表示的矩阵中生成 RunResults，输入的第一个维度表示行，第二个维度表示列。
  * oc 表示正确与否。
  */
-fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): ProgramRunResult {
+fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): RunResultForProgram {
 
     val mockStatementMap = StatementMap.ofLineBasedStatementMap(matrix.size, "don't need file path")
 
@@ -28,7 +28,7 @@ fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): Progra
         }
     }
 
-    return ProgramRunResult("mock program", mockStatementMap, result)
+    return RunResultForProgram("mock program", mockStatementMap, result)
 }
 
 /**
@@ -65,7 +65,7 @@ class AnalyzeUtilsTest : FreeSpec({
                 arrayOf(0, 0, 0),
                 arrayOf(1, 1, 1),
                 arrayOf(0, 0, 0)
-            ), arrayOf(1, 0, 0)) shouldBe ProgramRunResult(
+            ), arrayOf(1, 0, 0)) shouldBe RunResultForProgram(
                 "mock program",
                 mockStatementMap,
                 arrayListOf(

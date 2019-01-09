@@ -9,5 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 public class ProgramRunResultJam {
 
-    List<ProgramRunResult> programRunResults;
+    List<RunResultForProgram> runResultForPrograms;
 }

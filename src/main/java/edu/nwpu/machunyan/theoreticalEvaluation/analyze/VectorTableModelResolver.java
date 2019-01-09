@@ -2,7 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 
@@ -38,16 +38,16 @@ public class VectorTableModelResolver {
     }
 
     /**
-     * 从 {@link ProgramRunResult} 批量生成
+     * 从 {@link RunResultForProgram} 批量生成
      *
-     * @param programRunResult
+     * @param runResultForProgram
      * @return
      */
-    public static VectorTableModel resolve(ProgramRunResult programRunResult) {
-        final int statementCount = programRunResult.getStatementMap().getStatementCount();
-        final Stream<RunResultForTestcase> stream = programRunResult.getRunResults().stream();
+    public static VectorTableModel resolve(RunResultForProgram runResultForProgram) {
+        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
+        final Stream<RunResultForTestcase> stream = runResultForProgram.getRunResults().stream();
         final List<VectorTableModelRecord> vectorTableModelRecords = resolve(stream, statementCount);
-        return new VectorTableModel(programRunResult.getProgramTitle(), vectorTableModelRecords);
+        return new VectorTableModel(runResultForProgram.getProgramTitle(), vectorTableModelRecords);
     }
 
     /**
@@ -57,7 +57,7 @@ public class VectorTableModelResolver {
      * @return
      */
     public static VectorTableModelJam resolve(ProgramRunResultJam programRunResultJam) {
-        final List<VectorTableModel> vectorTableModels = programRunResultJam.getProgramRunResults().stream()
+        final List<VectorTableModel> vectorTableModels = programRunResultJam.getRunResultForPrograms().stream()
             .map(VectorTableModelResolver::resolve)
             .collect(Collectors.toList());
         return new VectorTableModelJam(vectorTableModels);

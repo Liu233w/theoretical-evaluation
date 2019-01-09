@@ -3,7 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgramItem;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import lombok.AllArgsConstructor;
@@ -37,17 +37,17 @@ public class TestcaseWeightResolver {
     }
 
     public TestcaseWeightJam resolve(ProgramRunResultJam jam) {
-        final List<TestcaseWeightForProgramItem> collect = jam.getProgramRunResults().stream()
+        final List<TestcaseWeightForProgramItem> collect = jam.getRunResultForPrograms().stream()
             .map(this::resolve)
             .collect(Collectors.toList());
         return new TestcaseWeightJam(collect);
     }
 
-    public TestcaseWeightForProgramItem resolve(ProgramRunResult programRunResult) {
+    public TestcaseWeightForProgramItem resolve(RunResultForProgram runResultForProgram) {
 
         // 1. prepare
-        final List<RunResultForTestcase> runResults = programRunResult.getRunResults();
-        final int statementCount = programRunResult.getStatementMap().getStatementCount();
+        final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
+        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
 
         // 2. resolve average performance
         final double overall = AveragePerformanceResolver.resolve(
@@ -87,7 +87,7 @@ public class TestcaseWeightResolver {
             .mapToObj(i -> new TestcaseWeightForTestcase(i, result[i]))
             .collect(Collectors.toList());
         return new TestcaseWeightForProgramItem(
-            programRunResult.getProgramTitle(),
+            runResultForProgram.getProgramTitle(),
             formulaTitle,
             testcaseWeights);
     }

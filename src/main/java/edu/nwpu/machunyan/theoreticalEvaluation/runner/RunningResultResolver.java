@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResult;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.ProgramRunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
@@ -31,7 +31,7 @@ public class RunningResultResolver {
 
         final ProgressBar progressBar = new ProgressBar("", inputs.size() * programs.size());
 
-        final List<ProgramRunResult> result = programs.stream()
+        final List<RunResultForProgram> result = programs.stream()
             .parallel()
             .map(program -> new RunningScheduler(program, runnerFactory, inputs, progressBar))
             .map(scheduler -> {
@@ -82,12 +82,12 @@ public class RunningResultResolver {
      * @param runResults
      * @return
      */
-    public static ProgramRunResult mapFromRunResult(List<RunResultFromRunner> runResults) {
+    public static RunResultForProgram mapFromRunResult(List<RunResultFromRunner> runResults) {
         final String title = runResults.get(0).getProgram().getTitle();
         final StatementMap defaultStatememtMap = runResults.get(0).getStatementMap();
         final List<RunResultForTestcase> runResultForTestcases = runResults.stream()
             .map(item -> mapFromRunResult(item, defaultStatememtMap))
             .collect(Collectors.toList());
-        return new ProgramRunResult(title, defaultStatememtMap, runResultForTestcases);
+        return new RunResultForProgram(title, defaultStatememtMap, runResultForTestcases);
     }
 }

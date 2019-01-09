@@ -22,9 +22,9 @@ class RunningResultResolverTest : FreeSpec({
 
             val result = RunningResultResolver.runProgramForAllVersions(programs, inputs, GccReadFromStdIoRunner::newInstance)
 
-            result.programRunResults.size shouldBe 1
+            result.runResultForPrograms.size shouldBe 1
 
-            val programRunResult = result.programRunResults[0]
+            val programRunResult = result.runResultForPrograms[0]
             programRunResult.programTitle shouldBe "1.cpp"
             programRunResult.statementMap.statementCount shouldBe 24
 

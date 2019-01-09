@@ -23,7 +23,7 @@ public class RunResultForTestcase {
     Coverage coverage;
 
     /**
-     * 本次运行中分析器所得出的语句的对应关系，正常情况下应该为 null，并使用 {@link ProgramRunResult#getStatementMap()} 的结果
+     * 本次运行中分析器所得出的语句的对应关系，正常情况下应该为 null，并使用 {@link RunResultForProgram#getStatementMap()} 的结果
      */
     StatementMap statementMap;
 }

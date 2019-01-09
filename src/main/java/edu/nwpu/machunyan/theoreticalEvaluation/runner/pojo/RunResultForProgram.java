@@ -11,7 +11,7 @@ import java.util.List;
  */
 @Data
 @AllArgsConstructor
-public class ProgramRunResult {
+public class RunResultForProgram {
 
     /**
      * 程序的标题
