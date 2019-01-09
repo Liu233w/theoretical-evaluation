@@ -31,7 +31,7 @@ public class VectorTableModelResolver {
             .collect(Collectors.toList());
 
         runResult.forEach(runResultItem ->
-            builders.stream().forEach(builder ->
+            builders.forEach(builder ->
                 builder.processRunResultForTestcase(runResultItem)));
 
         return buildVtm(builders);
