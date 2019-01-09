@@ -40,6 +40,8 @@ public class SuspiciousnessFactorResolver {
 
     public SuspiciousnessFactorResolver(@NonNull Function<VectorTableModelRecord, Double> formula) {
         this.formula = formula;
+        this.formulaTitle = "";
+        this.sort = false;
     }
 
     /**

@@ -34,6 +34,7 @@ public class TestcaseWeightResolver {
 
     public TestcaseWeightResolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula) {
         this.sfFormula = sfFormula;
+        this.formulaTitle = "";
     }
 
     private static Stream<RunResultForTestcase> buildStreamSkipAt(List<RunResultForTestcase> runResults, int index) {
