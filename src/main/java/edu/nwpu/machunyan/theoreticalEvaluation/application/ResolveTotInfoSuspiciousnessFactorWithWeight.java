@@ -1,46 +1,45 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorBatchRunner;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.MultipleFormulaSuspiciousnessFactorJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.interData.CsvExporter;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+
+import java.io.IOException;
+import java.util.List;
+
 /**
  * 用权重来解决 suspiciousness factor
  */
 public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 
     // 输出文件
-    private static final String outputFilePath = "./target/outputs/tot_info-suspiciousness-factors-with-weight.json";
-//
-//    public static void main(String[] args) throws IOException {
-//        final Map<String, ArrayList<RunResultFromRunner>> runResultsFromSavedFile = RunTotInfo.getRunResultsFromSavedFile();
-//        final Map<String, List<Double>> testcaseWeights = ResolveTotInfoTestcaseWeight.loadFromFile();
-//
-//        final JsonArray result = IntStream.range(1, runResultsFromSavedFile.size() + 1)
-//                .parallel()
-//                .mapToObj(i -> {
-//                    final String versionStr = "v" + i;
-//                    final JsonObject resultRecord = new JsonObject();
-//                    resultRecord.add("version", new JsonPrimitive(versionStr));
-//
-//                    final ArrayList<RunResultFromRunner> runResults = runResultsFromSavedFile.get(versionStr);
-//
-//                    final long passedCount = runResults.stream().filter(RunResultFromRunner::isCorrect).count();
-//                    final ArrayList<VectorTableModelRecord> vectorTableModel = VectorTableModelGenerator
-//                            .generateFromRunResultWithWeight(runResults, testcaseWeights.get(versionStr));
-//
-//                    // 某行代码的错误率（排序过的）
-//                    final ArrayList<SuspiciousnessFactorRecord> factorOfO = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(
-//                            vectorTableModel,
-//                            record -> record.calculateSuspiciousnessFactorAsO()
-//                    );
-//                    final ArrayList<SuspiciousnessFactorRecord> factorOfOp = SuspiciousnessFactorResolver.getSuspiciousnessFactorMatrixOrdered(
-//                            vectorTableModel,
-//                            record -> record.calculateSuspiciousnessFactorAsOp()
-//                    );
-//
-//                    resultRecord.add("factors of O", new Gson().toJsonTree(factorOfO));
-//                    resultRecord.add("factors of Op", new Gson().toJsonTree(factorOfOp));
-//                    return resultRecord;
-//                })
-//                .collect(JsonArray::new, JsonArray::add, JsonArray::addAll);
-//
-//        FileUtils.printJsonToFile(Paths.get(outputFilePath), result);
-//    }
+    private static final String jsonOutputPath = "./target/outputs/tot_info-suspiciousness-factors-with-weight.json";
+    private static final String csvOutputPath = "./target/outputs/tot_info-suspiciousness-factors-with-weight.csv";
+
+    public static void main(String[] args) throws IOException {
+
+        final TestcaseWeightJam testcaseWeightJam = ResolveTotInfoTestcaseWeight.loadFromFile();
+
+        final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
+
+        final List<SuspiciousnessFactorResolver> resolvers = SuspiciousnessFactorResolver.of(
+            SuspiciousnessFactorFormulas.getAllFormulas()
+        );
+
+        final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, testcaseWeightJam);
+
+        final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorBatchRunner.runAll(vtm, resolvers);
+        final MultipleFormulaSuspiciousnessFactorJam result = SuspiciousnessFactorBatchRunner.collectAsMultipleFormula(suspiciousnessFactorJam);
+
+        FileUtils.saveObject(jsonOutputPath, result);
+        FileUtils.saveString(csvOutputPath, CsvExporter.toCsvString(result));
+    }
 }
