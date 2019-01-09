@@ -10,7 +10,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 从 {@link OrderedVectorTableModel} 中生成测试用例的平均代价
+ * 从 {@link VectorTableModel} 中生成测试用例的平均代价
  * <p>
  * 是故障定位付出的代价测量，越小越好。
  */
@@ -43,11 +43,9 @@ public class AveragePerformanceResolver {
         return vtmRecords.stream()
             .filter(Objects::nonNull)
             .filter(AveragePerformanceResolver::isStatementNeeded)
-//            .peek(System.out::println)
             .map(VectorTableModelRecord::getStatementIndex)
             .map(examScore::get)
             .mapToDouble(Double::doubleValue)
-            .peek(System.out::println)
             .average()
             .orElse(0);
     }
