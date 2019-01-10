@@ -1,10 +1,8 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.interData;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
-@Data
-@AllArgsConstructor
+@Value
 public class CsvLine {
     Object[] lineItems;
 }

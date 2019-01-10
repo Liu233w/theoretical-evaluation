@@ -1,12 +1,12 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
-import lombok.Data;
+import lombok.Value;
 
 /**
  * 从命令行读入，检测输出是否正确
  */
-@Data
+@Value
 public class GccReadFromStdIoInput implements IProgramInput {
 
     private final String[] inputFromCommand;

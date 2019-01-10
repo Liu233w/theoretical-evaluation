@@ -2,8 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.StreamUtils;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -126,8 +125,7 @@ public class SuspiciousnessFactorHelper {
             ));
     }
 
-    @Data
-    @AllArgsConstructor
+    @Value
     private static class Key {
         String programTitle;
         String formulaTitle;

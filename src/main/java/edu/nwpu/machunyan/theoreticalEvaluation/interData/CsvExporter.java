@@ -14,7 +14,7 @@ public class CsvExporter {
     public static String toCsvString(List<CsvLine> lines) {
         final StringBuilder sb = new StringBuilder();
         for (CsvLine line : lines) {
-            for (Object item : line.lineItems) {
+            for (Object item : line.getLineItems()) {
                 sb.append(item).append(",");
             }
             sb.append(System.lineSeparator());

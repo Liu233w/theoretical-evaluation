@@ -9,7 +9,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
-import lombok.Data;
+import lombok.Value;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -77,7 +77,7 @@ public class RunTotInfo {
         return new Gson().fromJson(jsonReader, testcaseType);
     }
 
-    @Data
+    @Value
     private static class TestcaseItem {
         private String input;
         private String output;
