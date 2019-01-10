@@ -73,6 +73,7 @@ public class TestcaseWeightResolver {
 
     public TestcaseWeightJam resolve(RunResultJam jam) {
         final List<TestcaseWeightForProgram> collect = jam.getRunResultForPrograms().stream()
+            .parallel()
             .map(this::resolve)
             .collect(Collectors.toList());
         return new TestcaseWeightJam(collect);
@@ -90,7 +91,6 @@ public class TestcaseWeightResolver {
             resolver);
 
         final double[] result = IntStream.range(0, runResults.size())
-            .parallel()
             .mapToObj(i -> buildStreamSkipAt(runResults, i))
             .map(stream -> VectorTableModelResolver.resolve(stream, statementCount))
             .map(vtm -> AveragePerformanceResolver.resolve(vtm, resolver))

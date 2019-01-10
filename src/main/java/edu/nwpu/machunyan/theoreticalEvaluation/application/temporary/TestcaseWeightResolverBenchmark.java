@@ -18,6 +18,10 @@ public class TestcaseWeightResolverBenchmark {
         // Code took 7.4316307 seconds
         System.out.println("a program");
         bench(() -> resolver.resolve(imports.getRunResultForPrograms().get(0)));
+
+        // Code took 34.8370996 seconds
+        System.out.println("all program");
+        bench(() -> resolver.resolve(imports));
     }
 
     private static void bench(Runnable runnable) {
