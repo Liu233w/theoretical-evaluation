@@ -42,6 +42,14 @@ public class TestcaseWeightResolver {
             .build();
     }
 
+    public Function<VectorTableModelRecord, Double> getFormula() {
+        return resolver.getFormula();
+    }
+
+    public String getFormulaTitle() {
+        return resolver.getFormulaTitle();
+    }
+
     /**
      * 从参数中生成一系列指定公式的 resolver
      *
@@ -114,7 +122,7 @@ public class TestcaseWeightResolver {
             .collect(Collectors.toList());
         return new TestcaseWeightForProgram(
             runResultForProgram.getProgramTitle(),
-            resolver.getFormulaTitle(),
+            getFormulaTitle(),
             testcaseWeights);
     }
 }
