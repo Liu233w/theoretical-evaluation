@@ -2,9 +2,6 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForStatement;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.ToString;
 
 import java.util.*;
 import java.util.function.Function;
@@ -14,9 +11,6 @@ import java.util.function.Function;
  * <p>
  * 是故障定位付出的代价测量，越小越好。
  */
-@EqualsAndHashCode
-@ToString
-@AllArgsConstructor
 public class AveragePerformanceResolver {
 
     /**
