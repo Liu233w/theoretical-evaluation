@@ -11,6 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * 统计一次运行中所有语句的错误率指数，忽略从来没有运行过的语句 (aep+aef==0)
@@ -83,19 +84,18 @@ public class SuspiciousnessFactorResolver {
 
     public List<SuspiciousnessFactorForStatement> resolve(List<VectorTableModelRecord> records) {
 
-        final List<SuspiciousnessFactorForStatement> result = records.stream()
+        Stream<SuspiciousnessFactorForStatement> stream = records.stream()
             .filter(Objects::nonNull)
             .filter(SuspiciousnessFactorResolver::isStatementEvaluated)
             .map(item -> new SuspiciousnessFactorForStatement(
                 item.getStatementIndex(),
                 formula.apply(item)
-            ))
-            .collect(Collectors.toList());
+            ));
 
         if (sort) {
-            result.sort((l, r) -> -Double.compare(l.getSuspiciousnessFactor(), r.getSuspiciousnessFactor()));
+            stream = SuspiciousnessFactorHelper.rankedStream(stream);
         }
-        return result;
+        return stream.collect(Collectors.toList());
     }
 
     public SuspiciousnessFactorJam resolve(VectorTableModelJam jam) {
