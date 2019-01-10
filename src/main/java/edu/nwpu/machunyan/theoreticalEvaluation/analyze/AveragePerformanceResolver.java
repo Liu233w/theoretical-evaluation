@@ -3,11 +3,8 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForStatement;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 从 {@link VectorTableModel} 中生成测试用例的平均代价
@@ -73,22 +70,58 @@ public class AveragePerformanceResolver {
 
         final int n = sfs.size();
 
-        // 目前的时间复杂度是 O(n^2)
-        // TODO: 通过一趟排序将时间复杂度优化到 O(nlogn)
-        return sfs.stream()
-            .collect(Collectors.toMap(
-                SuspiciousnessFactorForStatement::getStatementIndex,
-                item -> {
-                    final double g = (int) sfs.stream()
-                        .filter(a -> a.getSuspiciousnessFactor() > item.getSuspiciousnessFactor())
-                        .count();
-                    final int equalCount = (int) sfs.stream()
-                        .filter(a -> a.getSuspiciousnessFactor() == item.getSuspiciousnessFactor())
-                        .count();
-                    // 如果没有和它相同的， e=0，否则 e=equalCount
-                    final double e = equalCount > 1 ? equalCount : 0;
-                    return (g + e / 2) / n;
-                }
-            ));
+        final SuspiciousnessFactorForStatement[] sortedInput = sfs.toArray(new SuspiciousnessFactorForStatement[0]);
+        Arrays.sort(sortedInput, Comparator.comparingDouble(
+            SuspiciousnessFactorForStatement::getSuspiciousnessFactor)
+            .reversed());
+
+        final HashMap<Integer, Double> result = new HashMap<>();
+
+        // 当前元素的开始位置（sf一样的元素）
+        int rankBeginIdx = 0;
+        // 当前元素的截止位置的下一个元素的位置
+        int rankEndNextIdx = 0;
+
+        while (rankEndNextIdx < sortedInput.length) {
+
+            if (sortedInput[rankBeginIdx].getSuspiciousnessFactor() ==
+                sortedInput[rankEndNextIdx].getSuspiciousnessFactor()) {
+
+                ++rankEndNextIdx;
+            } else {
+                resolveAndFillResult(sortedInput, rankBeginIdx, rankEndNextIdx, result, n);
+                rankBeginIdx = rankEndNextIdx;
+                ++rankEndNextIdx;
+            }
+        }
+
+        resolveAndFillResult(sortedInput, rankBeginIdx, rankEndNextIdx, result, n);
+        return result;
+    }
+
+    /**
+     * 用来减少代码重复的函数，和 {@link AveragePerformanceResolver#resolveExamScore(List)} 一起看
+     *
+     * @param rankBeginIdx
+     * @param rankEndNextIdx
+     * @param result
+     */
+    private static void resolveAndFillResult(
+        SuspiciousnessFactorForStatement[] sortedInput,
+        int rankBeginIdx,
+        int rankEndNextIdx,
+        Map<Integer, Double> result,
+        int n) {
+
+        //noinspection UnnecessaryLocalVariable
+        final double g = rankBeginIdx;
+        final int thisRankCount = rankEndNextIdx - rankBeginIdx;
+        // 如果没有和它相同的， e=0，否则 e=thisRankCount
+        final double e = thisRankCount > 1 ? thisRankCount : 0;
+        final double ap = (g + e / 2) / n;
+
+        for (int i = rankBeginIdx; i < rankEndNextIdx; i++) {
+            result.put(sortedInput[i].getStatementIndex(), ap);
+        }
     }
 }
