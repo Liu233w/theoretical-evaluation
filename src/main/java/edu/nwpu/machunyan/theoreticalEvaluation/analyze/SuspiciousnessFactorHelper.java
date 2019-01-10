@@ -6,10 +6,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * 用于批量生成多个公式的运行结果
- */
-public class SuspiciousnessFactorBatchRunner {
+public class SuspiciousnessFactorHelper {
 
     /**
      * 在vtm上运行每个 resolver，将结果收集到一起

@@ -4,7 +4,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
-class SuspiciousnessFactorBatchRunnerTest : FreeSpec({
+class SuspiciousnessFactorHelperTest : FreeSpec({
 
     "collectAsMultipleFormula" - {
 
@@ -45,7 +45,7 @@ class SuspiciousnessFactorBatchRunnerTest : FreeSpec({
                 )
             ))
 
-            val result = SuspiciousnessFactorBatchRunner.collectAsMultipleFormula(input)
+            val result = SuspiciousnessFactorHelper.collectAsMultipleFormula(input)
 
             result shouldBe MultipleFormulaSuspiciousnessFactorJam(listOf(
                 MultipleFormulaSuspiciousnessFactorForProgram(
@@ -126,7 +126,7 @@ class SuspiciousnessFactorBatchRunnerTest : FreeSpec({
                 )
             ))
 
-            val result = SuspiciousnessFactorBatchRunner.collectAsMultipleFormula(input)
+            val result = SuspiciousnessFactorHelper.collectAsMultipleFormula(input)
 
             result shouldBe MultipleFormulaSuspiciousnessFactorJam(listOf(
                 MultipleFormulaSuspiciousnessFactorForProgram(
