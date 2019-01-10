@@ -1,6 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightHelper;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
@@ -8,6 +9,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.List;
 
 public class ResolveTotInfoTestcaseWeight {
 
@@ -17,8 +19,9 @@ public class ResolveTotInfoTestcaseWeight {
     public static void main(String[] args) throws IOException {
 
         final RunResultJam imports = RunTotInfo.getRunResultsFromSavedFile();
-        final TestcaseWeightJam result = new TestcaseWeightResolver(SuspiciousnessFactorFormulas::o)
-            .resolve(imports);
+        final List<TestcaseWeightResolver> resolver = TestcaseWeightResolver.of(SuspiciousnessFactorFormulas.getAllFormulas());
+        final TestcaseWeightJam result = TestcaseWeightHelper.runOnAllResolvers(imports, resolver);
+
         FileUtils.saveObject(resultOutputPath, result);
     }
 

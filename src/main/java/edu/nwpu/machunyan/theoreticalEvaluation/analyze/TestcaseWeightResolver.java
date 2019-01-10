@@ -12,6 +12,7 @@ import lombok.NonNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -30,12 +31,47 @@ public class TestcaseWeightResolver {
     }
 
     @Builder
-    public TestcaseWeightResolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula, String formulaTitle) {
+    public TestcaseWeightResolver(
+        @NonNull Function<VectorTableModelRecord, Double> sfFormula,
+        String formulaTitle) {
+
         this.resolver = SuspiciousnessFactorResolver.builder()
             .formula(sfFormula)
             .formulaTitle(formulaTitle)
             .sort(false)
             .build();
+    }
+
+    /**
+     * 从参数中生成一系列指定公式的 resolver
+     *
+     * @param map key 为公式名， value 为公式
+     * @return
+     */
+    public static List<TestcaseWeightResolver> of(
+        Map<String, Function<VectorTableModelRecord, Double>> map) {
+
+        return of(map, TestcaseWeightResolver.builder());
+    }
+
+    /**
+     * 从参数中生成一系列指定公式的 resolver
+     *
+     * @param map     key 为公式名， value 为公式
+     * @param builder 提供一些默认参数
+     * @return
+     */
+    public static List<TestcaseWeightResolver> of(
+        Map<String, Function<VectorTableModelRecord, Double>> map,
+        TestcaseWeightResolverBuilder builder) {
+
+        return map.entrySet().stream()
+            .map(entry -> builder
+                .formulaTitle(entry.getKey())
+                .sfFormula(entry.getValue())
+                .build()
+            )
+            .collect(Collectors.toList());
     }
 
     private static Stream<RunResultForTestcase> buildStreamSkipAt(List<RunResultForTestcase> runResults, int index) {
