@@ -6,7 +6,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
 
@@ -30,7 +29,6 @@ public class TestcaseWeightResolver {
         this(sfFormula, "");
     }
 
-    @Builder
     public TestcaseWeightResolver(
         @NonNull Function<VectorTableModelRecord, Double> sfFormula,
         String formulaTitle) {
@@ -51,26 +49,8 @@ public class TestcaseWeightResolver {
     public static List<TestcaseWeightResolver> of(
         Map<String, Function<VectorTableModelRecord, Double>> map) {
 
-        return of(map, TestcaseWeightResolver.builder());
-    }
-
-    /**
-     * 从参数中生成一系列指定公式的 resolver
-     *
-     * @param map     key 为公式名， value 为公式
-     * @param builder 提供一些默认参数
-     * @return
-     */
-    public static List<TestcaseWeightResolver> of(
-        Map<String, Function<VectorTableModelRecord, Double>> map,
-        TestcaseWeightResolverBuilder builder) {
-
         return map.entrySet().stream()
-            .map(entry -> builder
-                .formulaTitle(entry.getKey())
-                .sfFormula(entry.getValue())
-                .build()
-            )
+            .map(entry -> new TestcaseWeightResolver(entry.getValue(), entry.getKey()))
             .collect(Collectors.toList());
     }
 
