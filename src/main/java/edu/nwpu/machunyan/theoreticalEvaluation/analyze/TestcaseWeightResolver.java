@@ -6,8 +6,13 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import lombok.Data;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.NonNull;
+import lombok.Value;
+import lombok.experimental.Wither;
+import me.tongfei.progressbar.ProgressBar;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -20,10 +25,15 @@ import java.util.stream.Stream;
 /**
  * 生成测试用例的权重
  */
-@Data
+@Value
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestcaseWeightResolver {
 
     private SuspiciousnessFactorResolver resolver;
+
+    @Wither
+    @Nullable
+    private ProgressBar progressBar;
 
     public TestcaseWeightResolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula) {
         this(sfFormula, "");
@@ -38,6 +48,7 @@ public class TestcaseWeightResolver {
             .formulaTitle(formulaTitle)
             .sort(false)
             .build();
+        this.progressBar = null;
     }
 
     /**
@@ -84,6 +95,11 @@ public class TestcaseWeightResolver {
             .map(stream -> VectorTableModelResolver.resolve(stream, statementCount))
             .map(vtm -> AveragePerformanceResolver.resolve(vtm, resolver))
             .mapToDouble(averagePerformance -> averagePerformance - overall)
+            .peek(a -> {
+                if (progressBar != null) {
+                    progressBar.step();
+                }
+            })
             .toArray();
 
         // 3. normalize average performance

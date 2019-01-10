@@ -4,6 +4,8 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForPr
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
+import lombok.Cleanup;
+import me.tongfei.progressbar.ProgressBar;
 
 import java.util.Collection;
 import java.util.List;
@@ -58,7 +60,16 @@ public class TestcaseWeightHelper {
         RunResultJam jam,
         List<TestcaseWeightResolver> resolvers) {
 
+        final int totalTaskNumber = jam.getRunResultForPrograms().stream()
+            .mapToInt(program -> program.getRunResults().size())
+            .reduce(Integer::sum)
+            .orElse(0)
+            * resolvers.size();
+
+        @Cleanup final ProgressBar progressBar = new ProgressBar("", totalTaskNumber);
+
         final List<TestcaseWeightForProgram> collect = resolvers.stream()
+            .map(resolver -> resolver.withProgressBar(progressBar))
             .map(resolver -> resolver.resolve(jam))
             .map(TestcaseWeightJam::getTestcaseWeightForPrograms)
             .map(Collection::stream)
