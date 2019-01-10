@@ -6,13 +6,9 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.NonNull;
-import lombok.Value;
-import lombok.experimental.Wither;
-import me.tongfei.progressbar.ProgressBar;
-import org.jetbrains.annotations.Nullable;
+import lombok.ToString;
 
 import java.util.Arrays;
 import java.util.List;
@@ -25,11 +21,11 @@ import java.util.stream.Stream;
 /**
  * 生成测试用例的权重
  */
-@Value
+@EqualsAndHashCode
+@ToString
 public class TestcaseWeightResolver {
 
-    private SuspiciousnessFactorResolver resolver;
-
+    private final SuspiciousnessFactorResolver resolver;
 
     public TestcaseWeightResolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula) {
         this(sfFormula, "");
@@ -42,7 +38,7 @@ public class TestcaseWeightResolver {
         this.resolver = SuspiciousnessFactorResolver.builder()
             .formula(sfFormula)
             .formulaTitle(formulaTitle)
-            .sort(false)
+            .sort(true)
             .build();
     }
 

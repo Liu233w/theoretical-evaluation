@@ -2,6 +2,9 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForStatement;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.util.*;
 import java.util.function.Function;
@@ -11,6 +14,9 @@ import java.util.function.Function;
  * <p>
  * 是故障定位付出的代价测量，越小越好。
  */
+@EqualsAndHashCode
+@ToString
+@AllArgsConstructor
 public class AveragePerformanceResolver {
 
     /**
@@ -35,7 +41,13 @@ public class AveragePerformanceResolver {
         List<VectorTableModelRecord> vtmRecords,
         Function<VectorTableModelRecord, Double> sfFormula) {
 
-        return resolve(vtmRecords, new SuspiciousnessFactorResolver(sfFormula));
+        return resolve(
+            vtmRecords,
+            SuspiciousnessFactorResolver
+                .builder()
+                .formula(sfFormula)
+                .sort(true)
+                .build());
     }
 
     public static double resolve(
@@ -43,7 +55,7 @@ public class AveragePerformanceResolver {
         SuspiciousnessFactorResolver sfResolver) {
 
         final List<SuspiciousnessFactorForStatement> sfs = sfResolver.resolve(vtmRecords);
-        final Map<Integer, Double> examScore = resolveExamScore(sfs);
+        final Map<Integer, Double> examScore = resolveExamScore(sfs, sfResolver.isSort());
 
         return vtmRecords.stream()
             .filter(Objects::nonNull)
@@ -66,14 +78,19 @@ public class AveragePerformanceResolver {
      * @param sfs
      * @return key 是语句编号， value 是结果
      */
-    private static Map<Integer, Double> resolveExamScore(List<SuspiciousnessFactorForStatement> sfs) {
+    private static Map<Integer, Double> resolveExamScore(List<SuspiciousnessFactorForStatement> sfs, boolean inputSorted) {
 
         final int n = sfs.size();
 
-        final SuspiciousnessFactorForStatement[] sortedInput = sfs.toArray(new SuspiciousnessFactorForStatement[0]);
-        Arrays.sort(sortedInput, Comparator.comparingDouble(
-            SuspiciousnessFactorForStatement::getSuspiciousnessFactor)
-            .reversed());
+        final List<SuspiciousnessFactorForStatement> sortedInput;
+        if (inputSorted) {
+            sortedInput = sfs;
+        } else {
+            sortedInput = new ArrayList<>(sfs);
+            sortedInput.sort(Comparator.comparingDouble(
+                SuspiciousnessFactorForStatement::getSuspiciousnessFactor)
+                .reversed());
+        }
 
         final HashMap<Integer, Double> result = new HashMap<>();
 
@@ -82,10 +99,10 @@ public class AveragePerformanceResolver {
         // 当前元素的截止位置的下一个元素的位置
         int rankEndNextIdx = 0;
 
-        while (rankEndNextIdx < sortedInput.length) {
+        while (rankEndNextIdx < sortedInput.size()) {
 
-            if (sortedInput[rankBeginIdx].getSuspiciousnessFactor() ==
-                sortedInput[rankEndNextIdx].getSuspiciousnessFactor()) {
+            if (sortedInput.get(rankBeginIdx).getSuspiciousnessFactor() ==
+                sortedInput.get(rankEndNextIdx).getSuspiciousnessFactor()) {
 
                 ++rankEndNextIdx;
             } else {
@@ -100,14 +117,14 @@ public class AveragePerformanceResolver {
     }
 
     /**
-     * 用来减少代码重复的函数，和 {@link AveragePerformanceResolver#resolveExamScore(List)} 一起看
+     * 用来减少代码重复的函数，和 {@link AveragePerformanceResolver#resolveExamScore(List, boolean)} )} 一起看
      *
      * @param rankBeginIdx
      * @param rankEndNextIdx
      * @param result
      */
     private static void resolveAndFillResult(
-        SuspiciousnessFactorForStatement[] sortedInput,
+        List<SuspiciousnessFactorForStatement> sortedInput,
         int rankBeginIdx,
         int rankEndNextIdx,
         Map<Integer, Double> result,
@@ -121,7 +138,7 @@ public class AveragePerformanceResolver {
         final double ap = (g + e / 2) / n;
 
         for (int i = rankBeginIdx; i < rankEndNextIdx; i++) {
-            result.put(sortedInput[i].getStatementIndex(), ap);
+            result.put(sortedInput.get(i).getStatementIndex(), ap);
         }
     }
 }
