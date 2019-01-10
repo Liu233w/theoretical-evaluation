@@ -26,14 +26,10 @@ import java.util.stream.Stream;
  * 生成测试用例的权重
  */
 @Value
-@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class TestcaseWeightResolver {
 
     private SuspiciousnessFactorResolver resolver;
 
-    @Wither
-    @Nullable
-    private ProgressBar progressBar;
 
     public TestcaseWeightResolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula) {
         this(sfFormula, "");
@@ -48,7 +44,6 @@ public class TestcaseWeightResolver {
             .formulaTitle(formulaTitle)
             .sort(false)
             .build();
-        this.progressBar = null;
     }
 
     /**
@@ -95,11 +90,6 @@ public class TestcaseWeightResolver {
             .map(stream -> VectorTableModelResolver.resolve(stream, statementCount))
             .map(vtm -> AveragePerformanceResolver.resolve(vtm, resolver))
             .mapToDouble(averagePerformance -> averagePerformance - overall)
-            .peek(a -> {
-                if (progressBar != null) {
-                    progressBar.step();
-                }
-            })
             .toArray();
 
         // 3. normalize average performance

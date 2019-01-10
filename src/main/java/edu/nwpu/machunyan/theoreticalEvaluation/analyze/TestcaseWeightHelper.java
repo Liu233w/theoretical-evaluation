@@ -60,19 +60,13 @@ public class TestcaseWeightHelper {
         RunResultJam jam,
         List<TestcaseWeightResolver> resolvers) {
 
-        final int totalTaskNumber = jam.getRunResultForPrograms().stream()
-            .mapToInt(program -> program.getRunResults().size())
-            .reduce(Integer::sum)
-            .orElse(0)
-            * resolvers.size();
-
-        @Cleanup final ProgressBar progressBar = new ProgressBar("", totalTaskNumber);
+        @Cleanup final ProgressBar progressBar = new ProgressBar("", resolvers.size());
 
         final List<TestcaseWeightForProgram> collect = resolvers.stream()
-            .map(resolver -> resolver.withProgressBar(progressBar))
             .map(resolver -> resolver.resolve(jam))
             .map(TestcaseWeightJam::getTestcaseWeightForPrograms)
             .map(Collection::stream)
+            .peek(a -> progressBar.step())
             .reduce(Stream::concat)
             .orElseGet(Stream::empty)
             .collect(Collectors.toList());
