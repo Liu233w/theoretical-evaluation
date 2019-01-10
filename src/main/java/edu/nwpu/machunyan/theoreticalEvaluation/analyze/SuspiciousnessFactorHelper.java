@@ -15,7 +15,10 @@ public class SuspiciousnessFactorHelper {
      * @param resolvers
      * @return
      */
-    public static SuspiciousnessFactorJam runAll(VectorTableModelJam jam, List<SuspiciousnessFactorResolver> resolvers) {
+    public static SuspiciousnessFactorJam runOnAllResolvers(
+        VectorTableModelJam jam,
+        List<SuspiciousnessFactorResolver> resolvers) {
+
         final List<SuspiciousnessFactorForProgram> collect = resolvers.stream()
             .map(resolver -> resolver.resolve(jam))
             .map(SuspiciousnessFactorJam::getResultForPrograms)
@@ -32,7 +35,8 @@ public class SuspiciousnessFactorHelper {
      * @param jam
      * @return
      */
-    public static MultipleFormulaSuspiciousnessFactorJam collectAsMultipleFormula(SuspiciousnessFactorJam jam) {
+    public static MultipleFormulaSuspiciousnessFactorJam collectAsMultipleFormula(
+        SuspiciousnessFactorJam jam) {
 
         final List<SuspiciousnessFactorForProgram> prevResult = jam.getResultForPrograms();
 

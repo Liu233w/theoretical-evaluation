@@ -36,7 +36,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 
         final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, testcaseWeightJam);
 
-        final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorHelper.runAll(vtm, resolvers);
+        final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
         final MultipleFormulaSuspiciousnessFactorJam result = SuspiciousnessFactorHelper.collectAsMultipleFormula(suspiciousnessFactorJam);
 
         FileUtils.saveObject(jsonOutputPath, result);

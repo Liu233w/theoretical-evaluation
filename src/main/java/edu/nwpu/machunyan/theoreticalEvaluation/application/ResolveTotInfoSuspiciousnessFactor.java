@@ -30,7 +30,7 @@ public class ResolveTotInfoSuspiciousnessFactor {
 
         final VectorTableModelJam vtm = VectorTableModelResolver.resolve(jam);
 
-        final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorHelper.runAll(vtm, resolvers);
+        final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
         final MultipleFormulaSuspiciousnessFactorJam result = SuspiciousnessFactorHelper.collectAsMultipleFormula(suspiciousnessFactorJam);
 
         FileUtils.saveObject(jsonOutputPath, result);
