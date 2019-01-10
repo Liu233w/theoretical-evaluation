@@ -42,14 +42,6 @@ public class TestcaseWeightResolver {
             .build();
     }
 
-    public Function<VectorTableModelRecord, Double> getFormula() {
-        return resolver.getFormula();
-    }
-
-    public String getFormulaTitle() {
-        return resolver.getFormulaTitle();
-    }
-
     /**
      * 从参数中生成一系列指定公式的 resolver
      *
@@ -68,6 +60,14 @@ public class TestcaseWeightResolver {
         return IntStream.range(0, runResults.size())
             .filter(i -> i != index)
             .mapToObj(runResults::get);
+    }
+
+    public Function<VectorTableModelRecord, Double> getFormula() {
+        return resolver.getFormula();
+    }
+
+    public String getFormulaTitle() {
+        return resolver.getFormulaTitle();
     }
 
     public TestcaseWeightJam resolve(RunResultJam jam) {

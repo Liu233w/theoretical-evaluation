@@ -125,12 +125,6 @@ public class SuspiciousnessFactorHelper {
             ));
     }
 
-    @Value
-    private static class Key {
-        String programTitle;
-        String formulaTitle;
-    }
-
     /**
      * 获取一个可疑指数的语句和对应的排名
      *
@@ -219,5 +213,11 @@ public class SuspiciousnessFactorHelper {
             .collect(Collectors.toList());
 
         return new MultipleFormulaSuspiciousnessFactorJam(collect, formulaTitles);
+    }
+
+    @Value
+    private static class Key {
+        String programTitle;
+        String formulaTitle;
     }
 }

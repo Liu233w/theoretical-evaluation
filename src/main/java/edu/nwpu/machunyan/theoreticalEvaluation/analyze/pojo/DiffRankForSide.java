@@ -1,6 +1,5 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
-import lombok.Data;
 import lombok.Value;
 
 /**
