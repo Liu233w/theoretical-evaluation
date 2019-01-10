@@ -34,10 +34,18 @@ public class AveragePerformanceResolver {
      * @param sfFormula  用来计算 SuspiciousnessFactor 的公式
      * @return
      */
-    public static double resolve(List<VectorTableModelRecord> vtmRecords, Function<VectorTableModelRecord, Double> sfFormula) {
+    public static double resolve(
+        List<VectorTableModelRecord> vtmRecords,
+        Function<VectorTableModelRecord, Double> sfFormula) {
 
-        final List<SuspiciousnessFactorForStatement> sfs = new SuspiciousnessFactorResolver(sfFormula)
-            .resolve(vtmRecords);
+        return resolve(vtmRecords, new SuspiciousnessFactorResolver(sfFormula));
+    }
+
+    public static double resolve(
+        List<VectorTableModelRecord> vtmRecords,
+        SuspiciousnessFactorResolver sfResolver) {
+
+        final List<SuspiciousnessFactorForStatement> sfs = sfResolver.resolve(vtmRecords);
         final Map<Integer, Double> examScore = resolveExamScore(sfs);
 
         return vtmRecords.stream()

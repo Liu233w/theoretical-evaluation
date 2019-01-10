@@ -6,7 +6,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
@@ -22,19 +21,21 @@ import java.util.stream.Stream;
  * 生成测试用例的权重
  */
 @Data
-@AllArgsConstructor
-@Builder
 public class TestcaseWeightResolver {
 
-    @NonNull
-    private Function<VectorTableModelRecord, Double> sfFormula;
-
-    @Builder.Default
-    private String formulaTitle = "";
+    private SuspiciousnessFactorResolver resolver;
 
     public TestcaseWeightResolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula) {
-        this.sfFormula = sfFormula;
-        this.formulaTitle = "";
+        this(sfFormula, "");
+    }
+
+    @Builder
+    public TestcaseWeightResolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula, String formulaTitle) {
+        this.resolver = SuspiciousnessFactorResolver.builder()
+            .formula(sfFormula)
+            .formulaTitle(formulaTitle)
+            .sort(false)
+            .build();
     }
 
     private static Stream<RunResultForTestcase> buildStreamSkipAt(List<RunResultForTestcase> runResults, int index) {
@@ -59,13 +60,13 @@ public class TestcaseWeightResolver {
         // 2. resolve average performance
         final double overall = AveragePerformanceResolver.resolve(
             VectorTableModelResolver.resolve(runResults.stream(), statementCount),
-            sfFormula);
+            resolver);
 
         final double[] result = IntStream.range(0, runResults.size())
             .parallel()
             .mapToObj(i -> buildStreamSkipAt(runResults, i))
             .map(stream -> VectorTableModelResolver.resolve(stream, statementCount))
-            .map(vtm -> AveragePerformanceResolver.resolve(vtm, sfFormula))
+            .map(vtm -> AveragePerformanceResolver.resolve(vtm, resolver))
             .mapToDouble(averagePerformance -> averagePerformance - overall)
             .toArray();
 
@@ -95,7 +96,7 @@ public class TestcaseWeightResolver {
             .collect(Collectors.toList());
         return new TestcaseWeightForProgram(
             runResultForProgram.getProgramTitle(),
-            formulaTitle,
+            resolver.getFormulaTitle(),
             testcaseWeights);
     }
 }
