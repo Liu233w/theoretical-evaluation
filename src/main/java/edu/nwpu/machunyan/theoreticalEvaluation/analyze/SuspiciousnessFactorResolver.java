@@ -1,10 +1,9 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.NonNull;
+import lombok.Value;
 
 import java.util.List;
 import java.util.Map;
@@ -16,33 +15,40 @@ import java.util.stream.Stream;
 /**
  * 统计一次运行中所有语句的错误率指数，忽略从来没有运行过的语句 (aep+aef==0)
  */
-@Data
-@Builder
-@AllArgsConstructor
+@Value
 public class SuspiciousnessFactorResolver {
 
     /**
      * 是否对运行结果排序
      */
-    @Builder.Default
-    private boolean sort = false;
+    private final boolean sort;
 
     /**
      * 输出时在公式位置显示的内容
      */
-    @Builder.Default
-    private String formulaTitle = "";
+    private final String formulaTitle;
 
     /**
      * 用来计算可疑指数的公式
      */
     @NonNull
-    private Function<VectorTableModelRecord, Double> formula;
+    private final Function<VectorTableModelRecord, Double> formula;
 
     public SuspiciousnessFactorResolver(@NonNull Function<VectorTableModelRecord, Double> formula) {
+        this(false, null, formula);
+    }
+
+    @Builder
+    public SuspiciousnessFactorResolver(boolean sort, String formulaTitle, @NonNull Function<VectorTableModelRecord, Double> formula) {
+
+        // default is false
+        this.sort = sort;
+        if (formulaTitle == null) {
+            this.formulaTitle = formulaTitle;
+        } else {
+            this.formulaTitle = "";
+        }
         this.formula = formula;
-        this.formulaTitle = "";
-        this.sort = false;
     }
 
     /**
