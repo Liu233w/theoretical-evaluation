@@ -1,44 +1,42 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runningDatas;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 /**
  * 一条语句的信息
  */
-@Data
-@AllArgsConstructor
+@Value
 public class StatementInfo {
 
     /**
      * 语句编号（索引）
      */
-    private final int statementIndex;
+    int statementIndex;
 
     /**
      * 包含语句的源代码的路径
      */
-    private final String filePath;
+    String filePath;
 
     /**
      * 语句在源代码中的起始行
      */
-    private final int startRow;
+    int startRow;
 
     /**
      * 语句在源代码中的起始列。如果分析器不支持显示列，则此字段为 -1。
      */
-    private final int startColomn;
+    int startColomn;
 
     /**
      * 语句在源代码中的终止行
      */
-    private final int endRow;
+    int endRow;
 
     /**
      * 语句在源代码中的终止列。如果分析器不支持显示列，则此字段为 -1。
      */
-    private final int endColomn;
+    int endColomn;
 
     /**
      * @param statementIndex

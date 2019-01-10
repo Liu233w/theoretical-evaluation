@@ -1,13 +1,12 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Value;
 
 /**
  * 一侧的排名信息
  */
-@Data
-@AllArgsConstructor
+@Value
 public class DiffRankForSide {
 
     int rank;

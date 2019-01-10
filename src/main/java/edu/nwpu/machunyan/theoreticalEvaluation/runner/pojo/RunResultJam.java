@@ -1,12 +1,10 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.List;
 
-@Data
-@AllArgsConstructor
+@Value
 public class RunResultJam {
 
     List<RunResultForProgram> runResultForPrograms;

@@ -1,15 +1,13 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.List;
 
 /**
  * 程序中的所有可疑指数
  */
-@Data
-@AllArgsConstructor
+@Value
 public class SuspiciousnessFactorForProgram {
 
     String programTitle;

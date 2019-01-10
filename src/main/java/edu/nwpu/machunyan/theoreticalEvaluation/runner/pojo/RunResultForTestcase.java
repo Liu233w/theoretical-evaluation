@@ -2,14 +2,12 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Coverage;
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.StatementMap;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 /**
  * 表示一次运行的结果，不包含多余的数据
  */
-@Data
-@AllArgsConstructor
+@Value
 public class RunResultForTestcase {
 
     /**

@@ -1,16 +1,14 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelRecord;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.List;
 
 /**
  * 一个 vtm
  */
-@Data
-@AllArgsConstructor
+@Value
 public class VectorTableModel {
 
     String programTitle;

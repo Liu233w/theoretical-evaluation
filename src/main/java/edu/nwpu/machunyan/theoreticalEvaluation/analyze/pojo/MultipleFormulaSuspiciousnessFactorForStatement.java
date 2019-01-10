@@ -1,15 +1,13 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.Map;
 
 /**
  * 一条语句中有多个公式的结果
  */
-@Data
-@AllArgsConstructor
+@Value
 public class MultipleFormulaSuspiciousnessFactorForStatement {
 
     int statementIndex;

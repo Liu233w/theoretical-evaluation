@@ -1,13 +1,13 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runningDatas;
 
-import lombok.Data;
+import lombok.Value;
 
 import java.util.ArrayList;
 
 /**
  * 表示一个程序源代码的语句信息，包含了文件中每条语句的位置和语句编号。编号从 1 开始。因此 map 的第 0 个元素是 null
  */
-@Data
+@Value
 public class StatementMap {
 
     /**

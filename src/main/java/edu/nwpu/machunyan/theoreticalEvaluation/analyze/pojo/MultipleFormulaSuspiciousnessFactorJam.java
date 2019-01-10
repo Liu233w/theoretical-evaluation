@@ -1,13 +1,11 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.List;
 import java.util.Set;
 
-@Data
-@AllArgsConstructor
+@Value
 public class MultipleFormulaSuspiciousnessFactorJam {
 
     List<MultipleFormulaSuspiciousnessFactorForProgram> resultForPrograms;

@@ -1,13 +1,11 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 /**
  * 一个测试用例的权重
  */
-@Data
-@AllArgsConstructor
+@Value
 public class TestcaseWeightForTestcase {
 
     /**

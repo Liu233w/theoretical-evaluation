@@ -1,15 +1,13 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.List;
 
 /**
  * 一个程序的测试用例权重所需的所有数据
  */
-@Data
-@AllArgsConstructor
+@Value
 public class TestcaseWeightJam {
 
     List<TestcaseWeightForProgram> testcaseWeightForPrograms;

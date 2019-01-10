@@ -1,16 +1,14 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.StatementMap;
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Value;
 
 import java.util.List;
 
 /**
  * 一个程序的运行结果
  */
-@Data
-@AllArgsConstructor
+@Value
 public class RunResultForProgram {
 
     /**
