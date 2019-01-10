@@ -27,8 +27,8 @@ class AveragePerformanceResolverTest : FreeSpec({
 
             // sf: 0, 0, 0, 0, 3, 3, 3, 4, (-1, -1)
             // ordered sf: 4, 3, 3, 3, 0, 0, 0, 0, (-1, -1)
-            // pm: 0, (1+(2/2))/10, 0.2, 0.2, (4+(3/2))/10, 0.55, 0.55, 0.55, (...,...)
-            // average pm: (0.2*3+0.55*4)/8 = (0.6+2.2)/8 = 0.35
+            // pm: 0, (1+(3/2))/10, 0.25, 0.25, (4+(4/2))/10, 0.6, 0.6, 0.6, (...,...)
+            // average pm: (0.25*3+0.6*4)/8 = (0.75+2.4)/8 = 0.39375
 
             val result = AveragePerformanceResolver.resolve(vtmList, SuspiciousnessFactorFormulas::o)
             result shouldBe (63.0 / 160 plusOrMinus 0.0000001)

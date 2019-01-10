@@ -82,9 +82,11 @@ public class AveragePerformanceResolver {
                     final double g = (int) sfs.stream()
                         .filter(a -> a.getSuspiciousnessFactor() > item.getSuspiciousnessFactor())
                         .count();
-                    final double e = (int) sfs.stream()
+                    final int equalCount = (int) sfs.stream()
                         .filter(a -> a.getSuspiciousnessFactor() == item.getSuspiciousnessFactor())
-                        .count() - 1; // 去掉本身
+                        .count();
+                    // 如果没有和它相同的， e=0，否则 e=equalCount
+                    final double e = equalCount > 1 ? equalCount : 0;
                     return (g + e / 2) / n;
                 }
             ));
