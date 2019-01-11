@@ -100,15 +100,25 @@ public class VectorTableModelResolver {
         RunResultJam runResultJam,
         TestcaseWeightJam testcaseWeightJam) {
 
-        final Map<String, List<TestcaseWeightForTestcase>> titleToWeights = testcaseWeightJam
-            .getTestcaseWeightForPrograms().stream()
+        return resolveWithWeights(
+            runResultJam,
+            testcaseWeightJam.getTestcaseWeightForPrograms());
+    }
+
+    public static VectorTableModelJam resolveWithWeights(
+        RunResultJam runResultJam,
+        List<TestcaseWeightForProgram> weights) {
+
+        final Map<String, List<TestcaseWeightForTestcase>> titleToWeights = weights
+            .stream()
             .collect(Collectors.toMap(
                 TestcaseWeightForProgram::getTitle,
                 TestcaseWeightForProgram::getTestcaseWeights
             ));
 
         final List<VectorTableModel> collect = runResultJam
-            .getRunResultForPrograms().stream()
+            .getRunResultForPrograms()
+            .stream()
             .map(a -> resolveWithWeights(a, titleToWeights.get(a.getProgramTitle())))
             .collect(Collectors.toList());
 

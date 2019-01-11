@@ -41,6 +41,21 @@ public class FileUtils {
     }
 
     /**
+     * 如果 path 是一个文件夹（没有后缀名），将创建它和它的所有父文件夹。否则创建它的父文件夹。
+     * 如果相应的文件夹存在，什么都不做。
+     *
+     * @param path
+     */
+    public static void ensurePathDir(Path path) {
+        final boolean isDir = path.getFileName().toString().lastIndexOf('.') == -1;
+        if (isDir) {
+            path.toFile().mkdirs();
+        } else {
+            path.getParent().toFile().mkdirs();
+        }
+    }
+
+    /**
      * 从路径中读取json
      *
      * @param path
@@ -108,6 +123,11 @@ public class FileUtils {
      * @throws IOException
      */
     public static void saveString(String path, String str) throws IOException {
-        Files.write(Paths.get(path), str.getBytes());
+        saveString(Paths.get(path), str);
+    }
+
+    public static void saveString(Path path, String str) throws IOException {
+        ensurePathDir(path);
+        Files.write(path, str.getBytes());
     }
 }

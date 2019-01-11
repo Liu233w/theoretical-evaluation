@@ -4,16 +4,19 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorForm
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorHelper;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelResolver;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.MultipleFormulaSuspiciousnessFactorJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * 用权重来解决 suspiciousness factor
@@ -21,25 +24,46 @@ import java.util.List;
 public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 
     // 输出文件
-    private static final String jsonOutputPath = "./target/outputs/tot_info-suspiciousness-factors-with-weight.json";
-    private static final String csvOutputPath = "./target/outputs/tot_info-suspiciousness-factors-with-weight.csv";
+    private static final Path csvOutputDir = Paths.get("./target/outputs/totInfoSuspiciousnessFactorsWithWeight");
 
     public static void main(String[] args) throws IOException {
 
-        final TestcaseWeightJam testcaseWeightJam = ResolveTotInfoTestcaseWeight.loadFromFile();
-
         final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
+        final TestcaseWeightJam testcaseWeightJam = ResolveTotInfoTestcaseWeight.loadFromFile();
 
         final List<SuspiciousnessFactorResolver> resolvers = SuspiciousnessFactorResolver.of(
             SuspiciousnessFactorFormulas.getAllFormulas()
         );
 
-        final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, testcaseWeightJam);
+        final Set<String> formulas = testcaseWeightJam
+            .getTestcaseWeightForPrograms()
+            .stream()
+            .map(TestcaseWeightForProgram::getFormulaTitle)
+            .collect(Collectors.toSet());
 
-        final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
-        final MultipleFormulaSuspiciousnessFactorJam result = SuspiciousnessFactorHelper.collectAsMultipleFormula(suspiciousnessFactorJam);
+        final HashMap<String, MultipleFormulaSuspiciousnessFactorJam> resultMap = new HashMap<>();
+        formulas.forEach(formula -> {
+            final List<TestcaseWeightForProgram> weights = testcaseWeightJam
+                .getTestcaseWeightForPrograms()
+                .stream()
+                .filter(a -> a.getFormulaTitle().equals(formula))
+                .collect(Collectors.toList());
 
-        FileUtils.saveObject(jsonOutputPath, result);
-        FileUtils.saveString(csvOutputPath, CsvExporter.toCsvString(result));
+            final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, weights);
+
+            final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
+            final MultipleFormulaSuspiciousnessFactorJam result = SuspiciousnessFactorHelper.collectAsMultipleFormula(suspiciousnessFactorJam);
+
+            resultMap.put(formula, result);
+        });
+
+        for (Map.Entry<String, MultipleFormulaSuspiciousnessFactorJam> entry : resultMap.entrySet()) {
+
+            final String formula = entry.getKey();
+            final MultipleFormulaSuspiciousnessFactorJam result = entry.getValue();
+
+            final Path savePath = csvOutputDir.resolve("weighted-by-" + formula + ".csv");
+            FileUtils.saveString(savePath, CsvExporter.toCsvString(result));
+        }
     }
 }
