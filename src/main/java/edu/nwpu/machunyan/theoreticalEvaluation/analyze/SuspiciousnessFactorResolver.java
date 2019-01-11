@@ -44,9 +44,9 @@ public class SuspiciousnessFactorResolver {
         // default is false
         this.sort = sort;
         if (formulaTitle == null) {
-            this.formulaTitle = formulaTitle;
-        } else {
             this.formulaTitle = "";
+        } else {
+            this.formulaTitle = formulaTitle;
         }
         this.formula = formula;
     }
