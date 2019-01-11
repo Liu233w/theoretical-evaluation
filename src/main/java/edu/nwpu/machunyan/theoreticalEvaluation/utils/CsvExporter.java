@@ -1,7 +1,6 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.interData;
+package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.ArrayUtils;
 
 import java.util.ArrayList;
 import java.util.List;

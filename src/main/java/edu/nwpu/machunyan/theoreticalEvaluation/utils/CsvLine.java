@@ -1,4 +1,4 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.interData;
+package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import lombok.Value;
 
