@@ -6,8 +6,8 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.GccReadFromStdIoRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningResultResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.IProgramInput;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import lombok.Value;
 

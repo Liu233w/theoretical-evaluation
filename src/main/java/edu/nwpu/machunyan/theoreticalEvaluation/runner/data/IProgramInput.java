@@ -1,4 +1,4 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.runningDatas;
+package edu.nwpu.machunyan.theoreticalEvaluation.runner.data;
 
 /**
  * 一次运行的输入。具体类型由分析器决定

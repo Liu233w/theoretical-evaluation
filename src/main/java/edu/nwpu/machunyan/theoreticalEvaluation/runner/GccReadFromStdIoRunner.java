@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.*;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.StreamUtils;
 import lombok.NonNull;
 

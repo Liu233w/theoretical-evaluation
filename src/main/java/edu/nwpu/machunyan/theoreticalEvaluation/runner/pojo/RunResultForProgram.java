@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.StatementMap;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap;
 import lombok.Value;
 
 import java.util.List;

@@ -3,10 +3,10 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.StatementMap;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.IProgramInput;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap;
 import me.tongfei.progressbar.ProgressBar;
 
 import java.util.List;

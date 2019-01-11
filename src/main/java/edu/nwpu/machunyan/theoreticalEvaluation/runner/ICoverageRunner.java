@@ -1,8 +1,8 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.IProgramInput;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program;
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.RunResultFromRunner;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.IProgramInput;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
 
 /**
  * 通过特定的分析器运行程序，得出覆盖信息的接口

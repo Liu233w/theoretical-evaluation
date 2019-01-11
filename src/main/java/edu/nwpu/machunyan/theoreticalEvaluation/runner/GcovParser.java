@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Coverage;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Coverage;
 import lombok.NonNull;
 
 import java.io.IOException;

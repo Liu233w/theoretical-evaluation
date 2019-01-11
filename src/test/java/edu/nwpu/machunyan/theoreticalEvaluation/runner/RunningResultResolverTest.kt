@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner
 
 import edu.nwpu.machunyan.theoreticalEvaluation.getTestFilePath
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Program
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 

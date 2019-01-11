@@ -1,4 +1,4 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.runningDatas;
+package edu.nwpu.machunyan.theoreticalEvaluation.runner.data;
 
 /**
  * 表示语句对应表的类型。

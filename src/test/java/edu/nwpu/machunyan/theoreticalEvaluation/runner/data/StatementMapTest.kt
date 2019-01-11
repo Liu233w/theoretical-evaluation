@@ -1,4 +1,4 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.runningDatas
+package edu.nwpu.machunyan.theoreticalEvaluation.runner.data
 
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec

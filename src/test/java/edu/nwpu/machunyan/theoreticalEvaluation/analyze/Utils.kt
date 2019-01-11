@@ -2,8 +2,8 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.Coverage
-import edu.nwpu.machunyan.theoreticalEvaluation.runningDatas.StatementMap
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Coverage
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 import java.util.stream.Collectors
