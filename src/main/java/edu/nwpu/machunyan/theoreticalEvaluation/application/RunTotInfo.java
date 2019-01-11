@@ -2,12 +2,12 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.IProgramInput;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningResultResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoRunner;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningResultResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.IProgramInput;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import lombok.Value;
 
