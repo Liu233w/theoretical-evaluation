@@ -90,5 +90,36 @@ public class CsvExporter {
 
         return toCsvString(csvLines);
     }
+
+    public static String toCsvString(DiffRankJam jam) {
+
+        final DiffRankForProgram sampleDiff = jam.getDiffRankForPrograms().get(0);
+        final String leftRankTitle = sampleDiff.getLeftRankTitle();
+        final String rightRankTitle = sampleDiff.getRightRankTitle();
+
+        final ArrayList<CsvLine> csvLines = new ArrayList<>();
+
+        csvLines.add(new CsvLine(new Object[]{
+            "program title", "formula",
+            leftRankTitle + "-rank", leftRankTitle + "-suspiciousnessFactor",
+            rightRankTitle + "-rank", rightRankTitle + "-suspiciousnessFactor",
+        }));
+
+        for (DiffRankForProgram program : jam.getDiffRankForPrograms()) {
+            for (DiffRankForStatement statement : program.getDiffRankForStatements()) {
+
+                final DiffRankForSide left = statement.getLeft();
+                final DiffRankForSide right = statement.getRight();
+
+                csvLines.add(new CsvLine(new Object[]{
+                    program.getProgramTitle(), program.getFormulaTitle(),
+                    left.getRank(), left.getSuspiciousnessFactor(),
+                    right.getRank(), right.getSuspiciousnessFactor(),
+                }));
+            }
+        }
+
+        return toCsvString(csvLines);
+    }
 }
 

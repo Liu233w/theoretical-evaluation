@@ -9,6 +9,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -28,6 +29,21 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 
     public static void main(String[] args) throws IOException {
 
+        final Map<String, SuspiciousnessFactorJam> resultMap = resolveAndGetResult();
+
+        for (Map.Entry<String, SuspiciousnessFactorJam> entry : resultMap.entrySet()) {
+
+            final String formula = entry.getKey();
+            final MultipleFormulaSuspiciousnessFactorJam result =
+                SuspiciousnessFactorHelper.collectAsMultipleFormula(entry.getValue());
+
+            final Path savePath = csvOutputDir.resolve("weighted-by-" + formula + ".csv");
+            FileUtils.saveString(savePath, CsvExporter.toCsvString(result));
+        }
+    }
+
+    public static Map<String, SuspiciousnessFactorJam> resolveAndGetResult() throws FileNotFoundException {
+
         final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
         final TestcaseWeightJam testcaseWeightJam = ResolveTotInfoTestcaseWeight.loadFromFile();
 
@@ -41,7 +57,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
             .map(TestcaseWeightForProgram::getFormulaTitle)
             .collect(Collectors.toSet());
 
-        final HashMap<String, MultipleFormulaSuspiciousnessFactorJam> resultMap = new HashMap<>();
+        final HashMap<String, SuspiciousnessFactorJam> resultMap = new HashMap<>();
         formulas.forEach(formula -> {
             final List<TestcaseWeightForProgram> weights = testcaseWeightJam
                 .getTestcaseWeightForPrograms()
@@ -51,19 +67,11 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 
             final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, weights);
 
-            final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
-            final MultipleFormulaSuspiciousnessFactorJam result = SuspiciousnessFactorHelper.collectAsMultipleFormula(suspiciousnessFactorJam);
+            final SuspiciousnessFactorJam result = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
 
             resultMap.put(formula, result);
         });
 
-        for (Map.Entry<String, MultipleFormulaSuspiciousnessFactorJam> entry : resultMap.entrySet()) {
-
-            final String formula = entry.getKey();
-            final MultipleFormulaSuspiciousnessFactorJam result = entry.getValue();
-
-            final Path savePath = csvOutputDir.resolve("weighted-by-" + formula + ".csv");
-            FileUtils.saveString(savePath, CsvExporter.toCsvString(result));
-        }
+        return resultMap;
     }
 }

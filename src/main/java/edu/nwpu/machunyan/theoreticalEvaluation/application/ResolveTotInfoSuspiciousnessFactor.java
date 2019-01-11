@@ -11,6 +11,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -33,8 +34,13 @@ public class ResolveTotInfoSuspiciousnessFactor {
         final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
         final MultipleFormulaSuspiciousnessFactorJam result = SuspiciousnessFactorHelper.collectAsMultipleFormula(suspiciousnessFactorJam);
 
-        FileUtils.saveObject(jsonOutputPath, result);
+        FileUtils.saveObject(jsonOutputPath, suspiciousnessFactorJam);
         FileUtils.saveString(csvOutputPath, CsvExporter.toCsvString(result));
+    }
+
+    public static SuspiciousnessFactorJam getResultFromFile() throws FileNotFoundException {
+
+        return FileUtils.loadObject(jsonOutputPath, SuspiciousnessFactorJam.class);
     }
 }
 
