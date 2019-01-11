@@ -1,6 +1,5 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
 

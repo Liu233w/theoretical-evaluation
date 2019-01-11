@@ -1,5 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner.data;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.IProgramInput;
 import lombok.Value;
 
 /**
