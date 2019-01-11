@@ -2,6 +2,8 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner
 
 import edu.nwpu.machunyan.theoreticalEvaluation.getTestFilePath
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoInput
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoRunner
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 

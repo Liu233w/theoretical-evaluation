@@ -1,4 +1,4 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.runner;
+package edu.nwpu.machunyan.theoreticalEvaluation.runner.impl;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Coverage;
 import lombok.NonNull;
