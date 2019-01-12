@@ -14,7 +14,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
- * 保存错误率指数的计算公式
+ * 保存可疑因子的计算公式
  */
 @SuppressWarnings("Duplicates")
 public class SuspiciousnessFactorFormulas {

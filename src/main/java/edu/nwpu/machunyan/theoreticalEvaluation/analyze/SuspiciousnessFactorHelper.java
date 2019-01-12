@@ -63,7 +63,7 @@ public class SuspiciousnessFactorHelper {
     }
 
     /**
-     * 比较两侧的可疑指数排名，必须有同样的编号
+     * 比较两侧的可疑因子排名，必须有同样的编号
      *
      * @param left
      * @param right
@@ -86,7 +86,7 @@ public class SuspiciousnessFactorHelper {
     }
 
     /**
-     * 比较两侧的可疑指数排名，必须一一对应
+     * 比较两侧的可疑因子排名，必须一一对应
      *
      * @param left
      * @param right
@@ -126,10 +126,10 @@ public class SuspiciousnessFactorHelper {
     }
 
     /**
-     * 获取一个可疑指数的语句和对应的排名
+     * 获取一个可疑因子的语句和对应的排名
      *
      * @param side
-     * @return key为语句编号，value为排名和可疑指数
+     * @return key为语句编号，value为排名和可疑因子
      */
     public static Map<Integer, DiffRankForSide> resolveIndexToRank(
         List<SuspiciousnessFactorForStatement> side) {
@@ -145,7 +145,7 @@ public class SuspiciousnessFactorHelper {
     }
 
     /**
-     * 返回根据可疑指数排序过的流
+     * 返回根据可疑因子排序过的流
      *
      * @param stream
      * @return

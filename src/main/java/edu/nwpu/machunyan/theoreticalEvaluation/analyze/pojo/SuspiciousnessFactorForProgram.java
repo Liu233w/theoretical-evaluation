@@ -5,7 +5,7 @@ import lombok.Value;
 import java.util.List;
 
 /**
- * 程序中的所有可疑指数
+ * 程序中的所有可疑因子
  */
 @Value
 public class SuspiciousnessFactorForProgram {
@@ -13,7 +13,7 @@ public class SuspiciousnessFactorForProgram {
     String programTitle;
 
     /**
-     * 使用的可疑指数公式
+     * 使用的可疑因子公式
      */
     String formula;
 

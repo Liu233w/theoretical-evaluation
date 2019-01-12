@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * 统计一次运行中所有语句的错误率指数，忽略从来没有运行过的语句 (aep+aef==0)
+ * 统计一次运行中所有语句的可疑因子，忽略从来没有运行过的语句 (aep+aef==0)
  */
 @Value
 public class SuspiciousnessFactorResolver {
@@ -29,7 +29,7 @@ public class SuspiciousnessFactorResolver {
     private final String formulaTitle;
 
     /**
-     * 用来计算可疑指数的公式
+     * 用来计算可疑因子的公式
      */
     @NonNull
     private final Function<VectorTableModelRecord, Double> formula;

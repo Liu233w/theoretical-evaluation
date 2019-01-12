@@ -15,7 +15,7 @@ public class SuspiciousnessFactorForStatement {
     private final int statementIndex;
 
     /**
-     * 计算出的错误率指数
+     * 计算出的可疑因子
      */
     private final double suspiciousnessFactor;
 }
