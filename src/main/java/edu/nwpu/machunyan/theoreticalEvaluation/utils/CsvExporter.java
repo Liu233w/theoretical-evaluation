@@ -100,7 +100,7 @@ public class CsvExporter {
         final ArrayList<CsvLine> csvLines = new ArrayList<>();
 
         csvLines.add(new CsvLine(new Object[]{
-            "program title", "formula",
+            "program title", "formula", "statement index",
             leftRankTitle + "-rank", leftRankTitle + "-suspiciousnessFactor",
             rightRankTitle + "-rank", rightRankTitle + "-suspiciousnessFactor",
         }));
@@ -113,6 +113,7 @@ public class CsvExporter {
 
                 csvLines.add(new CsvLine(new Object[]{
                     program.getProgramTitle(), program.getFormulaTitle(),
+                    statement.getStatementIndex(),
                     left.getRank(), left.getSuspiciousnessFactor(),
                     right.getRank(), right.getSuspiciousnessFactor(),
                 }));
