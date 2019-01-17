@@ -63,6 +63,7 @@ public class TestcaseWeightHelper {
         @Cleanup final ProgressBar progressBar = new ProgressBar("", resolvers.size());
 
         final List<TestcaseWeightForProgram> collect = resolvers.stream()
+            .parallel()
             .map(resolver -> resolver.resolve(jam))
             .map(TestcaseWeightJam::getTestcaseWeightForPrograms)
             .map(Collection::stream)
