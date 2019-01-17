@@ -6,7 +6,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
@@ -28,27 +27,13 @@ public class TestcaseWeightResolver {
 
     private final SuspiciousnessFactorResolver resolver;
 
-    // TODO: 起一个更好的名字
-    /**
-     * 用来表示对结果的加权值（如果结果不为 1.0，将乘以这个倍数）
-     */
-    private final double weightMultiple;
-
     public TestcaseWeightResolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula) {
-        this(sfFormula, "", 1.0);
+        this(sfFormula, "");
     }
 
-    // TODO: 用上 builder
-    @Builder
     public TestcaseWeightResolver(
         @NonNull Function<VectorTableModelRecord, Double> sfFormula,
-        String formulaTitle, double weightMultiple) {
-
-        if (weightMultiple == 0.0) {
-            this.weightMultiple = 1.0;
-        } else {
-            this.weightMultiple = weightMultiple;
-        }
+        String formulaTitle) {
 
         this.resolver = SuspiciousnessFactorResolver.builder()
             .formula(sfFormula)
@@ -65,22 +50,9 @@ public class TestcaseWeightResolver {
      */
     public static List<TestcaseWeightResolver> of(
         Map<String, Function<VectorTableModelRecord, Double>> map) {
-        return of(map, 1.0);
-    }
-
-    /**
-     * 从参数中生成一系列指定公式的 resolver
-     *
-     * @param map            key 为公式名， value 为公式
-     * @param weightMultiple 对于结果再次加权
-     * @return
-     */
-    public static List<TestcaseWeightResolver> of(
-        Map<String, Function<VectorTableModelRecord, Double>> map,
-        double weightMultiple) {
 
         return map.entrySet().stream()
-            .map(entry -> new TestcaseWeightResolver(entry.getValue(), entry.getKey(), weightMultiple))
+            .map(entry -> new TestcaseWeightResolver(entry.getValue(), entry.getKey()))
             .collect(Collectors.toList());
     }
 
@@ -135,9 +107,9 @@ public class TestcaseWeightResolver {
         for (int i = 0; i < result.length; i++) {
             final double a = result[i];
             if (a < 0) {
-                result[i] = (a / improvedAverage) * weightMultiple;
+                result[i] = a / improvedAverage;
             } else if (a > 0) {
-                result[i] = (a / reducedAverage + 1) * weightMultiple;
+                result[i] = a / reducedAverage + 1;
             } else {
                 result[i] = 1.0;
             }
