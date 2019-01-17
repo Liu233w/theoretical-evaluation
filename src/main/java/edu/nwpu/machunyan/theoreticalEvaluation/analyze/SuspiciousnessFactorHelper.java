@@ -1,7 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.StreamUtils;
 import lombok.Value;
 
 import java.util.*;
@@ -134,14 +133,25 @@ public class SuspiciousnessFactorHelper {
     public static Map<Integer, DiffRankForSide> resolveIndexToRank(
         List<SuspiciousnessFactorForStatement> side) {
 
-        final Stream<SuspiciousnessFactorForStatement> stream = rankedStream(side.stream());
-        return StreamUtils.zipWithIndex(stream)
-            .collect(Collectors.toMap(
-                a -> a.getValue().getStatementIndex(),
-                a -> new DiffRankForSide(
-                    a.getKey(),
-                    a.getValue().getSuspiciousnessFactor())
-            ));
+        final List<SuspiciousnessFactorForStatement> orderedSf = rankedStream(side.stream())
+            .collect(Collectors.toList());
+
+        final HashMap<Integer, DiffRankForSide> result = new HashMap<>();
+        int lastRank = 0;
+        double lastSf = Double.NaN;
+        for (SuspiciousnessFactorForStatement item :
+            orderedSf) {
+
+            if (item.getSuspiciousnessFactor() != lastSf) {
+                ++lastRank;
+                lastSf = item.getSuspiciousnessFactor();
+            }
+            result.put(
+                item.getStatementIndex(),
+                new DiffRankForSide(lastRank, lastSf)
+            );
+        }
+        return result;
     }
 
     /**
