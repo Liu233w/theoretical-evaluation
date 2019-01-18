@@ -1,9 +1,13 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.*;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.MultipleFormulaSuspiciousnessFactorJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.CustomCollectors;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.FileNotFoundException;
@@ -62,23 +66,21 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
             .collect(Collectors.toSet());
 
         final HashMap<String, SuspiciousnessFactorJam> resultMap = new HashMap<>();
-        formulas.forEach(formula -> {
-            final List<TestcaseWeightForProgram> weights = testcaseWeightJam
-                .getTestcaseWeightForPrograms()
-                .stream()
-                .filter(a -> a.getFormulaTitle().equals(formula))
-                .collect(Collectors.toList());
-
-            final TestcaseWeightJam weightJam = TestcaseWeightMultiplier.resolve(
-                new TestcaseWeightJam(weights),
-                testcaseWeightMultiply);
-
-            final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, weightJam);
-
-            final SuspiciousnessFactorJam result = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
-
-            resultMap.put(formula, result);
-        });
+        formulas.forEach(formula -> testcaseWeightJam
+            .getTestcaseWeightForPrograms()
+            .stream()
+            .filter(a -> a.getFormulaTitle().equals(formula))
+            .collect(CustomCollectors.collectToStream(Collectors.toList()))
+            // List<TestcaseWeightForProgram>
+            .map(TestcaseWeightJam::new)
+            // TestcaseWeightJam
+            .map(a -> TestcaseWeightMultiplier.resolve(a, testcaseWeightMultiply))
+            // multiplied TestcaseWeightJam
+            .map(a -> VectorTableModelResolver.resolveWithWeights(jam, a))
+            // VectorTableModel
+            .map(a -> SuspiciousnessFactorHelper.runOnAllResolvers(a, resolvers))
+            .findAny()
+            .ifPresent(a -> resultMap.put(formula, a)));
 
         return resultMap;
     }
