@@ -1,0 +1,119 @@
+<root>
+  <version name="v1">343c343
+&lt;                            goto ret1;
+---
+&gt; /*                                 goto ret1; missing code */
+</version>
+  <version name="v2">85c85
+&lt;                            if ( scanf( " %ld", &amp;x(i,j) ) != 1 )
+---
+&gt;                            if ( scanf( " %ld", &amp;x(i,j) ) == 0 )
+</version>
+  <version name="v3">75c75
+&lt;            if ( r * c &gt; MAXTBL )
+---
+&gt;            if ( r * c &gt; MAXTBL-10)
+</version>
+  <version name="v4">233c233
+&lt;                    if ( Abs( gold ) &lt; EPS * Abs( g ) )
+---
+&gt;                    if ( Abs( gold ) &lt; Abs( g ) )
+</version>
+  <version name="v5">105c105
+&lt;                    totinfo += info;
+---
+&gt;                    totinfo = info; /* removed + before = */
+</version>
+  <version name="v6">18c18
+&lt; #define    MAXLINE 256
+---
+&gt; #define    MAXLINE 56 
+</version>
+  <version name="v7">378c378
+&lt;            if ( pi &gt; 0.0 )
+---
+&gt;            if ( pi &gt;= 0.0 ) /* added an = after &gt; */
+</version>
+  <version name="v8">200,201c200,201
+&lt;            if ( Abs( del ) &lt; Abs( sum ) * EPS )
+&lt;                    return sum * exp( -x + a * log( x ) - LGamma( a ) );
+---
+&gt;            if ( Abs(del) &lt; Abs(sum) * EPS )
+&gt;                    return sum * exp(  x + a * log( x ) - LGamma( a ) );
+</version>
+  <version name="v9">106c106
+&lt;                    totdf += infodf;
+---
+&gt;                    totdf = infodf;
+</version>
+  <version name="v10">301c301
+&lt;    double          N;              /* (double)n */
+---
+&gt;    float           N;              /* (double)n */
+</version>
+  <version name="v11">198c198
+&lt;            sum += del *= x / ++ap;
+---
+&gt;            sum = del *= x / ++ap;
+</version>
+  <version name="v12">177c177
+&lt;    return -tmp + log( 2.50662827465 * ser );
+---
+&gt;    return -tmp + log( 2.50663 * ser );
+</version>
+  <version name="v13">394c394
+&lt;            if ( pj &gt; 0.0 )
+---
+&gt;            if ( pj &gt;= 0.0 )
+</version>
+  <version name="v14">75c75
+&lt;            if ( r * c &gt; MAXTBL )
+---
+&gt;            if ( r * c &gt;= MAXTBL )
+</version>
+  <version name="v15">200c200
+&lt;            if ( Abs( del ) &lt; Abs( sum ) * EPS )
+---
+&gt;            if ( Abs( del ) &lt; Abs( sum ) * (EPS-.000001) )
+</version>
+  <version name="v16">99c99
+&lt;            if ( info &gt;= 0.0 )
+---
+&gt;            if ( info &gt;= 0.1 )
+</version>
+  <version name="v17">223c223
+&lt;            anf = an * fac;
+---
+&gt;            anf = an - fac;
+</version>
+  <version name="v18">308c308
+&lt;    if ( rdf &lt;= 0 || cdf &lt;= 0 )
+---
+&gt;    if ( rdf == 0 || cdf == 0 )
+</version>
+  <version name="v19">18c18
+&lt; #define    MAXLINE 256
+---
+&gt; #define    MAXLINE 26
+</version>
+  <version name="v20">308c308
+&lt;    if ( rdf &lt;= 0 || cdf &lt;= 0 )
+---
+&gt;    if ( rdf &lt;= 0  )
+</version>
+  <version name="v21">22c22
+&lt; #define    MAXTBL  1000
+---
+&gt; #define    MAXTBL  5000  
+</version>
+  <version name="v22">352c352
+&lt;    if ( N &lt;= 0.0 )
+---
+&gt;    if ( N &lt;= 1.0 )
+</version>
+  <version name="v23">215c215
+&lt;    for ( n = 1; n &lt;= ITMAX; ++n )
+---
+&gt;    for ( n = 0; n &lt;= ITMAX; ++n )
+</version>
+</root>
