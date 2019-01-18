@@ -119,5 +119,10 @@
             <artifactId>progressbar</artifactId>
             <version>0.7.2</version>
         </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.6</version>
+        </dependency>
     </dependencies>
 </project>

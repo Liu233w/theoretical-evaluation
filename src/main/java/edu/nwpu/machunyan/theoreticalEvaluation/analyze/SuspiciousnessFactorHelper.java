@@ -41,6 +41,23 @@ public class SuspiciousnessFactorHelper {
         List<SuspiciousnessFactorForStatement> left,
         List<SuspiciousnessFactorForStatement> right) {
 
+        final LeftRightRankMap diffMap = checkParametersAndRank(left, right);
+        final Map<Integer, DiffRankForSide> leftMap = diffMap.getLeft();
+        final Map<Integer, DiffRankForSide> rightMap = diffMap.getRight();
+
+        return leftMap.entrySet().stream()
+            .filter(a -> a.getValue().getRank() != rightMap.get(a.getKey()).getRank())
+            .map(a -> new DiffRankForStatement(
+                a.getKey(),
+                a.getValue(),
+                rightMap.get(a.getKey())))
+            .collect(Collectors.toList());
+    }
+
+    private static LeftRightRankMap checkParametersAndRank(
+        List<SuspiciousnessFactorForStatement> left,
+        List<SuspiciousnessFactorForStatement> right) {
+
         if (left.size() != right.size()) {
             throw new IllegalArgumentException("用于比较的两侧的语句数必须相同");
         }
@@ -52,12 +69,36 @@ public class SuspiciousnessFactorHelper {
             throw new IllegalArgumentException("左右两侧的语句编号不同");
         }
 
-        return leftMap.entrySet().stream()
-            .filter(a -> a.getValue().getRank() != rightMap.get(a.getKey()).getRank())
+        return new LeftRightRankMap(leftMap, rightMap);
+    }
+
+    /**
+     * 比较两个 suspiciousness factor 的区别。两个必须有同样的语句数量和编号。
+     * 使用 {@link FaultLocationForProgram} 来筛选。
+     * 如果语句不存在，返回的 {@link DiffRankForSide} 为 (-1, NaN)
+     *
+     * @param left
+     * @param right
+     * @return
+     */
+    public static List<DiffRankForStatement> diff(
+        List<SuspiciousnessFactorForStatement> left,
+        List<SuspiciousnessFactorForStatement> right,
+        FaultLocationForProgram faultLocationForProgram
+    ) {
+
+        final LeftRightRankMap diffMap = checkParametersAndRank(left, right);
+        final Map<Integer, DiffRankForSide> leftMap = diffMap.getLeft();
+        final Map<Integer, DiffRankForSide> rightMap = diffMap.getRight();
+
+        return faultLocationForProgram
+            .getLocations()
+            .stream()
             .map(a -> new DiffRankForStatement(
-                a.getKey(),
-                a.getValue(),
-                rightMap.get(a.getKey())))
+                a,
+                leftMap.getOrDefault(a, new DiffRankForSide(-1, Double.NaN)),
+                rightMap.getOrDefault(a, new DiffRankForSide(-1, Double.NaN))
+            ))
             .collect(Collectors.toList());
     }
 
@@ -80,6 +121,24 @@ public class SuspiciousnessFactorHelper {
             left.getProgramTitle(),
             left.getFormula(),
             diff(left.getResultForStatements(), right.getResultForStatements()),
+            leftRankTitle,
+            rightRankTitle);
+    }
+
+    public static DiffRankForProgram diff(
+        SuspiciousnessFactorForProgram left,
+        SuspiciousnessFactorForProgram right,
+        String leftRankTitle,
+        String rightRankTitle,
+        FaultLocationForProgram faultLocationForProgram) {
+
+        return new DiffRankForProgram(
+            left.getProgramTitle(),
+            left.getFormula(),
+            diff(
+                left.getResultForStatements(),
+                right.getResultForStatements(),
+                faultLocationForProgram),
             leftRankTitle,
             rightRankTitle);
     }
@@ -229,5 +288,11 @@ public class SuspiciousnessFactorHelper {
     private static class Key {
         String programTitle;
         String formulaTitle;
+    }
+
+    @Value
+    private static class LeftRightRankMap {
+        Map<Integer, DiffRankForSide> left;
+        Map<Integer, DiffRankForSide> right;
     }
 }
