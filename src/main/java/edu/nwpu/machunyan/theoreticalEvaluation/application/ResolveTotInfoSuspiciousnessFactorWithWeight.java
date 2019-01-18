@@ -1,9 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorHelper;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorResolver;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
@@ -47,6 +44,13 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
         final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
         final TestcaseWeightJam testcaseWeightJam = ResolveTotInfoTestcaseWeight.loadFromFile();
 
+        // 权重加成倍数：测试用例的个数
+        final double testcaseWeightMultiply = jam
+            .getRunResultForPrograms()
+            .get(0)
+            .getRunResults()
+            .size();
+
         final List<SuspiciousnessFactorResolver> resolvers = SuspiciousnessFactorResolver.of(
             SuspiciousnessFactorFormulas.getAllFormulas()
         );
@@ -65,7 +69,11 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
                 .filter(a -> a.getFormulaTitle().equals(formula))
                 .collect(Collectors.toList());
 
-            final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, weights);
+            final TestcaseWeightJam weightJam = TestcaseWeightMultiplier.resolve(
+                new TestcaseWeightJam(weights),
+                testcaseWeightMultiply);
+
+            final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, weightJam);
 
             final SuspiciousnessFactorJam result = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
 

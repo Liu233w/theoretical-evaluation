@@ -19,13 +19,19 @@ public class TestcaseWeightMultiplier {
      * @return
      */
     public static TestcaseWeightForTestcase resolve(TestcaseWeightForTestcase input, double multiply) {
-        if (input.getTestcaseWeight() == 1.0) {
-            return input;
-        } else {
+        final double testcaseWeight = input.getTestcaseWeight();
+        if (testcaseWeight > 1.0) {
             return new TestcaseWeightForTestcase(
                 input.getTestcaseIndex(),
-                input.getTestcaseWeight() * multiply
+                testcaseWeight * multiply
             );
+        } else if (testcaseWeight < 1.0) {
+            return new TestcaseWeightForTestcase(
+                input.getTestcaseIndex(),
+                testcaseWeight * multiply
+            );
+        } else {
+            return input;
         }
     }
 
