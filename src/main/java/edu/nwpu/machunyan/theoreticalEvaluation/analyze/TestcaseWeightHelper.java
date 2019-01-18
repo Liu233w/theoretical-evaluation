@@ -10,7 +10,6 @@ import me.tongfei.progressbar.ProgressBar;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class TestcaseWeightHelper {
 
@@ -66,10 +65,8 @@ public class TestcaseWeightHelper {
             .parallel()
             .map(resolver -> resolver.resolve(jam))
             .map(TestcaseWeightJam::getTestcaseWeightForPrograms)
-            .map(Collection::stream)
             .peek(a -> progressBar.step())
-            .reduce(Stream::concat)
-            .orElseGet(Stream::empty)
+            .flatMap(Collection::stream)
             .collect(Collectors.toList());
         return new TestcaseWeightJam(collect);
     }

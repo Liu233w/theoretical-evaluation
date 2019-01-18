@@ -25,9 +25,7 @@ public class SuspiciousnessFactorHelper {
         final List<SuspiciousnessFactorForProgram> collect = resolvers.stream()
             .map(resolver -> resolver.resolve(jam))
             .map(SuspiciousnessFactorJam::getResultForPrograms)
-            .map(Collection::stream)
-            .reduce(Stream::concat)
-            .orElseGet(Stream::empty)
+            .flatMap(Collection::stream)
             .collect(Collectors.toList());
         return new SuspiciousnessFactorJam(collect);
     }
