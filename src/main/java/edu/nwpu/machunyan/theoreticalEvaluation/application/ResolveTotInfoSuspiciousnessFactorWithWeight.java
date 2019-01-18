@@ -70,7 +70,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
             .getTestcaseWeightForPrograms()
             .stream()
             .filter(a -> a.getFormulaTitle().equals(formula))
-            .collect(CustomCollectors.collectToStream(Collectors.toList()))
+            .collect(CustomCollectors.collectToOptional(Collectors.toList()))
             // List<TestcaseWeightForProgram>
             .map(TestcaseWeightJam::new)
             // TestcaseWeightJam
@@ -79,7 +79,6 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
             .map(a -> VectorTableModelResolver.resolveWithWeights(jam, a))
             // VectorTableModel
             .map(a -> SuspiciousnessFactorHelper.runOnAllResolvers(a, resolvers))
-            .findAny()
             .ifPresent(a -> resultMap.put(formula, a)));
 
         return resultMap;
