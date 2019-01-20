@@ -2,8 +2,8 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import lombok.Builder;
+import lombok.Data;
 import lombok.NonNull;
-import lombok.Value;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 /**
  * 统计一次运行中所有语句的可疑因子，忽略从来没有运行过的语句 (aep+aef==0)
  */
-@Value
+@Data
 public class SuspiciousnessFactorResolver {
 
     /**
