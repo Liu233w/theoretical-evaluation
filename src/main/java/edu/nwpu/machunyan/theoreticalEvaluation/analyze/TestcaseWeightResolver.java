@@ -28,12 +28,12 @@ public class TestcaseWeightResolver {
 
     private final SuspiciousnessFactorResolver resolver;
 
-    public TestcaseWeightResolver(@NonNull Function<VectorTableModelForStatement, Double> sfFormula) {
+    public TestcaseWeightResolver(@NonNull SuspiciousnessFactorFormula sfFormula) {
         this(sfFormula, "");
     }
 
     public TestcaseWeightResolver(
-        @NonNull Function<VectorTableModelForStatement, Double> sfFormula,
+        @NonNull SuspiciousnessFactorFormula sfFormula,
         String formulaTitle) {
 
         this.resolver = SuspiciousnessFactorResolver.builder()
@@ -50,7 +50,7 @@ public class TestcaseWeightResolver {
      * @return
      */
     public static List<TestcaseWeightResolver> of(
-        Map<String, Function<VectorTableModelForStatement, Double>> map) {
+        Map<String, SuspiciousnessFactorFormula> map) {
 
         return map.entrySet().stream()
             .map(entry -> new TestcaseWeightResolver(entry.getValue(), entry.getKey()))
@@ -63,7 +63,7 @@ public class TestcaseWeightResolver {
             .mapToObj(runResults::get);
     }
 
-    public Function<VectorTableModelForStatement, Double> getFormula() {
+    public SuspiciousnessFactorFormula getFormula() {
         return resolver.getFormula();
     }
 

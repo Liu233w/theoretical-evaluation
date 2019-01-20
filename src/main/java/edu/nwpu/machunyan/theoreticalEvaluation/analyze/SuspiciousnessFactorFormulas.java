@@ -25,7 +25,7 @@ public class SuspiciousnessFactorFormulas {
      *
      * @return
      */
-    public static Map<String, Function<VectorTableModelForStatement, Double>> getAllFormulas() {
+    public static Map<String, SuspiciousnessFactorFormula> getAllFormulas() {
 
         return Arrays.stream(SuspiciousnessFactorFormulas.class.getMethods())
             .filter(item -> item.getAnnotation(Formula.class) != null)
@@ -423,8 +423,8 @@ public class SuspiciousnessFactorFormulas {
      * @param formula
      * @return
      */
-    private static Function<VectorTableModelForStatement, Double> toFunctionInterface(Method formula) {
-        final Function<VectorTableModelForStatement, Double> function = (VectorTableModelForStatement input) -> {
+    private static SuspiciousnessFactorFormula toFunctionInterface(Method formula) {
+        final SuspiciousnessFactorFormula function = (VectorTableModelForStatement input) -> {
             try {
                 return (double) formula.invoke(null, input);
             } catch (IllegalAccessException | InvocationTargetException e) {

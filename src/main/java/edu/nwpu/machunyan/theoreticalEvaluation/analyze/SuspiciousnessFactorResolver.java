@@ -32,14 +32,14 @@ public class SuspiciousnessFactorResolver {
      * 用来计算可疑因子的公式
      */
     @NonNull
-    private final Function<VectorTableModelForStatement, Double> formula;
+    private final SuspiciousnessFactorFormula formula;
 
-    public SuspiciousnessFactorResolver(@NonNull Function<VectorTableModelForStatement, Double> formula) {
+    public SuspiciousnessFactorResolver(@NonNull SuspiciousnessFactorFormula formula) {
         this(false, null, formula);
     }
 
     @Builder
-    public SuspiciousnessFactorResolver(boolean sort, String formulaTitle, @NonNull Function<VectorTableModelForStatement, Double> formula) {
+    public SuspiciousnessFactorResolver(boolean sort, String formulaTitle, @NonNull SuspiciousnessFactorFormula formula) {
 
         // default is false
         this.sort = sort;
@@ -57,7 +57,7 @@ public class SuspiciousnessFactorResolver {
      * @param map key 为公式名， value 为公式
      * @return
      */
-    public static List<SuspiciousnessFactorResolver> of(Map<String, Function<VectorTableModelForStatement, Double>> map) {
+    public static List<SuspiciousnessFactorResolver> of(Map<String, SuspiciousnessFactorFormula> map) {
         return of(map, SuspiciousnessFactorResolver.builder());
     }
 
@@ -68,7 +68,7 @@ public class SuspiciousnessFactorResolver {
      * @param builder 提供一些默认参数
      * @return
      */
-    public static List<SuspiciousnessFactorResolver> of(Map<String, Function<VectorTableModelForStatement, Double>> map, SuspiciousnessFactorResolverBuilder builder) {
+    public static List<SuspiciousnessFactorResolver> of(Map<String, SuspiciousnessFactorFormula> map, SuspiciousnessFactorResolverBuilder builder) {
         return map.entrySet().stream()
             .map(entry -> builder
                 .formulaTitle(entry.getKey())
