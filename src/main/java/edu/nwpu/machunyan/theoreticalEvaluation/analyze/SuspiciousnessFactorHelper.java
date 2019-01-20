@@ -3,11 +3,12 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import lombok.NonNull;
 import lombok.Value;
+import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SuspiciousnessFactorHelper {
 
@@ -22,11 +23,12 @@ public class SuspiciousnessFactorHelper {
         VectorTableModelJam jam,
         List<SuspiciousnessFactorResolver> resolvers) {
 
-        final List<SuspiciousnessFactorForProgram> collect = resolvers.stream()
+        final List<SuspiciousnessFactorForProgram> collect = StreamEx
+            .of(resolvers)
             .map(resolver -> resolver.resolve(jam))
             .map(SuspiciousnessFactorJam::getResultForPrograms)
             .flatMap(Collection::stream)
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new SuspiciousnessFactorJam(collect);
     }
 
@@ -72,24 +74,25 @@ public class SuspiciousnessFactorHelper {
         // 为 null 时回退到普通情况
         if (faultLocationForProgram == null) {
 
-            return leftMap.entrySet().stream()
+            return StreamEx
+                .of(leftMap.entrySet())
                 .filter(a -> a.getValue().getRank() != rightMap.get(a.getKey()).getRank())
                 .map(a -> new DiffRankForStatement(
                     a.getKey(),
                     a.getValue(),
-                    rightMap.get(a.getKey())))
-                .collect(Collectors.toList());
+                    rightMap.get(a.getKey())
+                ))
+                .toImmutableList();
         } else {
 
-            return faultLocationForProgram
-                .getLocations()
-                .stream()
+            return StreamEx
+                .of(faultLocationForProgram.getLocations())
                 .map(a -> new DiffRankForStatement(
                     a,
                     leftMap.getOrDefault(a, new DiffRankForSide(-1, Double.NaN)),
                     rightMap.getOrDefault(a, new DiffRankForSide(-1, Double.NaN))
                 ))
-                .collect(Collectors.toList());
+                .toImmutableList();
         }
     }
 
@@ -139,7 +142,8 @@ public class SuspiciousnessFactorHelper {
             diff(
                 left.getResultForStatements(),
                 right.getResultForStatements(),
-                faultLocationForProgram),
+                faultLocationForProgram
+            ),
             leftRankTitle,
             rightRankTitle);
     }
@@ -194,31 +198,35 @@ public class SuspiciousnessFactorHelper {
             throw new IllegalArgumentException("左右两侧必须一一对应");
         }
 
-        final Map<String, FaultLocationForProgram> titleToLocationMap = faultLocationJam
-            .getFaultLocationForPrograms()
-            .stream()
-            .collect(Collectors.toMap(
+        final Map<String, FaultLocationForProgram> titleToLocationMap = StreamEx
+            .of(faultLocationJam.getFaultLocationForPrograms())
+            .mapToEntry(
                 FaultLocationForProgram::getProgramTitle,
                 a -> a
-            ));
+            )
+            .toImmutableMap();
 
-        final List<DiffRankForProgram> collect = leftMapper.entrySet().stream()
+        final List<DiffRankForProgram> collect = StreamEx
+            .of(leftMapper.entrySet())
             .map(a -> diff(
                 a.getValue(),
                 rightMapper.get(a.getKey()),
                 leftRankTitle,
                 rightRankTitle,
-                titleToLocationMap.get(a.getKey().getProgramTitle())))
-            .collect(Collectors.toList());
+                titleToLocationMap.get(a.getKey().getProgramTitle())
+            ))
+            .toImmutableList();
         return new DiffRankJam(collect);
     }
 
     private static Map<Key, SuspiciousnessFactorForProgram> resolveMapper(SuspiciousnessFactorJam jam) {
-        return jam.getResultForPrograms().stream()
-            .collect(Collectors.toMap(
+        return StreamEx
+            .of(jam.getResultForPrograms())
+            .mapToEntry(
                 a -> new Key(a.getProgramTitle(), a.getFormula()),
                 a -> a
-            ));
+            )
+            .toImmutableMap();
     }
 
     /**
@@ -230,25 +238,29 @@ public class SuspiciousnessFactorHelper {
     public static Map<Integer, DiffRankForSide> resolveIndexToRank(
         List<SuspiciousnessFactorForStatement> side) {
 
-        final List<SuspiciousnessFactorForStatement> orderedSf = rankedStream(side.stream())
-            .collect(Collectors.toList());
+        return rankedStream(StreamEx.of(side))
+            .mapToEntry(
+                SuspiciousnessFactorForStatement::getStatementIndex,
+                a -> a
+            )
+            .mapValues(
+                new Function<SuspiciousnessFactorForStatement, DiffRankForSide>() {
 
-        final HashMap<Integer, DiffRankForSide> result = new HashMap<>();
-        int lastRank = 0;
-        double lastSf = Double.NaN;
-        for (SuspiciousnessFactorForStatement item :
-            orderedSf) {
+                    int lastRank = 0;
+                    double lastSf = Double.NaN;
 
-            if (item.getSuspiciousnessFactor() != lastSf) {
-                ++lastRank;
-                lastSf = item.getSuspiciousnessFactor();
-            }
-            result.put(
-                item.getStatementIndex(),
-                new DiffRankForSide(lastRank, lastSf)
-            );
-        }
-        return result;
+                    @Override
+                    public DiffRankForSide apply(SuspiciousnessFactorForStatement item) {
+
+                        if (item.getSuspiciousnessFactor() != lastSf) {
+                            ++lastRank;
+                            lastSf = item.getSuspiciousnessFactor();
+                        }
+                        return new DiffRankForSide(lastRank, lastSf);
+                    }
+                }
+            )
+            .toImmutableMap();
     }
 
     /**
@@ -257,7 +269,7 @@ public class SuspiciousnessFactorHelper {
      * @param stream
      * @return
      */
-    public static Stream<SuspiciousnessFactorForStatement> rankedStream(Stream<SuspiciousnessFactorForStatement> stream) {
+    public static StreamEx<SuspiciousnessFactorForStatement> rankedStream(StreamEx<SuspiciousnessFactorForStatement> stream) {
         return stream.sorted(
             Comparator.comparingDouble(
                 SuspiciousnessFactorForStatement::getSuspiciousnessFactor)
@@ -275,12 +287,20 @@ public class SuspiciousnessFactorHelper {
 
         final List<SuspiciousnessFactorForProgram> prevResult = jam.getResultForPrograms();
 
-        final Set<String> programTitles = prevResult.stream()
+        final Map<String, List<SuspiciousnessFactorForProgram>> titleToProgramResult = StreamEx
+            .of(prevResult)
+            .groupingBy(SuspiciousnessFactorForProgram::getProgramTitle);
+
+        final Set<String> programTitles = StreamEx.of(prevResult)
             .map(SuspiciousnessFactorForProgram::getProgramTitle)
-            .collect(Collectors.toSet());
-        final Set<String> formulaTitles = prevResult.stream()
+            .toImmutableSet();
+        final Set<String> formulaTitles = StreamEx.of(prevResult)
             .map(SuspiciousnessFactorForProgram::getFormula)
-            .collect(Collectors.toSet());
+            .toImmutableSet();
+
+        StreamEx
+            .of(programTitles)
+            .map()
 
         final List<MultipleFormulaSuspiciousnessFactorForProgram> collect = programTitles.stream()
             .map(programTitle -> {
