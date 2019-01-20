@@ -124,5 +124,10 @@
             <artifactId>commons-csv</artifactId>
             <version>1.6</version>
         </dependency>
+        <dependency>
+            <groupId>one.util</groupId>
+            <artifactId>streamex</artifactId>
+            <version>0.6.8</version>
+        </dependency>
     </dependencies>
 </project>
