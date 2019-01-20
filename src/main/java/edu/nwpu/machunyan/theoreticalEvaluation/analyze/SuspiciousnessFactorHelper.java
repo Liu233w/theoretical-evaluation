@@ -40,7 +40,7 @@ public class SuspiciousnessFactorHelper {
     public static List<DiffRankForStatement> diff(
         List<SuspiciousnessFactorForStatement> left,
         List<SuspiciousnessFactorForStatement> right) {
-        return diff(left, right);
+        return diff(left, right, null);
     }
 
     /**

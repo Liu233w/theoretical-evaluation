@@ -191,11 +191,11 @@ class SuspiciousnessFactorHelperTest : FreeSpec({
             SuspiciousnessFactorHelper.diff(left, right) shouldBe
                 listOf(
                     DiffRankForStatement(1,
-                        DiffRankForSide(0, 9.0),
-                        DiffRankForSide(1, 7.5)),
+                        DiffRankForSide(1, 9.0),
+                        DiffRankForSide(2, 7.5)),
                     DiffRankForStatement(2,
-                        DiffRankForSide(1, 8.0),
-                        DiffRankForSide(0, 8.0))
+                        DiffRankForSide(2, 8.0),
+                        DiffRankForSide(1, 8.0))
                 )
         }
     }
