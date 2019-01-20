@@ -9,7 +9,7 @@ import lombok.ToString;
  */
 @EqualsAndHashCode
 @ToString
-public class VectorTableModelForStatement {
+public final class VectorTableModelForStatement {
 
     /**
      * 语句的序号
