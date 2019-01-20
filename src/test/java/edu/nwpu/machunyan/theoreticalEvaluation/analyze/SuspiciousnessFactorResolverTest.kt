@@ -2,7 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForProgram
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForStatement
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForProgram
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
@@ -12,7 +12,7 @@ class SuspiciousnessFactorResolverTest : FreeSpec({
     "resolve" - {
 
         "能通过论文上的数据 1" {
-            val vtm = VectorTableModel("program", arrayListOf(
+            val vtm = VectorTableModelForProgram("program", arrayListOf(
                 null,
                 VectorTableModelForStatement(1, 1, 1, 1, 1),
                 VectorTableModelForStatement(2, 0, 0, 2, 2),

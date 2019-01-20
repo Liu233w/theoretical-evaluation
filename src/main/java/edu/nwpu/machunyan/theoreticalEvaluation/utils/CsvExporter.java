@@ -29,7 +29,7 @@ public class CsvExporter {
             "Unweighted Anf", "Unweighted Anp", "Unweighted Aef", "Unweighted Aep"
         }));
 
-        for (VectorTableModel vtm : jam.getVectorTableModels()) {
+        for (VectorTableModelForProgram vtm : jam.getVectorTableModelForPrograms()) {
             vtm.getRecords().stream()
                 .skip(1)
                 .map(record -> new CsvLine(new Object[]{

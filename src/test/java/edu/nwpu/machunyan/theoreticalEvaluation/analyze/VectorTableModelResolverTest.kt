@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForProgram
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
@@ -24,7 +24,7 @@ class VectorTableModelResolverTest : FreeSpec({
 
             val vectorTableModel = VectorTableModelResolver.resolve(input)
 
-            vectorTableModel shouldBe VectorTableModel(
+            vectorTableModel shouldBe VectorTableModelForProgram(
                 input.programTitle,
                 buildVectorModelTableFromMatrix(
                     arrayOf(0, 0, 3, 6),

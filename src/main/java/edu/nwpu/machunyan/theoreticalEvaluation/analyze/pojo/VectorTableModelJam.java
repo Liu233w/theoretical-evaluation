@@ -7,5 +7,5 @@ import java.util.List;
 @Value
 public class VectorTableModelJam {
 
-    List<VectorTableModel> vectorTableModels;
+    List<VectorTableModelForProgram> vectorTableModelForPrograms;
 }

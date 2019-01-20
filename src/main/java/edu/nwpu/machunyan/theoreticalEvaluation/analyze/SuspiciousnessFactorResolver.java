@@ -105,13 +105,13 @@ public class SuspiciousnessFactorResolver {
     }
 
     public SuspiciousnessFactorJam resolve(VectorTableModelJam jam) {
-        final List<SuspiciousnessFactorForProgram> collect = jam.getVectorTableModels().stream()
+        final List<SuspiciousnessFactorForProgram> collect = jam.getVectorTableModelForPrograms().stream()
             .map(this::resolve)
             .collect(Collectors.toList());
         return new SuspiciousnessFactorJam(collect);
     }
 
-    public SuspiciousnessFactorForProgram resolve(VectorTableModel vtm) {
+    public SuspiciousnessFactorForProgram resolve(VectorTableModelForProgram vtm) {
         return new SuspiciousnessFactorForProgram(vtm.getProgramTitle(), formulaTitle, resolve(vtm.getRecords()));
     }
 }

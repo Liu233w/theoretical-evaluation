@@ -13,7 +13,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * 生成 {@link edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel}
+ * 生成 {@link VectorTableModelForProgram}
  */
 public class VectorTableModelResolver {
 
@@ -46,7 +46,7 @@ public class VectorTableModelResolver {
      * @param testcaseWeights     测试用例的权重，和运行结果一一对应
      * @return
      */
-    public static VectorTableModel resolveWithWeights(
+    public static VectorTableModelForProgram resolveWithWeights(
         RunResultForProgram runResultForProgram,
         List<TestcaseWeightForTestcase> testcaseWeights) {
 
@@ -66,7 +66,7 @@ public class VectorTableModelResolver {
             }
         }
 
-        return new VectorTableModel(runResultForProgram.getProgramTitle(), buildVtm(builders));
+        return new VectorTableModelForProgram(runResultForProgram.getProgramTitle(), buildVtm(builders));
     }
 
     /**
@@ -75,11 +75,11 @@ public class VectorTableModelResolver {
      * @param runResultForProgram
      * @return
      */
-    public static VectorTableModel resolve(RunResultForProgram runResultForProgram) {
+    public static VectorTableModelForProgram resolve(RunResultForProgram runResultForProgram) {
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
         final Stream<RunResultForTestcase> stream = runResultForProgram.getRunResults().stream();
         final List<VectorTableModelForStatement> vectorTableModelForStatements = resolve(stream, statementCount);
-        return new VectorTableModel(runResultForProgram.getProgramTitle(), vectorTableModelForStatements);
+        return new VectorTableModelForProgram(runResultForProgram.getProgramTitle(), vectorTableModelForStatements);
     }
 
     /**
@@ -89,11 +89,11 @@ public class VectorTableModelResolver {
      * @return
      */
     public static VectorTableModelJam resolve(RunResultJam runResultJam) {
-        final List<VectorTableModel> vectorTableModels = runResultJam
+        final List<VectorTableModelForProgram> vectorTableModelForPrograms = runResultJam
             .getRunResultForPrograms().stream()
             .map(VectorTableModelResolver::resolve)
             .collect(Collectors.toList());
-        return new VectorTableModelJam(vectorTableModels);
+        return new VectorTableModelJam(vectorTableModelForPrograms);
     }
 
     public static VectorTableModelJam resolveWithWeights(
@@ -108,7 +108,7 @@ public class VectorTableModelResolver {
                 TestcaseWeightForProgram::getTestcaseWeights
             ));
 
-        final List<VectorTableModel> collect = runResultJam
+        final List<VectorTableModelForProgram> collect = runResultJam
             .getRunResultForPrograms()
             .stream()
             .map(a -> resolveWithWeights(a, titleToWeights.get(a.getProgramTitle())))

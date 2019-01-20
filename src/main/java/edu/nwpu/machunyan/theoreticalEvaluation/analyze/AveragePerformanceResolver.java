@@ -1,14 +1,14 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForStatement;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement;
 
 import java.util.*;
 import java.util.function.Function;
 
 /**
- * 从 {@link VectorTableModel} 中生成测试用例的平均代价
+ * 从 {@link VectorTableModelForProgram} 中生成测试用例的平均代价
  * <p>
  * 是故障定位付出的代价测量，越小越好。
  */
@@ -21,7 +21,7 @@ public class AveragePerformanceResolver {
      * @param sfFormula 用来计算 SuspiciousnessFactor 的公式
      * @return
      */
-    public static double resolve(VectorTableModel vtm, Function<VectorTableModelForStatement, Double> sfFormula) {
+    public static double resolve(VectorTableModelForProgram vtm, Function<VectorTableModelForStatement, Double> sfFormula) {
         return resolve(vtm.getRecords(), sfFormula);
     }
 

@@ -8,7 +8,7 @@ import java.util.List;
  * 一个 vtm
  */
 @Value
-public class VectorTableModel {
+public class VectorTableModelForProgram {
 
     String programTitle;
 
