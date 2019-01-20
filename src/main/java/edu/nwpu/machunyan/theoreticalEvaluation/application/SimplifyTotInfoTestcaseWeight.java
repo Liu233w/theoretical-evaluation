@@ -1,7 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightHelper;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeight;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.IOException;
@@ -12,8 +11,8 @@ public class SimplifyTotInfoTestcaseWeight {
 
     public static void main(String[] args) throws IOException {
 
-        final TestcaseWeightJam input = ResolveTotInfoTestcaseWeight.loadFromFile();
-        final TestcaseWeightJam result = TestcaseWeightHelper.simplifyTestcaseWeights(input);
+        final TestcaseWeight.Pojo.Jam input = ResolveTotInfoTestcaseWeight.loadFromFile();
+        final TestcaseWeight.Pojo.Jam result = TestcaseWeight.Helper.simplifyTestcaseWeights(input);
         FileUtils.saveObject(outputPath, result);
     }
 }

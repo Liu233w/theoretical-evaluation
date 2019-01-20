@@ -48,7 +48,7 @@ public class VectorTableModelResolver {
      */
     public static VectorTableModel resolveWithWeights(
         RunResultForProgram runResultForProgram,
-        List<TestcaseWeightForTestcase> testcaseWeights) {
+        List<TestcaseWeight.Pojo.ForTestcase> testcaseWeights) {
 
         if (runResultForProgram.getRunResults().size() != testcaseWeights.size()) {
             throw new IllegalArgumentException("运行结果和权重必须一一对应（一个 RunResultForTestcase 对应一个 testcaseWeight）");
@@ -98,14 +98,14 @@ public class VectorTableModelResolver {
 
     public static VectorTableModelJam resolveWithWeights(
         RunResultJam runResultJam,
-        TestcaseWeightJam testcaseWeightJam) {
+        TestcaseWeight.Pojo.Jam testcaseWeightJam) {
 
-        final Map<String, List<TestcaseWeightForTestcase>> titleToWeights = testcaseWeightJam
-            .getTestcaseWeightForPrograms()
+        final Map<String, List<TestcaseWeight.Pojo.ForTestcase>> titleToWeights = testcaseWeightJam
+            .getForPrograms()
             .stream()
             .collect(Collectors.toMap(
-                TestcaseWeightForProgram::getTitle,
-                TestcaseWeightForProgram::getTestcaseWeights
+                TestcaseWeight.Pojo.ForProgram::getTitle,
+                TestcaseWeight.Pojo.ForProgram::getTestcaseWeights
             ));
 
         final List<VectorTableModel> collect = runResultJam

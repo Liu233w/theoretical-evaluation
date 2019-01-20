@@ -42,7 +42,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
     public static Map<String, SuspiciousnessFactorJam> resolveAndGetResult() throws FileNotFoundException {
 
         final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
-        final TestcaseWeightJam testcaseWeightJam = ResolveTotInfoTestcaseWeight.loadFromFile();
+        final TestcaseWeight.Pojo.Jam testcaseWeightJam = ResolveTotInfoTestcaseWeight.loadFromFile();
 
         // 权重加成倍数：测试用例的个数
         final double testcaseWeightMultiply = jam
@@ -56,21 +56,21 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
         );
 
         final Set<String> formulas = testcaseWeightJam
-            .getTestcaseWeightForPrograms()
+            .getForPrograms()
             .stream()
-            .map(TestcaseWeightForProgram::getFormulaTitle)
+            .map(TestcaseWeight.Pojo.ForProgram::getFormulaTitle)
             .collect(Collectors.toSet());
 
         final HashMap<String, SuspiciousnessFactorJam> resultMap = new HashMap<>();
         formulas.forEach(formula -> {
-            final List<TestcaseWeightForProgram> weights = testcaseWeightJam
-                .getTestcaseWeightForPrograms()
+            final List<TestcaseWeight.Pojo.ForProgram> weights = testcaseWeightJam
+                .getForPrograms()
                 .stream()
                 .filter(a -> a.getFormulaTitle().equals(formula))
                 .collect(Collectors.toList());
 
-            final TestcaseWeightJam weightJam = TestcaseWeightMultiplier.resolve(
-                new TestcaseWeightJam(weights),
+            final TestcaseWeight.Pojo.Jam weightJam = TestcaseWeight.Multiplier.resolve(
+                new TestcaseWeight.Pojo.Jam(weights),
                 testcaseWeightMultiply);
 
             final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, weightJam);

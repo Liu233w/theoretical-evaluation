@@ -1,9 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightHelper;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightResolver;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeight;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
@@ -19,8 +17,8 @@ public class ResolveTotInfoTestcaseWeight {
     public static void main(String[] args) throws IOException {
 
         final RunResultJam imports = RunTotInfo.getRunResultsFromSavedFile();
-        final List<TestcaseWeightResolver> resolver = TestcaseWeightResolver.of(SuspiciousnessFactorFormulas.getAllFormulas());
-        final TestcaseWeightJam result = TestcaseWeightHelper.runOnAllResolvers(imports, resolver);
+        final List<TestcaseWeight.Resolver> resolver = TestcaseWeight.Resolver.of(SuspiciousnessFactorFormulas.getAllFormulas());
+        final TestcaseWeight.Pojo.Jam result = TestcaseWeight.Helper.runOnAllResolvers(imports, resolver);
 
         FileUtils.saveObject(resultOutputPath, result);
     }
@@ -30,7 +28,7 @@ public class ResolveTotInfoTestcaseWeight {
      *
      * @return
      */
-    public static TestcaseWeightJam loadFromFile() throws FileNotFoundException {
-        return FileUtils.loadObject(resultOutputPath, TestcaseWeightJam.class);
+    public static TestcaseWeight.Pojo.Jam loadFromFile() throws FileNotFoundException {
+        return FileUtils.loadObject(resultOutputPath, TestcaseWeight.Pojo.Jam.class);
     }
 }

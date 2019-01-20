@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application.temporary;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeight;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.RunTotInfo;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 
@@ -13,7 +13,7 @@ public class TestcaseWeightResolverBenchmark {
 
         final RunResultJam imports = RunTotInfo.getRunResultsFromSavedFile();
 
-        final TestcaseWeightResolver resolver = new TestcaseWeightResolver(SuspiciousnessFactorFormulas::o);
+        final TestcaseWeight.Resolver resolver = new TestcaseWeight.Resolver(SuspiciousnessFactorFormulas::o);
 
         // Code took 7.4316307 seconds
         System.out.println("a program");
