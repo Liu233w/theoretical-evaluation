@@ -19,7 +19,7 @@ public class SuspiciousnessFactorHelper {
      * @return
      */
     public static SuspiciousnessFactorJam runOnAllResolvers(
-        VectorTableModelJam jam,
+        VectorTableModel.Pojo.VectorTableModelJam jam,
         List<SuspiciousnessFactorResolver> resolvers) {
 
         final List<SuspiciousnessFactorForProgram> collect = resolvers.stream()

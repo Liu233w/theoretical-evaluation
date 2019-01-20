@@ -1,13 +1,12 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForStatement;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
 
 import java.util.*;
 import java.util.function.Function;
 
 /**
- * 从 {@link VectorTableModel} 中生成测试用例的平均代价
+ * 从 {@link VectorTableModel.Pojo.VectorTableModelForProgram} 中生成测试用例的平均代价
  * <p>
  * 是故障定位付出的代价测量，越小越好。
  */
@@ -20,7 +19,7 @@ public class AveragePerformanceResolver {
      * @param sfFormula 用来计算 SuspiciousnessFactor 的公式
      * @return
      */
-    public static double resolve(VectorTableModel vtm, Function<VectorTableModelRecord, Double> sfFormula) {
+    public static double resolve(VectorTableModel.Pojo.VectorTableModelForProgram vtm, Function<VectorTableModel.Pojo.ForStatement, Double> sfFormula) {
         return resolve(vtm.getRecords(), sfFormula);
     }
 
@@ -32,8 +31,8 @@ public class AveragePerformanceResolver {
      * @return
      */
     public static double resolve(
-        List<VectorTableModelRecord> vtmRecords,
-        Function<VectorTableModelRecord, Double> sfFormula) {
+        List<VectorTableModel.Pojo.ForStatement> vtmRecords,
+        Function<VectorTableModel.Pojo.ForStatement, Double> sfFormula) {
 
         return resolve(
             vtmRecords,
@@ -45,7 +44,7 @@ public class AveragePerformanceResolver {
     }
 
     public static double resolve(
-        List<VectorTableModelRecord> vtmRecords,
+        List<VectorTableModel.Pojo.ForStatement> vtmRecords,
         SuspiciousnessFactorResolver sfResolver) {
 
         final List<SuspiciousnessFactorForStatement> sfs = sfResolver.resolve(vtmRecords);
@@ -54,14 +53,14 @@ public class AveragePerformanceResolver {
         return vtmRecords.stream()
             .filter(Objects::nonNull)
             .filter(AveragePerformanceResolver::isStatementNeeded)
-            .map(VectorTableModelRecord::getStatementIndex)
+            .map(VectorTableModel.Pojo.ForStatement::getStatementIndex)
             .map(examScore::get)
             .mapToDouble(Double::doubleValue)
             .average()
             .orElse(0);
     }
 
-    private static boolean isStatementNeeded(VectorTableModelRecord record) {
+    private static boolean isStatementNeeded(VectorTableModel.Pojo.ForStatement record) {
         return record.getUnWeightedAep() + record.getUnWeightedAef() > 0
             && record.getUnWeightedAnf() == 0;
     }

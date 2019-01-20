@@ -1,5 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModel;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 
 import java.util.ArrayList;
@@ -21,7 +22,7 @@ public class CsvExporter {
         return sb.toString();
     }
 
-    public static String toCsvString(VectorTableModelJam jam) {
+    public static String toCsvString(VectorTableModel.Pojo.VectorTableModelJam jam) {
         final ArrayList<CsvLine> csvLines = new ArrayList<>();
 
         csvLines.add(new CsvLine(new Object[]{
@@ -29,7 +30,7 @@ public class CsvExporter {
             "Unweighted Anf", "Unweighted Anp", "Unweighted Aef", "Unweighted Aep"
         }));
 
-        for (VectorTableModel vtm : jam.getVectorTableModels()) {
+        for (VectorTableModel.Pojo.VectorTableModelForProgram vtm : jam.getVectorTableModelForPrograms()) {
             vtm.getRecords().stream()
                 .skip(1)
                 .map(record -> new CsvLine(new Object[]{

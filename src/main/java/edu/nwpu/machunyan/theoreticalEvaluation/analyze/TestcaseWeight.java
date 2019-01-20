@@ -88,12 +88,12 @@ public class TestcaseWeight {
 
         private final SuspiciousnessFactorResolver resolver;
 
-        public Resolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula) {
+        public Resolver(@NonNull Function<VectorTableModel.Pojo.ForStatement, Double> sfFormula) {
             this(sfFormula, "");
         }
 
         public Resolver(
-            @NonNull Function<VectorTableModelRecord, Double> sfFormula,
+            @NonNull Function<VectorTableModel.Pojo.ForStatement, Double> sfFormula,
             String formulaTitle) {
 
             this.resolver = SuspiciousnessFactorResolver.builder()
@@ -110,7 +110,7 @@ public class TestcaseWeight {
          * @return
          */
         public static List<Resolver> of(
-            Map<String, Function<VectorTableModelRecord, Double>> map) {
+            Map<String, Function<VectorTableModel.Pojo.ForStatement, Double>> map) {
 
             return map.entrySet().stream()
                 .map(entry -> new Resolver(entry.getValue(), entry.getKey()))
@@ -123,7 +123,7 @@ public class TestcaseWeight {
                 .mapToObj(runResults::get);
         }
 
-        public Function<VectorTableModelRecord, Double> getFormula() {
+        public Function<VectorTableModel.Pojo.ForStatement, Double> getFormula() {
             return resolver.getFormula();
         }
 
@@ -147,12 +147,12 @@ public class TestcaseWeight {
 
             // 2. resolve average performance
             final double overall = AveragePerformanceResolver.resolve(
-                VectorTableModelResolver.resolve(runResults.stream(), statementCount),
+                VectorTableModel.VectorTableModelResolver.resolve(runResults.stream(), statementCount),
                 resolver);
 
             final double[] result = IntStream.range(0, runResults.size())
                 .mapToObj(i -> buildStreamSkipAt(runResults, i))
-                .map(stream -> VectorTableModelResolver.resolve(stream, statementCount))
+                .map(stream -> VectorTableModel.VectorTableModelResolver.resolve(stream, statementCount))
                 .map(vtm -> AveragePerformanceResolver.resolve(vtm, resolver))
                 .mapToDouble(averagePerformance -> averagePerformance - overall)
                 .toArray();

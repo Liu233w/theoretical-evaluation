@@ -73,7 +73,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
                 new TestcaseWeight.Pojo.Jam(weights),
                 testcaseWeightMultiply);
 
-            final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, weightJam);
+            final VectorTableModel.Pojo.VectorTableModelJam vtm = VectorTableModel.VectorTableModelResolver.resolveWithWeights(jam, weightJam);
 
             final SuspiciousnessFactorJam result = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
 

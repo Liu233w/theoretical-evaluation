@@ -24,7 +24,7 @@ public class SuspiciousnessFactorFormulas {
      *
      * @return
      */
-    public static Map<String, Function<VectorTableModelRecord, Double>> getAllFormulas() {
+    public static Map<String, Function<VectorTableModel.Pojo.ForStatement, Double>> getAllFormulas() {
 
         return Arrays.stream(SuspiciousnessFactorFormulas.class.getMethods())
             .filter(item -> item.getAnnotation(Formula.class) != null)
@@ -36,12 +36,12 @@ public class SuspiciousnessFactorFormulas {
 
     // ============= 公式 ===========================
 
-    private static double resolveP(VectorTableModelRecord record) {
+    private static double resolveP(VectorTableModel.Pojo.ForStatement record) {
         // 通过的测试用例
         return record.getAep() + record.getAnp();
     }
 
-    private static double resolveF(VectorTableModelRecord record) {
+    private static double resolveF(VectorTableModel.Pojo.ForStatement record) {
         // 失败的测试用例
         return record.getAef() + record.getAnf();
     }
@@ -53,7 +53,7 @@ public class SuspiciousnessFactorFormulas {
      * @return
      */
     @Formula
-    public static double o(VectorTableModelRecord record) {
+    public static double o(VectorTableModel.Pojo.ForStatement record) {
 
         if (record.getAnf() > 0) {
             return -1;
@@ -69,13 +69,13 @@ public class SuspiciousnessFactorFormulas {
      * @return
      */
     @Formula
-    public static double op(VectorTableModelRecord record) {
+    public static double op(VectorTableModel.Pojo.ForStatement record) {
         return record.getAef() - record.getAep() / (resolveP(record) + 1);
     }
 
     // === o ?
     @Formula
-    public static double naish1(VectorTableModelRecord record) {
+    public static double naish1(VectorTableModel.Pojo.ForStatement record) {
         final double f = resolveF(record);
         final double aef = record.getAef();
         final double anp = record.getAnp();
@@ -88,7 +88,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double andergerg(VectorTableModelRecord record) {
+    public static double andergerg(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double f = resolveF(record);
         final double aep = record.getAep();
@@ -97,7 +97,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double goodman(VectorTableModelRecord record) {
+    public static double goodman(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double f = resolveF(record);
         final double aep = record.getAep();
@@ -106,7 +106,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double sorensenDice(VectorTableModelRecord record) {
+    public static double sorensenDice(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double f = resolveF(record);
         final double aep = record.getAep();
@@ -116,7 +116,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double cbiInc(VectorTableModelRecord record) {
+    public static double cbiInc(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
@@ -126,7 +126,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double tarantula(VectorTableModelRecord record) {
+    public static double tarantula(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
@@ -135,7 +135,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double hamann(VectorTableModelRecord record) {
+    public static double hamann(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double anp = record.getAnp();
         final double f = resolveF(record);
@@ -145,7 +145,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double rogersTanimoto(VectorTableModelRecord record) {
+    public static double rogersTanimoto(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double anp = record.getAnp();
@@ -157,7 +157,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double simpleMatching(VectorTableModelRecord record) {
+    public static double simpleMatching(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double anp = record.getAnp();
         final double f = resolveF(record);
@@ -167,7 +167,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double sokal(VectorTableModelRecord record) {
+    public static double sokal(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double anp = record.getAnp();
         final double f = resolveF(record);
@@ -177,7 +177,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double binary(VectorTableModelRecord record) {
+    public static double binary(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double f = resolveF(record);
 
@@ -189,12 +189,12 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double wong1(VectorTableModelRecord record) {
+    public static double wong1(VectorTableModel.Pojo.ForStatement record) {
         return record.getAef();
     }
 
     @Formula
-    public static double rogot1(VectorTableModelRecord record) {
+    public static double rogot1(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double anp = record.getAnp();
@@ -206,7 +206,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double scott(VectorTableModelRecord record) {
+    public static double scott(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double anp = record.getAnp();
@@ -220,7 +220,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double ample(VectorTableModelRecord record) {
+    public static double ample(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
@@ -230,7 +230,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double arithmeticMean(VectorTableModelRecord record) {
+    public static double arithmeticMean(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double anp = record.getAnp();
@@ -244,7 +244,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double cohen(VectorTableModelRecord record) {
+    public static double cohen(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double anp = record.getAnp();
@@ -258,7 +258,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double fleiss(VectorTableModelRecord record) {
+    public static double fleiss(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double anp = record.getAnp();
@@ -272,7 +272,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double m1(VectorTableModelRecord record) {
+    public static double m1(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double anp = record.getAnp();
@@ -282,7 +282,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double wong3(VectorTableModelRecord record) {
+    public static double wong3(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
 
@@ -296,7 +296,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double naish2(VectorTableModelRecord record) {
+    public static double naish2(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double p = resolveP(record);
@@ -305,7 +305,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double dice(VectorTableModelRecord record) {
+    public static double dice(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
@@ -314,7 +314,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double jaccard(VectorTableModelRecord record) {
+    public static double jaccard(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
@@ -323,7 +323,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double qe(VectorTableModelRecord record) {
+    public static double qe(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
 
@@ -331,7 +331,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double euclid(VectorTableModelRecord record) {
+    public static double euclid(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double anp = record.getAnp();
@@ -343,7 +343,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double hammingEtc(VectorTableModelRecord record) {
+    public static double hammingEtc(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double anp = record.getAnp();
 
@@ -351,7 +351,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double wong2(VectorTableModelRecord record) {
+    public static double wong2(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
 
@@ -359,7 +359,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double russelRao(VectorTableModelRecord record) {
+    public static double russelRao(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double f = resolveF(record);
         final double p = resolveP(record);
@@ -368,7 +368,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double ample2(VectorTableModelRecord record) {
+    public static double ample2(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
@@ -378,7 +378,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double kulcznski1(VectorTableModelRecord record) {
+    public static double kulcznski1(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
@@ -387,7 +387,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double kulcznski2(VectorTableModelRecord record) {
+    public static double kulcznski2(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
@@ -396,7 +396,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double ochiai(VectorTableModelRecord record) {
+    public static double ochiai(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
@@ -405,7 +405,7 @@ public class SuspiciousnessFactorFormulas {
     }
 
     @Formula
-    public static double m2(VectorTableModelRecord record) {
+    public static double m2(VectorTableModel.Pojo.ForStatement record) {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
@@ -422,8 +422,8 @@ public class SuspiciousnessFactorFormulas {
      * @param formula
      * @return
      */
-    private static Function<VectorTableModelRecord, Double> toFunctionInterface(Method formula) {
-        final Function<VectorTableModelRecord, Double> function = (VectorTableModelRecord input) -> {
+    private static Function<VectorTableModel.Pojo.ForStatement, Double> toFunctionInterface(Method formula) {
+        final Function<VectorTableModel.Pojo.ForStatement, Double> function = (VectorTableModel.Pojo.ForStatement input) -> {
             try {
                 return (double) formula.invoke(null, input);
             } catch (IllegalAccessException | InvocationTargetException e) {

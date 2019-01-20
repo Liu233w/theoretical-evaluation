@@ -32,11 +32,11 @@ fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): RunRes
 }
 
 /**
- * 从矩阵生成结果。第 0 个是 null。剩下的每一个 VectorTableModelRecord 对应矩阵的一行
+ * 从矩阵生成结果。第 0 个是 null。剩下的每一个 VectorTableModelForStatement 对应矩阵的一行
  */
-fun buildVectorModelTableFromMatrix(vararg records: Array<Int>): ArrayList<VectorTableModelRecord> {
+fun buildVectorModelTableFromMatrix(vararg records: Array<Int>): ArrayList<VectorTableModel.Pojo.ForStatement> {
     return ArrayList(records.mapIndexed { index, record ->
-        VectorTableModelRecord(index + 1, record[0], record[1], record[2], record[3])
+        VectorTableModel.Pojo.ForStatement(index + 1, record[0], record[1], record[2], record[3])
     }).apply { add(0, null) }
 }
 
@@ -51,9 +51,9 @@ class AnalyzeUtilsTest : FreeSpec({
                 arrayOf(9, 10, 11, 12)
             ) shouldBe arrayListOf(
                 null,
-                VectorTableModelRecord(1, 1, 2, 3, 4),
-                VectorTableModelRecord(2, 5, 6, 7, 8),
-                VectorTableModelRecord(3, 9, 10, 11, 12)
+                VectorTableModel.Pojo.ForStatement(1, 1, 2, 3, 4),
+                VectorTableModel.Pojo.ForStatement(2, 5, 6, 7, 8),
+                VectorTableModel.Pojo.ForStatement(3, 9, 10, 11, 12)
             )
         }
 
