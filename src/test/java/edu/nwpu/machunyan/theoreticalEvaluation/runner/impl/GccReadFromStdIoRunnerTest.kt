@@ -1,7 +1,10 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner.impl
 
 import edu.nwpu.machunyan.theoreticalEvaluation.getTestFilePath
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.*
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Coverage
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
@@ -40,12 +43,7 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
                     23 to 1,
                     24 to 3
                 )),
-                StatementMap(StatementMapType.LINE_BASED).apply {
-                    mapList.add(null)
-                    for (i in 1..24) {
-                        mapList.add(StatementInfo(i, testFilePath, i, i))
-                    }
-                }
+                StatementMap.ofLineBasedStatementMap(24, testFilePath)
             )
         }
 
@@ -80,12 +78,7 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
                     23 to 1,
                     24 to 3
                 )),
-                StatementMap(StatementMapType.LINE_BASED).apply {
-                    mapList.add(null)
-                    for (i in 1..24) {
-                        mapList.add(StatementInfo(i, testFilePath, i, i))
-                    }
-                }
+                StatementMap.ofLineBasedStatementMap(24, testFilePath)
             )
         }
 
@@ -121,12 +114,7 @@ class GccReadFromStdIoRunnerTest : FreeSpec({
                     24 to 1,
                     25 to 3
                 )),
-                StatementMap(StatementMapType.LINE_BASED).apply {
-                    mapList.add(null)
-                    for (i in 1..25) {
-                        mapList.add(StatementInfo(i, testFilePath, i, i))
-                    }
-                }
+                StatementMap.ofLineBasedStatementMap(25, testFilePath)
             )
         }
     }
