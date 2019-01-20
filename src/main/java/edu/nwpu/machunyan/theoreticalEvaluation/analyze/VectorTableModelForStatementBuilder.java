@@ -1,11 +1,12 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 
 /**
- * 用于生成 {@link VectorTableModelRecord}
+ * 用于生成 {@link VectorTableModelForStatement}
  */
-public class VectorTableModelRecordBuilder {
+public class VectorTableModelForStatementBuilder {
 
     /**
      * 语句的序号
@@ -26,11 +27,11 @@ public class VectorTableModelRecordBuilder {
     private double weightedAef;
     private double weightedAep;
 
-    public VectorTableModelRecordBuilder(int statementIndex) {
+    public VectorTableModelForStatementBuilder(int statementIndex) {
         this(statementIndex, false);
     }
 
-    public VectorTableModelRecordBuilder(int statementIndex, boolean useWeight) {
+    public VectorTableModelForStatementBuilder(int statementIndex, boolean useWeight) {
         this.statementIndex = statementIndex;
         this.useWeight = useWeight;
     }
@@ -78,14 +79,14 @@ public class VectorTableModelRecordBuilder {
     }
 
     /**
-     * 获取构建好的 VectorTableModelRecord
+     * 获取构建好的 {@link VectorTableModelForStatement}
      *
      * @return
      */
-    public VectorTableModelRecord build() {
+    public VectorTableModelForStatement build() {
         if (useWeight) {
-            return new VectorTableModelRecord(statementIndex, anf, anp, aef, aep, weightedAnf, weightedAnp, weightedAef, weightedAep);
+            return new VectorTableModelForStatement(statementIndex, anf, anp, aef, aep, weightedAnf, weightedAnp, weightedAef, weightedAep);
         }
-        return new VectorTableModelRecord(statementIndex, anf, anp, aef, aep);
+        return new VectorTableModelForStatement(statementIndex, anf, anp, aef, aep);
     }
 }

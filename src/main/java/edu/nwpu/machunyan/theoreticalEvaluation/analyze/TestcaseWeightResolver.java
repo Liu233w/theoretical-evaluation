@@ -3,6 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
@@ -27,12 +28,12 @@ public class TestcaseWeightResolver {
 
     private final SuspiciousnessFactorResolver resolver;
 
-    public TestcaseWeightResolver(@NonNull Function<VectorTableModelRecord, Double> sfFormula) {
+    public TestcaseWeightResolver(@NonNull Function<VectorTableModelForStatement, Double> sfFormula) {
         this(sfFormula, "");
     }
 
     public TestcaseWeightResolver(
-        @NonNull Function<VectorTableModelRecord, Double> sfFormula,
+        @NonNull Function<VectorTableModelForStatement, Double> sfFormula,
         String formulaTitle) {
 
         this.resolver = SuspiciousnessFactorResolver.builder()
@@ -49,7 +50,7 @@ public class TestcaseWeightResolver {
      * @return
      */
     public static List<TestcaseWeightResolver> of(
-        Map<String, Function<VectorTableModelRecord, Double>> map) {
+        Map<String, Function<VectorTableModelForStatement, Double>> map) {
 
         return map.entrySet().stream()
             .map(entry -> new TestcaseWeightResolver(entry.getValue(), entry.getKey()))
@@ -62,7 +63,7 @@ public class TestcaseWeightResolver {
             .mapToObj(runResults::get);
     }
 
-    public Function<VectorTableModelRecord, Double> getFormula() {
+    public Function<VectorTableModelForStatement, Double> getFormula() {
         return resolver.getFormula();
     }
 

@@ -24,12 +24,12 @@ public class VectorTableModelResolver {
      * @param statementCount
      * @return
      */
-    public static List<VectorTableModelRecord> resolve(
+    public static List<VectorTableModelForStatement> resolve(
         Stream<RunResultForTestcase> runResult,
         int statementCount) {
 
-        final List<VectorTableModelRecordBuilder> builders = IntStream.range(0, statementCount)
-            .mapToObj(i -> new VectorTableModelRecordBuilder(i + 1))
+        final List<VectorTableModelForStatementBuilder> builders = IntStream.range(0, statementCount)
+            .mapToObj(i -> new VectorTableModelForStatementBuilder(i + 1))
             .collect(Collectors.toList());
 
         runResult.forEach(runResultItem ->
@@ -55,13 +55,13 @@ public class VectorTableModelResolver {
         }
 
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
-        final List<VectorTableModelRecordBuilder> builders = IntStream.range(0, statementCount)
-            .mapToObj(i -> new VectorTableModelRecordBuilder(i + 1, true))
+        final List<VectorTableModelForStatementBuilder> builders = IntStream.range(0, statementCount)
+            .mapToObj(i -> new VectorTableModelForStatementBuilder(i + 1, true))
             .collect(Collectors.toList());
 
         final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
         for (int i = 0; i < runResults.size(); i++) {
-            for (VectorTableModelRecordBuilder builder : builders) {
+            for (VectorTableModelForStatementBuilder builder : builders) {
                 builder.processRunResultForTestcase(runResults.get(i), testcaseWeights.get(i).getTestcaseWeight());
             }
         }
@@ -78,8 +78,8 @@ public class VectorTableModelResolver {
     public static VectorTableModel resolve(RunResultForProgram runResultForProgram) {
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
         final Stream<RunResultForTestcase> stream = runResultForProgram.getRunResults().stream();
-        final List<VectorTableModelRecord> vectorTableModelRecords = resolve(stream, statementCount);
-        return new VectorTableModel(runResultForProgram.getProgramTitle(), vectorTableModelRecords);
+        final List<VectorTableModelForStatement> vectorTableModelForStatements = resolve(stream, statementCount);
+        return new VectorTableModel(runResultForProgram.getProgramTitle(), vectorTableModelForStatements);
     }
 
     /**
@@ -117,10 +117,10 @@ public class VectorTableModelResolver {
         return new VectorTableModelJam(collect);
     }
 
-    private static List<VectorTableModelRecord> buildVtm(List<VectorTableModelRecordBuilder> builders) {
-        final ArrayList<VectorTableModelRecord> result = new ArrayList<>(builders.size() + 1);
+    private static List<VectorTableModelForStatement> buildVtm(List<VectorTableModelForStatementBuilder> builders) {
+        final ArrayList<VectorTableModelForStatement> result = new ArrayList<>(builders.size() + 1);
         result.add(null);
-        for (VectorTableModelRecordBuilder builder :
+        for (VectorTableModelForStatementBuilder builder :
             builders) {
             result.add(builder.build());
         }

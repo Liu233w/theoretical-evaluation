@@ -1,5 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze
 
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Coverage
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram
@@ -32,11 +33,11 @@ fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): RunRes
 }
 
 /**
- * 从矩阵生成结果。第 0 个是 null。剩下的每一个 VectorTableModelRecord 对应矩阵的一行
+ * 从矩阵生成结果。第 0 个是 null。剩下的每一个 VectorTableModelForStatement 对应矩阵的一行
  */
-fun buildVectorModelTableFromMatrix(vararg records: Array<Int>): ArrayList<VectorTableModelRecord> {
+fun buildVectorModelTableFromMatrix(vararg records: Array<Int>): ArrayList<VectorTableModelForStatement> {
     return ArrayList(records.mapIndexed { index, record ->
-        VectorTableModelRecord(index + 1, record[0], record[1], record[2], record[3])
+        VectorTableModelForStatement(index + 1, record[0], record[1], record[2], record[3])
     }).apply { add(0, null) }
 }
 
@@ -51,9 +52,9 @@ class AnalyzeUtilsTest : FreeSpec({
                 arrayOf(9, 10, 11, 12)
             ) shouldBe arrayListOf(
                 null,
-                VectorTableModelRecord(1, 1, 2, 3, 4),
-                VectorTableModelRecord(2, 5, 6, 7, 8),
-                VectorTableModelRecord(3, 9, 10, 11, 12)
+                VectorTableModelForStatement(1, 1, 2, 3, 4),
+                VectorTableModelForStatement(2, 5, 6, 7, 8),
+                VectorTableModelForStatement(3, 9, 10, 11, 12)
             )
         }
 

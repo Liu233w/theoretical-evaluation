@@ -2,6 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForStatement;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModel;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement;
 
 import java.util.*;
 import java.util.function.Function;
@@ -20,7 +21,7 @@ public class AveragePerformanceResolver {
      * @param sfFormula 用来计算 SuspiciousnessFactor 的公式
      * @return
      */
-    public static double resolve(VectorTableModel vtm, Function<VectorTableModelRecord, Double> sfFormula) {
+    public static double resolve(VectorTableModel vtm, Function<VectorTableModelForStatement, Double> sfFormula) {
         return resolve(vtm.getRecords(), sfFormula);
     }
 
@@ -32,8 +33,8 @@ public class AveragePerformanceResolver {
      * @return
      */
     public static double resolve(
-        List<VectorTableModelRecord> vtmRecords,
-        Function<VectorTableModelRecord, Double> sfFormula) {
+        List<VectorTableModelForStatement> vtmRecords,
+        Function<VectorTableModelForStatement, Double> sfFormula) {
 
         return resolve(
             vtmRecords,
@@ -45,7 +46,7 @@ public class AveragePerformanceResolver {
     }
 
     public static double resolve(
-        List<VectorTableModelRecord> vtmRecords,
+        List<VectorTableModelForStatement> vtmRecords,
         SuspiciousnessFactorResolver sfResolver) {
 
         final List<SuspiciousnessFactorForStatement> sfs = sfResolver.resolve(vtmRecords);
@@ -54,14 +55,14 @@ public class AveragePerformanceResolver {
         return vtmRecords.stream()
             .filter(Objects::nonNull)
             .filter(AveragePerformanceResolver::isStatementNeeded)
-            .map(VectorTableModelRecord::getStatementIndex)
+            .map(VectorTableModelForStatement::getStatementIndex)
             .map(examScore::get)
             .mapToDouble(Double::doubleValue)
             .average()
             .orElse(0);
     }
 
-    private static boolean isStatementNeeded(VectorTableModelRecord record) {
+    private static boolean isStatementNeeded(VectorTableModelForStatement record) {
         return record.getUnWeightedAep() + record.getUnWeightedAef() > 0
             && record.getUnWeightedAnf() == 0;
     }

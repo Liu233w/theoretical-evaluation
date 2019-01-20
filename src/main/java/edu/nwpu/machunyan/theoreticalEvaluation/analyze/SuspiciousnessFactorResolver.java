@@ -32,14 +32,14 @@ public class SuspiciousnessFactorResolver {
      * 用来计算可疑因子的公式
      */
     @NonNull
-    private final Function<VectorTableModelRecord, Double> formula;
+    private final Function<VectorTableModelForStatement, Double> formula;
 
-    public SuspiciousnessFactorResolver(@NonNull Function<VectorTableModelRecord, Double> formula) {
+    public SuspiciousnessFactorResolver(@NonNull Function<VectorTableModelForStatement, Double> formula) {
         this(false, null, formula);
     }
 
     @Builder
-    public SuspiciousnessFactorResolver(boolean sort, String formulaTitle, @NonNull Function<VectorTableModelRecord, Double> formula) {
+    public SuspiciousnessFactorResolver(boolean sort, String formulaTitle, @NonNull Function<VectorTableModelForStatement, Double> formula) {
 
         // default is false
         this.sort = sort;
@@ -57,7 +57,7 @@ public class SuspiciousnessFactorResolver {
      * @param map key 为公式名， value 为公式
      * @return
      */
-    public static List<SuspiciousnessFactorResolver> of(Map<String, Function<VectorTableModelRecord, Double>> map) {
+    public static List<SuspiciousnessFactorResolver> of(Map<String, Function<VectorTableModelForStatement, Double>> map) {
         return of(map, SuspiciousnessFactorResolver.builder());
     }
 
@@ -68,7 +68,7 @@ public class SuspiciousnessFactorResolver {
      * @param builder 提供一些默认参数
      * @return
      */
-    public static List<SuspiciousnessFactorResolver> of(Map<String, Function<VectorTableModelRecord, Double>> map, SuspiciousnessFactorResolverBuilder builder) {
+    public static List<SuspiciousnessFactorResolver> of(Map<String, Function<VectorTableModelForStatement, Double>> map, SuspiciousnessFactorResolverBuilder builder) {
         return map.entrySet().stream()
             .map(entry -> builder
                 .formulaTitle(entry.getKey())
@@ -79,16 +79,16 @@ public class SuspiciousnessFactorResolver {
     }
 
     /**
-     * 返回 {@link VectorTableModelRecord} 代表的语句是否执行过
+     * 返回 {@link VectorTableModelForStatement} 代表的语句是否执行过
      *
      * @param record
      * @return
      */
-    private static boolean isStatementEvaluated(VectorTableModelRecord record) {
+    private static boolean isStatementEvaluated(VectorTableModelForStatement record) {
         return record.getUnWeightedAep() + record.getUnWeightedAef() > 0;
     }
 
-    public List<SuspiciousnessFactorForStatement> resolve(List<VectorTableModelRecord> records) {
+    public List<SuspiciousnessFactorForStatement> resolve(List<VectorTableModelForStatement> records) {
 
         Stream<SuspiciousnessFactorForStatement> stream = records.stream()
             .filter(Objects::nonNull)

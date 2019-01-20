@@ -1,4 +1,4 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
+package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.ToString;
  */
 @EqualsAndHashCode
 @ToString
-public class VectorTableModelRecord {
+public class VectorTableModelForStatement {
 
     /**
      * 语句的序号
@@ -51,7 +51,7 @@ public class VectorTableModelRecord {
      * @param weightedAef
      * @param weightedAep
      */
-    public VectorTableModelRecord(int statementIndex, int anf, int anp, int aef, int aep, double weightedAnf, double weightedAnp, double weightedAef, double weightedAep) {
+    public VectorTableModelForStatement(int statementIndex, int anf, int anp, int aef, int aep, double weightedAnf, double weightedAnp, double weightedAef, double weightedAep) {
         this.useWeight = true;
 
         this.statementIndex = statementIndex;
@@ -74,7 +74,7 @@ public class VectorTableModelRecord {
      * @param aef
      * @param aep
      */
-    public VectorTableModelRecord(int statementIndex, int anf, int anp, int aef, int aep) {
+    public VectorTableModelForStatement(int statementIndex, int anf, int anp, int aef, int aep) {
         this.useWeight = false;
 
         this.statementIndex = statementIndex;
