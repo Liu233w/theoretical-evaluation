@@ -28,8 +28,8 @@ public class VectorTableModelResolver {
         Stream<RunResultForTestcase> runResult,
         int statementCount) {
 
-        final List<VectorTableModelForStatementBuilder> builders = IntStream.range(0, statementCount)
-            .mapToObj(i -> new VectorTableModelForStatementBuilder(i + 1))
+        final List<VectorTableModelForStatement.Builder> builders = IntStream.range(0, statementCount)
+            .mapToObj(i -> new VectorTableModelForStatement.Builder(i + 1))
             .collect(Collectors.toList());
 
         runResult.forEach(runResultItem ->
@@ -55,13 +55,13 @@ public class VectorTableModelResolver {
         }
 
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
-        final List<VectorTableModelForStatementBuilder> builders = IntStream.range(0, statementCount)
-            .mapToObj(i -> new VectorTableModelForStatementBuilder(i + 1, true))
+        final List<VectorTableModelForStatement.Builder> builders = IntStream.range(0, statementCount)
+            .mapToObj(i -> new VectorTableModelForStatement.Builder(i + 1, true))
             .collect(Collectors.toList());
 
         final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
         for (int i = 0; i < runResults.size(); i++) {
-            for (VectorTableModelForStatementBuilder builder : builders) {
+            for (VectorTableModelForStatement.Builder builder : builders) {
                 builder.processRunResultForTestcase(runResults.get(i), testcaseWeights.get(i).getTestcaseWeight());
             }
         }
@@ -117,10 +117,10 @@ public class VectorTableModelResolver {
         return new VectorTableModelJam(collect);
     }
 
-    private static List<VectorTableModelForStatement> buildVtm(List<VectorTableModelForStatementBuilder> builders) {
+    private static List<VectorTableModelForStatement> buildVtm(List<VectorTableModelForStatement.Builder> builders) {
         final ArrayList<VectorTableModelForStatement> result = new ArrayList<>(builders.size() + 1);
         result.add(null);
-        for (VectorTableModelForStatementBuilder builder :
+        for (VectorTableModelForStatement.Builder builder :
             builders) {
             result.add(builder.build());
         }

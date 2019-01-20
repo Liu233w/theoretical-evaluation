@@ -1,5 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -155,5 +156,93 @@ public final class VectorTableModelForStatement {
      */
     public int getUnWeightedAep() {
         return aep;
+    }
+
+    /**
+     * 用于生成 {@link VectorTableModelForStatement}
+     */
+    public static class Builder {
+
+        /**
+         * 语句的序号
+         */
+        private final int statementIndex;
+
+        // 4 个数据
+        /**
+         * 是否使用权重
+         */
+        private final boolean useWeight;
+        private int anf;
+        private int anp;
+        private int aef;
+        private int aep;
+        private double weightedAnf;
+        private double weightedAnp;
+        private double weightedAef;
+        private double weightedAep;
+
+        public Builder(int statementIndex) {
+            this(statementIndex, false);
+        }
+
+        public Builder(int statementIndex, boolean useWeight) {
+            this.statementIndex = statementIndex;
+            this.useWeight = useWeight;
+        }
+
+        /**
+         * 根据一次运行结果将 4 个数值中的一个递增
+         *
+         * @param runResultForTestcase
+         */
+        public void processRunResultForTestcase(RunResultForTestcase runResultForTestcase) {
+            processRunResultForTestcase(runResultForTestcase, 1.0);
+        }
+
+        /**
+         * 根据一次运行结果将 4 个数值中的一个递增
+         *
+         * @param runResultForTestcase
+         * @param testcaseWeight
+         */
+        public void processRunResultForTestcase(RunResultForTestcase runResultForTestcase, double testcaseWeight) {
+
+            final boolean correct = runResultForTestcase.isCorrect();
+            final boolean hit = runResultForTestcase.getCoverage()
+                .getCoverageForStatement(statementIndex) > 0;
+
+            if (correct) {
+
+                if (hit) {
+                    ++aep;
+                    weightedAep += testcaseWeight;
+                } else {
+                    ++anp;
+                    weightedAnp += testcaseWeight;
+                }
+            } else {
+
+                if (hit) {
+                    ++aef;
+                    weightedAef += testcaseWeight;
+                } else {
+                    ++anf;
+                    weightedAnf += testcaseWeight;
+                }
+            }
+        }
+
+        /**
+         * 获取构建好的 {@link VectorTableModelForStatement}
+         *
+         * @return
+         */
+        public VectorTableModelForStatement build() {
+            if (useWeight) {
+                return new VectorTableModelForStatement(statementIndex, anf, anp, aef, aep, weightedAnf, weightedAnp, weightedAef, weightedAep);
+            }
+            return new VectorTableModelForStatement(statementIndex, anf, anp, aef, aep);
+        }
     }
 }
