@@ -3,14 +3,13 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * 表示 vector table model 中的一行
  */
 @EqualsAndHashCode
 @ToString
-public class VectorTableModelRecord implements Comparable {
+public class VectorTableModelRecord {
 
     /**
      * 语句的序号
@@ -156,28 +155,5 @@ public class VectorTableModelRecord implements Comparable {
      */
     public int getUnWeightedAep() {
         return aep;
-    }
-
-    @Override
-    public int compareTo(@NotNull Object o) {
-        if (!(o instanceof VectorTableModelRecord)) {
-            throw new IllegalArgumentException("VectorTableModelRecord can only be compared to VectorTableModelRecord");
-        }
-        VectorTableModelRecord that = (VectorTableModelRecord) o;
-
-        if (this.useWeight != that.useWeight) {
-            throw new IllegalArgumentException("Cannot compare a weighted record with an un-weighted record.");
-        }
-
-        if (anf != that.getAnf()) {
-            return Double.compare(anf, that.getAnf());
-        }
-        if (anp != that.getAnp()) {
-            return Double.compare(anp, that.getAnp());
-        }
-        if (aef != that.getAef()) {
-            return Double.compare(aef, that.getAef());
-        }
-        return Double.compare(aep, that.getAep());
     }
 }
