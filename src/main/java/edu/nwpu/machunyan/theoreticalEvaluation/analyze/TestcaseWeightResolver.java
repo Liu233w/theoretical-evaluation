@@ -3,19 +3,18 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
+import one.util.streamex.IntStreamEx;
+import one.util.streamex.StreamEx;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -52,9 +51,10 @@ public class TestcaseWeightResolver {
     public static List<TestcaseWeightResolver> of(
         Map<String, SuspiciousnessFactorFormula> map) {
 
-        return map.entrySet().stream()
+        return StreamEx
+            .of(map.entrySet())
             .map(entry -> new TestcaseWeightResolver(entry.getValue(), entry.getKey()))
-            .collect(Collectors.toList());
+            .toImmutableList();
     }
 
     private static Stream<RunResultForTestcase> buildStreamSkipAt(List<RunResultForTestcase> runResults, int index) {
@@ -72,10 +72,11 @@ public class TestcaseWeightResolver {
     }
 
     public TestcaseWeightJam resolve(RunResultJam jam) {
-        final List<TestcaseWeightForProgram> collect = jam.getRunResultForPrograms().stream()
+        final List<TestcaseWeightForProgram> collect = StreamEx
+            .of(jam.getRunResultForPrograms())
             .parallel()
             .map(this::resolve)
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new TestcaseWeightJam(collect);
     }
 
@@ -117,10 +118,10 @@ public class TestcaseWeightResolver {
         }
 
         // 4. output
-        final List<TestcaseWeightForTestcase> testcaseWeights = IntStream
+        final List<TestcaseWeightForTestcase> testcaseWeights = IntStreamEx
             .range(0, result.length)
             .mapToObj(i -> new TestcaseWeightForTestcase(i, result[i]))
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new TestcaseWeightForProgram(
             runResultForProgram.getProgramTitle(),
             getFormulaTitle(),

@@ -4,12 +4,12 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
+import one.util.streamex.IntStreamEx;
+import one.util.streamex.StreamEx;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
@@ -28,9 +28,10 @@ public class VectorTableModelResolver {
         Stream<RunResultForTestcase> runResult,
         int statementCount) {
 
-        final List<VectorTableModelForStatement.Builder> builders = IntStream.range(0, statementCount)
+        final List<VectorTableModelForStatement.Builder> builders = IntStreamEx
+            .range(0, statementCount)
             .mapToObj(i -> new VectorTableModelForStatement.Builder(i + 1))
-            .collect(Collectors.toList());
+            .toImmutableList();
 
         runResult.forEach(runResultItem ->
             builders.forEach(builder ->
@@ -55,9 +56,10 @@ public class VectorTableModelResolver {
         }
 
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
-        final List<VectorTableModelForStatement.Builder> builders = IntStream.range(0, statementCount)
+        final List<VectorTableModelForStatement.Builder> builders = IntStreamEx
+            .range(0, statementCount)
             .mapToObj(i -> new VectorTableModelForStatement.Builder(i + 1, true))
-            .collect(Collectors.toList());
+            .toImmutableList();
 
         final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
         for (int i = 0; i < runResults.size(); i++) {
@@ -89,10 +91,10 @@ public class VectorTableModelResolver {
      * @return
      */
     public static VectorTableModelJam resolve(RunResultJam runResultJam) {
-        final List<VectorTableModelForProgram> vectorTableModelForPrograms = runResultJam
-            .getRunResultForPrograms().stream()
+        final List<VectorTableModelForProgram> vectorTableModelForPrograms = StreamEx
+            .of(runResultJam.getRunResultForPrograms())
             .map(VectorTableModelResolver::resolve)
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new VectorTableModelJam(vectorTableModelForPrograms);
     }
 
@@ -100,19 +102,17 @@ public class VectorTableModelResolver {
         RunResultJam runResultJam,
         TestcaseWeightJam testcaseWeightJam) {
 
-        final Map<String, List<TestcaseWeightForTestcase>> titleToWeights = testcaseWeightJam
-            .getTestcaseWeightForPrograms()
-            .stream()
-            .collect(Collectors.toMap(
+        final Map<String, List<TestcaseWeightForTestcase>> titleToWeights = StreamEx
+            .of(testcaseWeightJam.getTestcaseWeightForPrograms())
+            .toMap(
                 TestcaseWeightForProgram::getTitle,
                 TestcaseWeightForProgram::getTestcaseWeights
-            ));
+            );
 
-        final List<VectorTableModelForProgram> collect = runResultJam
-            .getRunResultForPrograms()
-            .stream()
+        final List<VectorTableModelForProgram> collect = StreamEx
+            .of(runResultJam.getRunResultForPrograms())
             .map(a -> resolveWithWeights(a, titleToWeights.get(a.getProgramTitle())))
-            .collect(Collectors.toList());
+            .toImmutableList();
 
         return new VectorTableModelJam(collect);
     }

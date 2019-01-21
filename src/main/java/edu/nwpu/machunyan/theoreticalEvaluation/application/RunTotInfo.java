@@ -10,6 +10,8 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoRunn
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import lombok.Value;
+import one.util.streamex.IntStreamEx;
+import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -19,8 +21,6 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class RunTotInfo {
 
@@ -34,21 +34,23 @@ public class RunTotInfo {
         // 存版本的文件夹
         final Path versionsDir = FileUtils.getFilePathFromResources("tot_info/versions");
 
-        final List<IProgramInput> inputs = resolveTestcases().stream()
+        final List<IProgramInput> inputs = StreamEx
+            .of(resolveTestcases())
             .map(a -> new GccReadFromStdIoInput(
                 new String[]{},
                 a.getInput(),
                 a.getOutput()
             ))
             .map(a -> (IProgramInput) a)
-            .collect(Collectors.toList());
+            .toImmutableList();
 
-        final List<Program> programs = IntStream.range(1, lastVersionNumber + 1)
+        final List<Program> programs = IntStreamEx.range(1, lastVersionNumber + 1)
             .mapToObj(i -> "v" + i)
             .map(versionStr -> new Program(
                 versionStr,
-                versionsDir.resolve(versionStr).resolve("tot_info.c").toString()))
-            .collect(Collectors.toList());
+                versionsDir.resolve(versionStr).resolve("tot_info.c").toString()
+            ))
+            .toImmutableList();
 
         return RunningResultResolver.runProgramForAllVersions(programs, inputs, GccReadFromStdIoRunner::newInstance);
     }

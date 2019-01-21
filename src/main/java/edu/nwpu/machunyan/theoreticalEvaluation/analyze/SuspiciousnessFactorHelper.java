@@ -200,11 +200,10 @@ public class SuspiciousnessFactorHelper {
 
         final Map<String, FaultLocationForProgram> titleToLocationMap = StreamEx
             .of(faultLocationJam.getFaultLocationForPrograms())
-            .mapToEntry(
+            .toMap(
                 FaultLocationForProgram::getProgramTitle,
                 a -> a
-            )
-            .toImmutableMap();
+            );
 
         final List<DiffRankForProgram> collect = StreamEx
             .of(leftMapper.entrySet())
@@ -222,11 +221,10 @@ public class SuspiciousnessFactorHelper {
     private static Map<Key, SuspiciousnessFactorForProgram> resolveMapper(SuspiciousnessFactorJam jam) {
         return StreamEx
             .of(jam.getResultForPrograms())
-            .mapToEntry(
+            .toMap(
                 a -> new Key(a.getProgramTitle(), a.getFormula()),
                 a -> a
-            )
-            .toImmutableMap();
+            );
     }
 
     /**

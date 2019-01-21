@@ -7,8 +7,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
-import java.util.stream.Collectors
-import java.util.stream.IntStream
+import one.util.streamex.IntStreamEx
 
 /**
  * 从论文中表示的矩阵中生成 RunResults，输入的第一个维度表示行，第二个维度表示列。
@@ -18,9 +17,9 @@ fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): RunRes
 
     val mockStatementMap = StatementMap.ofLineBasedStatementMap(matrix.size, "don't need file path")
 
-    val result = IntStream.range(0, matrix[0].size)
+    val result = IntStreamEx.range(0, matrix[0].size)
         .mapToObj { i -> RunResultForTestcase(oc[i] == 1, Coverage(), null) }
-        .collect(Collectors.toList())
+        .toImmutableList()
 
     // row: s -- statement; column: t -- singleRun
     matrix.forEachIndexed { row, line ->
