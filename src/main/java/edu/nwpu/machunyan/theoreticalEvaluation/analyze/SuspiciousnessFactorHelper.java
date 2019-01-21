@@ -287,6 +287,7 @@ public class SuspiciousnessFactorHelper {
 
         final List<MultipleFormulaSuspiciousnessFactorForProgram> collect = StreamEx
             .of(sfForPrograms)
+            .sortedBy(SuspiciousnessFactorForProgram::getProgramTitle)
             .groupRuns((l, r) -> l.getProgramTitle().equals(r.getProgramTitle()))
             .map(resultsForSameProgram -> new MultipleFormulaSuspiciousnessFactorForProgram(
                 resultsForSameProgram.get(0).getProgramTitle(),
