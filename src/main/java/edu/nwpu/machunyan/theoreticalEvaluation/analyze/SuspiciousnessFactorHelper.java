@@ -3,12 +3,12 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import lombok.NonNull;
 import lombok.Value;
+import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public class SuspiciousnessFactorHelper {
 
@@ -285,61 +285,58 @@ public class SuspiciousnessFactorHelper {
     public static MultipleFormulaSuspiciousnessFactorJam collectAsMultipleFormula(
         SuspiciousnessFactorJam jam) {
 
-        final List<SuspiciousnessFactorForProgram> prevResult = jam.getResultForPrograms();
+        final List<SuspiciousnessFactorForProgram> sfForPrograms = jam.getResultForPrograms();
 
-        final Map<String, List<SuspiciousnessFactorForProgram>> titleToProgramResult = StreamEx
-            .of(prevResult)
-            .groupingBy(SuspiciousnessFactorForProgram::getProgramTitle);
+        final List<MultipleFormulaSuspiciousnessFactorForProgram> collect = StreamEx
+            .of(sfForPrograms)
+            .groupRuns((l, r) -> l.getProgramTitle().equals(r.getProgramTitle()))
+            .map(resultsForSameProgram -> new MultipleFormulaSuspiciousnessFactorForProgram(
+                resultsForSameProgram.get(0).getProgramTitle(),
+                resolveMultipleFormulaSf(resultsForSameProgram)
+            ))
+            .toImmutableList();
 
-        final Set<String> programTitles = StreamEx.of(prevResult)
-            .map(SuspiciousnessFactorForProgram::getProgramTitle)
-            .toImmutableSet();
-        final Set<String> formulaTitles = StreamEx.of(prevResult)
+        final Set<String> formulaTitles = StreamEx.of(sfForPrograms)
             .map(SuspiciousnessFactorForProgram::getFormula)
             .toImmutableSet();
 
-        StreamEx
-            .of(programTitles)
-            .map()
-
-        final List<MultipleFormulaSuspiciousnessFactorForProgram> collect = programTitles.stream()
-            .map(programTitle -> {
-
-                // 同一个程序得到的 vtm 是一样的。因此执行的语句也是一样的。
-                @SuppressWarnings("OptionalGetWithoutIsPresent") final Map<Integer, MultipleFormulaSuspiciousnessFactorForStatement>
-                    idxToItemMap = prevResult.stream()
-                    .filter(a -> a.getProgramTitle().equals(programTitle))
-                    .findAny()
-                    .get()
-                    .getResultForStatements()
-                    .stream()
-                    .map(SuspiciousnessFactorForStatement::getStatementIndex)
-                    .collect(Collectors.toMap(
-                        i -> i,
-                        i -> new MultipleFormulaSuspiciousnessFactorForStatement(i, new HashMap<>())
-                    ));
-
-                prevResult.stream()
-                    .filter(a -> a.getProgramTitle().equals(programTitle))
-                    .forEach(sfForProgram -> {
-
-                        sfForProgram
-                            .getResultForStatements()
-                            .forEach(statement -> {
-                                idxToItemMap.get(statement.getStatementIndex())
-                                    .getFormulaTitleToResult()
-                                    .put(sfForProgram.getFormula(), statement.getSuspiciousnessFactor());
-                            });
-                    });
-
-                final List<MultipleFormulaSuspiciousnessFactorForStatement> result = idxToItemMap.values().stream()
-                    .sorted(Comparator.comparingInt(MultipleFormulaSuspiciousnessFactorForStatement::getStatementIndex))
-                    .collect(Collectors.toList());
-                return new MultipleFormulaSuspiciousnessFactorForProgram(programTitle, result);
-            })
-            .collect(Collectors.toList());
-
         return new MultipleFormulaSuspiciousnessFactorJam(collect, formulaTitles);
+    }
+
+    /**
+     * 从一个 program 列表获取到本 program 的所有语句和公式的可疑因子。
+     * 列表中的 program 必须有相同的 programTitle
+     *
+     * @param lstForProgram
+     * @return
+     */
+    private static List<MultipleFormulaSuspiciousnessFactorForStatement> resolveMultipleFormulaSf(
+        List<SuspiciousnessFactorForProgram> lstForProgram) {
+
+        // resolve builder
+        // 同一个程序得到的 vtm 是一样的。因此执行的语句也是一样的。
+        final Map<Integer, Map<String, Double>> statementIdxToFormulaTitleToResult = StreamEx
+            .of(lstForProgram.get(0).getResultForStatements())
+            .map(SuspiciousnessFactorForStatement::getStatementIndex)
+            .toMap(HashMap::new);
+
+        // process builder
+        lstForProgram.forEach(program ->
+            program.getResultForStatements().forEach(statement -> {
+                statementIdxToFormulaTitleToResult
+                    .get(statement.getStatementIndex())
+                    .put(program.getFormula(), statement.getSuspiciousnessFactor());
+            }));
+
+        // build
+        return EntryStream
+            .of(statementIdxToFormulaTitleToResult)
+            .mapValues(map -> Collections.unmodifiableMap(new HashMap<>(map)))
+            .sorted(Comparator.comparingInt(Map.Entry::getKey))
+            .map(entry -> new MultipleFormulaSuspiciousnessFactorForStatement(
+                entry.getKey(),
+                entry.getValue()))
+            .toImmutableList();
     }
 
     @Value
