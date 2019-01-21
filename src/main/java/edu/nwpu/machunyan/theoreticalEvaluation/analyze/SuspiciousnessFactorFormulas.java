@@ -2,6 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement;
 import lombok.Lombok;
+import one.util.streamex.StreamEx;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,10 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Map;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * 保存可疑因子的计算公式
@@ -27,12 +25,13 @@ public class SuspiciousnessFactorFormulas {
      */
     public static Map<String, SuspiciousnessFactorFormula> getAllFormulas() {
 
-        return Arrays.stream(SuspiciousnessFactorFormulas.class.getMethods())
+        return StreamEx.of(SuspiciousnessFactorFormulas.class.getMethods())
             .filter(item -> item.getAnnotation(Formula.class) != null)
-            .collect(Collectors.toMap(
+            .mapToEntry(
                 Method::getName,
                 SuspiciousnessFactorFormulas::toFunctionInterface
-            ));
+            )
+            .toImmutableMap();
     }
 
     // ============= 公式 ===========================

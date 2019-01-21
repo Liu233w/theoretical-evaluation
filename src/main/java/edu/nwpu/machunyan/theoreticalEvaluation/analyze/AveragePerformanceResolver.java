@@ -5,7 +5,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelFor
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement;
 
 import java.util.*;
-import java.util.function.Function;
 
 /**
  * 从 {@link VectorTableModelForProgram} 中生成测试用例的平均代价

@@ -5,9 +5,9 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.DiffRankJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.JsonUtils;
+import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
-import java.util.stream.Collectors;
 
 public class DiffSuspiciousnessFactor {
     public static void main(String[] args) throws FileNotFoundException {
@@ -21,11 +21,10 @@ public class DiffSuspiciousnessFactor {
 
         final DiffRankJam diff = SuspiciousnessFactorHelper.diff(left, right, "orig", "dump");
 
-        final DiffRankJam filteredDiff = new DiffRankJam(diff
-            .getDiffRankForPrograms()
-            .stream()
+        final DiffRankJam filteredDiff = new DiffRankJam(StreamEx
+            .of(diff.getDiffRankForPrograms())
             .filter(a -> a.getDiffRankForStatements().size() != 0)
-            .collect(Collectors.toList()));
+            .toImmutableList());
 
         final String s = JsonUtils.toJson(filteredDiff).toString();
         System.out.println(s);

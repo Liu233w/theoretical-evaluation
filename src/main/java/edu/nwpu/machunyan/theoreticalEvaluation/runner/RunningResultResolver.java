@@ -7,11 +7,11 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import me.tongfei.progressbar.ProgressBar;
+import one.util.streamex.StreamEx;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * 运行特定组织结构的程序的工具
@@ -30,7 +30,8 @@ public class RunningResultResolver {
 
         final ProgressBar progressBar = new ProgressBar("", inputs.size() * programs.size());
 
-        final List<RunResultForProgram> result = programs.stream()
+        final List<RunResultForProgram> result = StreamEx
+            .of(programs)
             .parallel()
             .map(program -> new RunningScheduler(program, runnerFactory, inputs, progressBar))
             .map(scheduler -> {
@@ -43,7 +44,7 @@ public class RunningResultResolver {
             })
             .filter(Objects::nonNull)
             .map(RunningResultResolver::mapFromRunResult)
-            .collect(Collectors.toList());
+            .toImmutableList();
 
         progressBar.close();
 
@@ -84,9 +85,10 @@ public class RunningResultResolver {
     public static RunResultForProgram mapFromRunResult(List<RunResultFromRunner> runResults) {
         final String title = runResults.get(0).getProgram().getTitle();
         final StatementMap defaultStatememtMap = runResults.get(0).getStatementMap();
-        final List<RunResultForTestcase> runResultForTestcases = runResults.stream()
+        final List<RunResultForTestcase> runResultForTestcases = StreamEx
+            .of(runResults)
             .map(item -> mapFromRunResult(item, defaultStatememtMap))
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new RunResultForProgram(title, defaultStatememtMap, runResultForTestcases);
     }
 }

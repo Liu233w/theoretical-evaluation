@@ -6,10 +6,10 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import lombok.Cleanup;
 import me.tongfei.progressbar.ProgressBar;
+import one.util.streamex.StreamEx;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class TestcaseWeightHelper {
 
@@ -20,9 +20,10 @@ public class TestcaseWeightHelper {
      * @return
      */
     public static List<TestcaseWeightForTestcase> simplifyTestcaseWeights(List<TestcaseWeightForTestcase> input) {
-        return input.stream()
+        return StreamEx
+            .of(input)
             .filter(a -> a.getTestcaseWeight() != 1.0)
-            .collect(Collectors.toList());
+            .toImmutableList();
     }
 
     /**
@@ -46,9 +47,10 @@ public class TestcaseWeightHelper {
      * @return
      */
     public static TestcaseWeightJam simplifyTestcaseWeights(TestcaseWeightJam input) {
-        final List<TestcaseWeightForProgram> collect = input.getTestcaseWeightForPrograms().stream()
+        final List<TestcaseWeightForProgram> collect = StreamEx
+            .of(input.getTestcaseWeightForPrograms())
             .map(TestcaseWeightHelper::simplifyTestcaseWeights)
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new TestcaseWeightJam(collect);
     }
 
@@ -61,13 +63,14 @@ public class TestcaseWeightHelper {
 
         @Cleanup final ProgressBar progressBar = new ProgressBar("", resolvers.size());
 
-        final List<TestcaseWeightForProgram> collect = resolvers.stream()
+        final List<TestcaseWeightForProgram> collect = StreamEx
+            .of(resolvers)
             .parallel()
             .map(resolver -> resolver.resolve(jam))
             .map(TestcaseWeightJam::getTestcaseWeightForPrograms)
             .peek(a -> progressBar.step())
             .flatMap(Collection::stream)
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new TestcaseWeightJam(collect);
     }
 }

@@ -4,13 +4,11 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NonNull;
+import one.util.streamex.StreamEx;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * 统计一次运行中所有语句的可疑因子，忽略从来没有运行过的语句 (aep+aef==0)
@@ -69,13 +67,14 @@ public class SuspiciousnessFactorResolver {
      * @return
      */
     public static List<SuspiciousnessFactorResolver> of(Map<String, SuspiciousnessFactorFormula> map, SuspiciousnessFactorResolverBuilder builder) {
-        return map.entrySet().stream()
+        return StreamEx
+            .of(map.entrySet())
             .map(entry -> builder
                 .formulaTitle(entry.getKey())
                 .formula(entry.getValue())
                 .build()
             )
-            .collect(Collectors.toList());
+            .toImmutableList();
     }
 
     /**
@@ -90,7 +89,8 @@ public class SuspiciousnessFactorResolver {
 
     public List<SuspiciousnessFactorForStatement> resolve(List<VectorTableModelForStatement> records) {
 
-        Stream<SuspiciousnessFactorForStatement> stream = records.stream()
+        StreamEx<SuspiciousnessFactorForStatement> stream = StreamEx
+            .of(records)
             .filter(Objects::nonNull)
             .filter(SuspiciousnessFactorResolver::isStatementEvaluated)
             .map(item -> new SuspiciousnessFactorForStatement(
@@ -101,13 +101,14 @@ public class SuspiciousnessFactorResolver {
         if (sort) {
             stream = SuspiciousnessFactorHelper.rankedStream(stream);
         }
-        return stream.collect(Collectors.toList());
+        return stream.toImmutableList();
     }
 
     public SuspiciousnessFactorJam resolve(VectorTableModelJam jam) {
-        final List<SuspiciousnessFactorForProgram> collect = jam.getVectorTableModelForPrograms().stream()
+        final List<SuspiciousnessFactorForProgram> collect = StreamEx
+            .of(jam.getVectorTableModelForPrograms())
             .map(this::resolve)
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new SuspiciousnessFactorJam(collect);
     }
 

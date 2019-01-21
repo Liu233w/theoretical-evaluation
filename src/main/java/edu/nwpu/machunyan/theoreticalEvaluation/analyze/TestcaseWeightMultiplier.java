@@ -3,9 +3,9 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
+import one.util.streamex.StreamEx;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 将测试用例的权重扩大，使结果更加明显。
@@ -36,11 +36,10 @@ public class TestcaseWeightMultiplier {
     }
 
     public static TestcaseWeightForProgram resolve(TestcaseWeightForProgram input, double multiply) {
-        final List<TestcaseWeightForTestcase> collect = input
-            .getTestcaseWeights()
-            .stream()
+        final List<TestcaseWeightForTestcase> collect = StreamEx
+            .of(input.getTestcaseWeights())
             .map(a -> resolve(a, multiply))
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new TestcaseWeightForProgram(
             input.getTitle(),
             input.getFormulaTitle(),
@@ -49,11 +48,10 @@ public class TestcaseWeightMultiplier {
     }
 
     public static TestcaseWeightJam resolve(TestcaseWeightJam input, double multiply) {
-        final List<TestcaseWeightForProgram> collect = input
-            .getTestcaseWeightForPrograms()
-            .stream()
+        final List<TestcaseWeightForProgram> collect = StreamEx
+            .of(input.getTestcaseWeightForPrograms())
             .map(a -> resolve(a, multiply))
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new TestcaseWeightJam(collect);
     }
 }

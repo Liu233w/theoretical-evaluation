@@ -5,6 +5,8 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvLine;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+import one.util.streamex.IntStreamEx;
+import one.util.streamex.StreamEx;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 
@@ -12,8 +14,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class DiffTotInfoSfWithWeightSimplifiedByFaultLocation {
 
@@ -25,17 +25,17 @@ public class DiffTotInfoSfWithWeightSimplifiedByFaultLocation {
         final SuspiciousnessFactorJam sfUnweighted = ResolveTotInfoSuspiciousnessFactor.getResultFromFile();
         final Map<String, SuspiciousnessFactorJam> sfWeighted = ResolveTotInfoSuspiciousnessFactorWithWeight.resolveAndGetResult();
 
-        final Map<String, DiffRankJam> collect = sfWeighted
-            .entrySet()
-            .stream()
-            .collect(Collectors.toMap(
+        final Map<String, DiffRankJam> collect = StreamEx
+            .of(sfWeighted.entrySet())
+            .mapToEntry(
                 Map.Entry::getKey,
                 a -> SuspiciousnessFactorHelper.diff(
                     sfUnweighted, a.getValue(),
                     "unweighted", "weighted",
                     faultLocations
                 )
-            ));
+            )
+            .toImmutableMap();
 
         FileUtils.saveString(outputFile, toCsvString(collect));
     }
@@ -50,14 +50,13 @@ public class DiffTotInfoSfWithWeightSimplifiedByFaultLocation {
             .withFirstRecordAsHeader()
             .parse(new FileReader(faultLocationFile));
 
-        final List<FaultLocationForProgram> collect = csvRecords
-            .getRecords()
-            .stream()
+        final List<FaultLocationForProgram> collect = StreamEx
+            .of(csvRecords.getRecords())
             .map(a -> new FaultLocationForProgram(
                 a.get(0),
                 splitLines(a.get(1))
             ))
-            .collect(Collectors.toList());
+            .toImmutableList();
         return new FaultLocationJam(collect);
     }
 
@@ -82,9 +81,9 @@ public class DiffTotInfoSfWithWeightSimplifiedByFaultLocation {
                 throw new IllegalArgumentException("for " + input + ": 起点必须比终点低");
             }
 
-            return IntStream.range(start, end + 1)
+            return IntStreamEx.range(start, end + 1)
                 .boxed()
-                .collect(Collectors.toSet());
+                .toImmutableSet();
 
         } else {
             throw new IllegalArgumentException("无法解析此输入");

@@ -5,6 +5,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,7 +15,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 用权重来解决 suspiciousness factor
@@ -55,19 +55,17 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
             SuspiciousnessFactorFormulas.getAllFormulas()
         );
 
-        final Set<String> formulas = testcaseWeightJam
-            .getTestcaseWeightForPrograms()
-            .stream()
+        final Set<String> formulas = StreamEx
+            .of(testcaseWeightJam.getTestcaseWeightForPrograms())
             .map(TestcaseWeightForProgram::getFormulaTitle)
-            .collect(Collectors.toSet());
+            .toImmutableSet();
 
         final HashMap<String, SuspiciousnessFactorJam> resultMap = new HashMap<>();
         formulas.forEach(formula -> {
-            final List<TestcaseWeightForProgram> weights = testcaseWeightJam
-                .getTestcaseWeightForPrograms()
-                .stream()
+            final List<TestcaseWeightForProgram> weights = StreamEx
+                .of(testcaseWeightJam.getTestcaseWeightForPrograms())
                 .filter(a -> a.getFormulaTitle().equals(formula))
-                .collect(Collectors.toList());
+                .toImmutableList();
 
             final TestcaseWeightJam weightJam = TestcaseWeightMultiplier.resolve(
                 new TestcaseWeightJam(weights),
