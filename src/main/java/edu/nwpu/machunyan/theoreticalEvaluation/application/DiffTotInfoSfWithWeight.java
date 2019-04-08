@@ -11,6 +11,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Map;
 
+/**
+ * 比较加权之前和之后的每条语句的区别
+ */
 public class DiffTotInfoSfWithWeight {
 
     // 输出文件

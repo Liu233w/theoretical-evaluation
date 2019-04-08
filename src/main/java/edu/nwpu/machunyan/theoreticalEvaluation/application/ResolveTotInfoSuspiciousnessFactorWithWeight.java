@@ -39,6 +39,10 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
         }
     }
 
+    /**
+     * @return Key 是用来加权的公式， Value 是加权之后计算的结果（分别用每个公式来加权）
+     * @throws FileNotFoundException
+     */
     public static Map<String, SuspiciousnessFactorJam> resolveAndGetResult() throws FileNotFoundException {
 
         final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
