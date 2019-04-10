@@ -1,7 +1,10 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.application;
+package edu.nwpu.machunyan.theoreticalEvaluation.application.temporary;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorHelper;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.ResolveTotInfoSuspiciousnessFactor;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.ResolveTotInfoSuspiciousnessFactorWithWeight;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.TotInfoFaultLocationLoader;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvLine;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
