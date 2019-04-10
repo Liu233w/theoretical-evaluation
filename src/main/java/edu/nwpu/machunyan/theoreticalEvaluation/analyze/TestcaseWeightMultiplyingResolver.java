@@ -11,7 +11,7 @@ import java.util.List;
  * 将测试用例的权重扩大，使结果更加明显。
  * 不会改变现有的数值，而是产生新的数值。
  */
-public class TestcaseWeightingResolver {
+public class TestcaseWeightMultiplyingResolver {
 
     /**
      * @param input
