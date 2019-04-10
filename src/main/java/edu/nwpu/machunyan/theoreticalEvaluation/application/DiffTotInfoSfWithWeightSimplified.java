@@ -84,14 +84,23 @@ public class DiffTotInfoSfWithWeightSimplified {
                 .put(item.getFormulaTitle(), item.getAverageRankDiff());
         });
 
-        tmp.forEach((programTitle, formulaToDiff) -> {
+        final List<String> sortedProgramTitle = tmp.keySet().stream()
+            .map(a -> a.substring(1))
+            .map(Integer::parseInt)
+            .sorted()
+            .map(a -> "v" + a)
+            .collect(Collectors.toList());
+
+        for (String programTitle : sortedProgramTitle) {
+            final HashMap<String, Double> formulaToDiff = tmp.get(programTitle);
+
             final Object[] diffs = new Object[formulaTitles.length];
             for (int i = 0; i < formulaTitles.length; i++) {
                 diffs[i] = formulaToDiff.get(formulaTitles[i]);
             }
 
             csvLines.add(new CsvLine(ArrayUtils.concat(new Object[]{programTitle}, diffs)));
-        });
+        }
 
         return CsvExporter.toCsvString(csvLines);
     }
