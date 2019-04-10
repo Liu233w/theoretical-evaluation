@@ -59,13 +59,13 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
             SuspiciousnessFactorFormulas.getAllFormulas()
         );
 
-        final Set<String> formulas = StreamEx
+        final Set<String> formulaTitles = StreamEx
             .of(testcaseWeightJam.getTestcaseWeightForPrograms())
             .map(TestcaseWeightForProgram::getFormulaTitle)
             .toImmutableSet();
 
         final HashMap<String, SuspiciousnessFactorJam> resultMap = new HashMap<>();
-        formulas.forEach(formula -> {
+        formulaTitles.forEach(formula -> {
             final List<TestcaseWeightForProgram> weights = StreamEx
                 .of(testcaseWeightJam.getTestcaseWeightForPrograms())
                 .filter(a -> a.getFormulaTitle().equals(formula))
