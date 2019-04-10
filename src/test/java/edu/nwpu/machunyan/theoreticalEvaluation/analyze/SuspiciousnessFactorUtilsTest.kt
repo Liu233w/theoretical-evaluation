@@ -4,7 +4,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*
 import io.kotlintest.shouldBe
 import io.kotlintest.specs.FreeSpec
 
-class SuspiciousnessFactorHelperTest : FreeSpec({
+class SuspiciousnessFactorUtilsTest : FreeSpec({
 
     "collectAsMultipleFormula" - {
 
@@ -45,7 +45,7 @@ class SuspiciousnessFactorHelperTest : FreeSpec({
                 )
             ))
 
-            val result = SuspiciousnessFactorHelper.collectAsMultipleFormula(input)
+            val result = SuspiciousnessFactorUtils.collectAsMultipleFormula(input)
 
             result shouldBe MultipleFormulaSuspiciousnessFactorJam(listOf(
                 MultipleFormulaSuspiciousnessFactorForProgram(
@@ -126,7 +126,7 @@ class SuspiciousnessFactorHelperTest : FreeSpec({
                 )
             ))
 
-            val result = SuspiciousnessFactorHelper.collectAsMultipleFormula(input)
+            val result = SuspiciousnessFactorUtils.collectAsMultipleFormula(input)
 
             result shouldBe MultipleFormulaSuspiciousnessFactorJam(listOf(
                 MultipleFormulaSuspiciousnessFactorForProgram(
@@ -168,35 +168,6 @@ class SuspiciousnessFactorHelperTest : FreeSpec({
                     )
                 )
             ), setOf("f1", "f2"))
-        }
-    }
-
-    "diff" - {
-
-        "能得到正确结果" {
-
-            val left = listOf(
-                SuspiciousnessFactorForStatement(1, 9.0),
-                SuspiciousnessFactorForStatement(2, 8.0),
-                SuspiciousnessFactorForStatement(3, 7.0),
-                SuspiciousnessFactorForStatement(4, 6.0)
-            )
-            val right = listOf(
-                SuspiciousnessFactorForStatement(1, 7.5),
-                SuspiciousnessFactorForStatement(2, 8.0),
-                SuspiciousnessFactorForStatement(3, 7.0),
-                SuspiciousnessFactorForStatement(4, 6.0)
-            )
-
-            SuspiciousnessFactorHelper.diff(left, right) shouldBe
-                listOf(
-                    DiffRankForStatement(1,
-                        DiffRankForSide(1, 9.0),
-                        DiffRankForSide(2, 7.5)),
-                    DiffRankForStatement(2,
-                        DiffRankForSide(2, 8.0),
-                        DiffRankForSide(1, 8.0))
-                )
         }
     }
 })

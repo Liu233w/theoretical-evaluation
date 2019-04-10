@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorHelper;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.DiffRankResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.DiffRankJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
@@ -29,7 +29,7 @@ public class DiffTotInfoSfWithWeight {
             final String formula = entry.getKey();
             final SuspiciousnessFactorJam weightedResult = entry.getValue();
 
-            final DiffRankJam diff = SuspiciousnessFactorHelper.diff(
+            final DiffRankJam diff = DiffRankResolver.resolve(
                 unWeightedResult, weightedResult,
                 "unweighted", "weighted");
 

@@ -32,7 +32,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 
             final String formula = entry.getKey();
             final MultipleFormulaSuspiciousnessFactorJam result =
-                SuspiciousnessFactorHelper.collectAsMultipleFormula(entry.getValue());
+                SuspiciousnessFactorUtils.collectAsMultipleFormula(entry.getValue());
 
             final Path savePath = csvOutputDir.resolve("weighted-by-" + formula + ".csv");
             FileUtils.saveString(savePath, CsvExporter.toCsvString(result));
@@ -77,7 +77,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 
             final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, weightJam);
 
-            final SuspiciousnessFactorJam result = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
+            final SuspiciousnessFactorJam result = SuspiciousnessFactorUtils.runOnAllResolvers(vtm, resolvers);
 
             resultMap.put(formula, result);
         });

@@ -99,7 +99,7 @@ public class SuspiciousnessFactorResolver {
             ));
 
         if (sort) {
-            stream = SuspiciousnessFactorHelper.rankedStream(stream);
+            stream = SuspiciousnessFactorUtils.rankedStream(stream);
         }
         return stream.toImmutableList();
     }

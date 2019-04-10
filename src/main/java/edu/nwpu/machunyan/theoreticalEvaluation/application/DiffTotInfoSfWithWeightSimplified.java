@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.AverageRankDiffResolver;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorHelper;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.DiffRankResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.ArrayUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
@@ -35,7 +35,7 @@ public class DiffTotInfoSfWithWeightSimplified {
 
         final SuspiciousnessFactorJam simplifyedWeightedSf = getSimplifyedWeightedSf(sfWeighted);
 
-        final DiffRankJam diff = SuspiciousnessFactorHelper.diff(sfUnweighted, simplifyedWeightedSf, "unweighted", "weighted", faultLocations);
+        final DiffRankJam diff = DiffRankResolver.resolve(sfUnweighted, simplifyedWeightedSf, "unweighted", "weighted", faultLocations);
 
         final AverageDiffRankJam averageDiffRankJam = AverageRankDiffResolver.resolve(diff, faultLocations);
 

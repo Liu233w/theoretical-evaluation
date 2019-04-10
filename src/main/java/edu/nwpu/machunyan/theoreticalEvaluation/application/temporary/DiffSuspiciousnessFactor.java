@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application.temporary;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorHelper;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.DiffRankResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.DiffRankJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
@@ -19,7 +19,7 @@ public class DiffSuspiciousnessFactor {
             "./target/outputs/tot_info-suspiciousness-factors - 副本.json",
             SuspiciousnessFactorJam.class);
 
-        final DiffRankJam diff = SuspiciousnessFactorHelper.diff(left, right, "orig", "dump");
+        final DiffRankJam diff = DiffRankResolver.resolve(left, right, "orig", "dump");
 
         final DiffRankJam filteredDiff = new DiffRankJam(StreamEx
             .of(diff.getDiffRankForPrograms())

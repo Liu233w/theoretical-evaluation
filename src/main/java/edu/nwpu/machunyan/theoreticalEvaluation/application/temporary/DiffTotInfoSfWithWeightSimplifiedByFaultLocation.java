@@ -1,6 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application.temporary;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorHelper;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.DiffRankResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.ResolveTotInfoSuspiciousnessFactor;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.ResolveTotInfoSuspiciousnessFactorWithWeight;
@@ -32,7 +32,7 @@ public class DiffTotInfoSfWithWeightSimplifiedByFaultLocation {
             .of(sfWeighted.entrySet())
             .mapToEntry(
                 Map.Entry::getKey,
-                a -> SuspiciousnessFactorHelper.diff(
+                a -> DiffRankResolver.resolve(
                     sfUnweighted, a.getValue(),
                     "unweighted", "weighted",
                     faultLocations

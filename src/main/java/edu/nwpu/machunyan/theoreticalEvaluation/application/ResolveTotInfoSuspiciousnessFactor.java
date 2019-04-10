@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorHelper;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.MultipleFormulaSuspiciousnessFactorJam;
@@ -31,8 +31,8 @@ public class ResolveTotInfoSuspiciousnessFactor {
 
         final VectorTableModelJam vtm = VectorTableModelResolver.resolve(jam);
 
-        final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorHelper.runOnAllResolvers(vtm, resolvers);
-        final MultipleFormulaSuspiciousnessFactorJam result = SuspiciousnessFactorHelper.collectAsMultipleFormula(suspiciousnessFactorJam);
+        final SuspiciousnessFactorJam suspiciousnessFactorJam = SuspiciousnessFactorUtils.runOnAllResolvers(vtm, resolvers);
+        final MultipleFormulaSuspiciousnessFactorJam result = SuspiciousnessFactorUtils.collectAsMultipleFormula(suspiciousnessFactorJam);
 
         FileUtils.saveObject(jsonOutputPath, suspiciousnessFactorJam);
         FileUtils.saveString(csvOutputPath, CsvExporter.toCsvString(result));
