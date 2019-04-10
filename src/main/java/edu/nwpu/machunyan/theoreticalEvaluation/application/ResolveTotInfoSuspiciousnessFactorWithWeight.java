@@ -71,7 +71,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
                 .filter(a -> a.getFormulaTitle().equals(formula))
                 .toImmutableList();
 
-            final TestcaseWeightJam weightJam = TestcaseWeightMultiplier.resolve(
+            final TestcaseWeightJam weightJam = TestcaseWeightingResolver.resolve(
                 new TestcaseWeightJam(weights),
                 testcaseWeightMultiply);
 
