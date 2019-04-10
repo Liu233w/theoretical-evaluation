@@ -28,7 +28,7 @@ public class TestcaseWeightMultiplier {
         } else if (testcaseWeight < 1.0) {
             return new TestcaseWeightForTestcase(
                 input.getTestcaseIndex(),
-                testcaseWeight * multiply
+                testcaseWeight / multiply
             );
         } else {
             return input;
