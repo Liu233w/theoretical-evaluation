@@ -14,7 +14,6 @@ import one.util.streamex.StreamEx;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 从一个大的测试用例中去除掉无效的测试用例
@@ -108,6 +107,7 @@ public class TestSuitSubsetResolver {
             if (useItem[i]) {
                 toOldSetMap[tail] = i;
                 res[tail] = rawRunResult.get(i);
+                ++tail;
             }
         }
 
@@ -129,7 +129,10 @@ public class TestSuitSubsetResolver {
         return new TestSuitSubsetJam(list);
     }
 
-    private double resolveAveragePerformance(StreamEx<RunResultForTestcase> stream, int statementCount) {
+    private double resolveAveragePerformance(
+        StreamEx<RunResultForTestcase> stream,
+        int statementCount) {
+
         return AveragePerformanceResolver.resolve(
             VectorTableModelResolver.resolve(stream, statementCount),
             resolver);
