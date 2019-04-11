@@ -15,12 +15,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 最简化版本的比较代码，只比较使用 Op 加权、并且使用 Op 计算结果的代码。
+ * 最简化版本的比较代码，只比较使用 特定公式 加权、并且使用 该公式 计算结果的代码。
  * 能够输出比较好看的结果。
  */
-public class DiffTotInfoSfWeightedByOp {
+public class DiffTotInfoSfWeightedByCertainFormula {
 
-    private static final String outputFile = "./target/outputs/totInfoSfWeightDiffByOp.csv";
+    // 权重加成倍数：测试用例的个数 * mm
+    private static final double mm = 1.0;
+
+    private static final SuspiciousnessFactorFormula formula =
+        SuspiciousnessFactorFormulas::op;
+    private static final String formulaTitle = "op";
+
+    private static final String outputFile = "./target/outputs/totInfoSfWeightDiffBy-" + formulaTitle + ".csv";
+
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
@@ -76,8 +84,6 @@ public class DiffTotInfoSfWeightedByOp {
         final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
         final TestcaseWeightJam testcaseWeightJam = ResolveTotInfoTestcaseWeight.loadFromFile();
 
-        final double mm = 1.0;
-        // 权重加成倍数：测试用例的个数 * mm
         final double testcaseWeightMultiply = jam
             .getRunResultForPrograms()
             .get(0)
@@ -92,8 +98,8 @@ public class DiffTotInfoSfWeightedByOp {
 
         return SuspiciousnessFactorResolver
             .builder()
-            .formula(SuspiciousnessFactorFormulas::op)
-            .formulaTitle("op")
+            .formula(formula)
+            .formulaTitle(formulaTitle)
             .build()
             .resolve(vtm);
     }
@@ -108,7 +114,7 @@ public class DiffTotInfoSfWeightedByOp {
 
         final List<TestcaseWeightForProgram> list = StreamEx
             .of(jam.getTestcaseWeightForPrograms())
-            .filter(a -> a.getFormulaTitle().equals("op"))
+            .filter(a -> a.getFormulaTitle().equals(formulaTitle))
             .toImmutableList();
 
         return new TestcaseWeightJam(list);
@@ -124,7 +130,7 @@ public class DiffTotInfoSfWeightedByOp {
 
         final List<SuspiciousnessFactorForProgram> list = StreamEx
             .of(jam.getResultForPrograms())
-            .filter(a -> a.getFormula().equals("op"))
+            .filter(a -> a.getFormula().equals(formulaTitle))
             .toImmutableList();
 
         return new SuspiciousnessFactorJam(list);
