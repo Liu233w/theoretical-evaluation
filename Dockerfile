@@ -23,8 +23,11 @@ RUN apt-get install \
     -y
 
 WORKDIR /app
-COPY . .
 
-RUN mvn build
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+COPY . .
+RUN mvn compile
 
 ENTRYPOINT ["sh", "entry-point.sh"]
