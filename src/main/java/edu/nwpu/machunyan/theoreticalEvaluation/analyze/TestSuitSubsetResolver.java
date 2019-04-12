@@ -88,7 +88,7 @@ public class TestSuitSubsetResolver {
 
         final List<TestSuitSubsetForProgram> list = StreamEx
             .of(runResultForPrograms)
-            .parallel()
+//            .parallel()
             .map(this::resolve)
             .peek(a -> progressBar.step())
             .toImmutableList();
