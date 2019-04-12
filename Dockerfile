@@ -25,7 +25,7 @@ RUN apt-get install \
 WORKDIR /app
 
 COPY pom.xml .
-RUN mvn dependency:go-offline
+RUN mvn verify --fail-never
 
 COPY . .
 RUN mvn compile
