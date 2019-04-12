@@ -10,6 +10,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.StreamUtils;
 import lombok.NonNull;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -78,9 +79,14 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
                 compiler, "-I.", "-fprofile-arcs", "-ftest-coverage", filePath.toString()
             });
 
-            executable = directoryPath.resolve("a");
-            if (!executable.toFile().exists()) {
-                executable = directoryPath.resolve("a.exe");
+            final String[] exeFileNames = new String[]{"a", "a.out", "a.exe"};
+            for (String name : exeFileNames) {
+                executable = directoryPath.resolve(name);
+                final File file = executable.toFile();
+                if (file.exists()) {
+                    file.setExecutable(true);
+                    return;
+                }
             }
 
             final String fileName = filePath.getFileName().toString();
