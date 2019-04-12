@@ -1,13 +1,23 @@
-FROM openjdk:8-jdk-alpine
+FROM openjdk:11-jdk-stretch
+
+#RUN rm -rf /etc/apt/sources.list.d
+RUN apt-get update && apt-get install apt-transport-https -y
 
 # 国内的镜像源
-RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.ustc.edu.cn/g' /etc/apk/repositories && \
-    sed -i 's/http:/https:/g' /etc/apk/repositories && \
-    apk update
+RUN echo '\
+# 默认注释了源码镜像以提高 apt update 速度，如有需要可自行取消注释\n\
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch main contrib non-free\n\
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch main contrib non-free\n\
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch-updates main contrib non-free\n\
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch-updates main contrib non-free\n\
+deb https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch-backports main contrib non-free\n\
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian/ stretch-backports main contrib non-free\n\
+deb https://mirrors.tuna.tsinghua.edu.cn/debian-security stretch/updates main contrib non-free\n\
+# deb-src https://mirrors.tuna.tsinghua.edu.cn/debian-security stretch/updates main contrib non-free\n\
+'\
+> /etc/apt/sources.list && apt-get update
 
 # 部分源程序不能在最新的 gcc 上编译，所以使用旧版
-RUN apk add \
-    gcc \
-    g++ \
-    make \
-    --no-cache
+RUN apt-get install \
+    build-essential \
+    -y
