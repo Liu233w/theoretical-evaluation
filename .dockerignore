@@ -1,0 +1,10 @@
+/.git
+/.idea
+/target
+/tools
+/theoretical-evaluation-framework.iml
+
+/.*
+
+/build-image.sh
+/run-image.sh

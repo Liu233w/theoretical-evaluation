@@ -1,4 +1,4 @@
-FROM openjdk:11-jdk-stretch
+FROM maven:3.6-jdk-11
 
 #RUN rm -rf /etc/apt/sources.list.d
 RUN apt-get update && apt-get install apt-transport-https -y
@@ -21,3 +21,10 @@ deb https://mirrors.tuna.tsinghua.edu.cn/debian-security stretch/updates main co
 RUN apt-get install \
     build-essential \
     -y
+
+WORKDIR /app
+COPY . .
+
+RUN mvn build
+
+ENTRYPOINT ["sh", "entry-point.sh"]

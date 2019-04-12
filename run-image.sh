@@ -4,4 +4,4 @@
 IMAGE=liu233w/private-project:theoretical-evaluation
 
 docker pull $IMAGE
-docker run -it --rm -v $(dirname $0):/workdir $IMAGE $1
+docker run -it --rm -v $(dirname $0):/app/target/outputs $IMAGE $1
