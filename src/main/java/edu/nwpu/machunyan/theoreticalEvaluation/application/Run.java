@@ -1,0 +1,177 @@
+package edu.nwpu.machunyan.theoreticalEvaluation.application;
+
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.IProgramInput;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningResultResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoInput;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoRunner;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+import lombok.Value;
+import one.util.streamex.StreamEx;
+
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.reflect.Type;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.Optional;
+
+/**
+ * 批量执行测试程序，为每个程序单独返回结果
+ */
+public class Run {
+
+    /**
+     * 要执行的所有程序
+     */
+    private static final ProgramDefination[] MAIN_LIST = new ProgramDefination[]{
+        new ProgramDefination("tcas", "tcas.c"),
+        new ProgramDefination("schedule2", "schedule2.c"),
+        new ProgramDefination("my_sort", "my_sort.c"),
+        new ProgramDefination("tot_info", "tot_info.c"),
+    };
+
+    private static final String resultDir = "./target/outputs/run-results";
+
+    public static void main(String[] args) {
+
+        StreamEx
+            .of(MAIN_LIST)
+            .mapToEntry(ProgramDefination::getProgramDir, Run::runAndGetResult)
+            .filterValues(Optional::isPresent)
+            .mapValues(Optional::get)
+            .forKeyValue((name, result) -> {
+
+                final String filePath = resolveResultFilePath(name);
+                try {
+                    FileUtils.saveObject(filePath, result);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+    }
+
+    public static RunResultJam getResultFromFile(String programName) throws FileNotFoundException {
+        final String path = resolveResultFilePath(programName);
+        return FileUtils.loadObject(path, RunResultJam.class);
+    }
+
+    private static String resolveResultFilePath(String programName) {
+        return resultDir + "/" + programName + ".json";
+    }
+
+    public static Optional<RunResultJam> runAndGetResult(ProgramDefination defination) {
+
+        // 存版本的文件夹
+        try {
+            final Path versionsDir = FileUtils.getFilePathFromResources(
+                defination.getProgramDir() + "/versions");
+
+            final List<IProgramInput> inputs = StreamEx
+                .of(resolveTestcases(defination))
+                .map(a -> new GccReadFromStdIoInput(
+                    a.getParams(),
+                    a.getInput(),
+                    a.getOutput()
+                ))
+                .map(a -> (IProgramInput) a)
+                .toImmutableList();
+
+            final List<String> subDirName = resolveSubDirName(versionsDir);
+            final List<Program> programs = StreamEx
+                .of(subDirName)
+                .map(versionStr -> new Program(
+                    versionStr,
+                    versionsDir.resolve(versionStr).resolve(defination.getProgramName()).toString()
+                ))
+                .toImmutableList();
+
+            final RunResultJam runResultJam = RunningResultResolver.runProgramForAllVersions(
+                programs, inputs, GccReadFromStdIoRunner::newInstance);
+
+            return Optional.of(runResultJam);
+
+        } catch (URISyntaxException | IOException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * 返回文件夹里的所有子文件夹名称
+     *
+     * @param versionsDir
+     * @return
+     * @throws IOException
+     */
+    private static List<String> resolveSubDirName(Path versionsDir) throws IOException {
+        return StreamEx.of(Files.list(versionsDir))
+            .filter(item -> item.toFile().isDirectory())
+            .map(item -> item.getFileName().toString())
+            .toImmutableList();
+    }
+
+    private static List<TestcaseItem> resolveTestcases(ProgramDefination defination) throws URISyntaxException, IOException {
+
+        final Path casePath = FileUtils.getFilePathFromResources(
+            defination.getProgramDir() + "/testplans/cases.json");
+        final InputStreamReader jsonReader = new InputStreamReader(Files.newInputStream(casePath));
+        final Type testcaseType = new TypeToken<List<TestcaseItem>>() {
+        }.getType();
+
+        final List<TestcaseItem> list = new Gson().fromJson(jsonReader, testcaseType);
+
+        return StreamEx
+            .of(list)
+            .map(a -> {
+                String input = a.getInput();
+                if (input == null) {
+                    input = "";
+                }
+                String[] params = a.getParams();
+                if (params == null) {
+                    params = new String[]{};
+                }
+                return new TestcaseItem(input, a.getOutput(), params, a.getName());
+            })
+            .toImmutableList();
+    }
+
+    @Value
+    public static class ProgramDefination {
+        /**
+         * resources 文件夹中存放程序文件的文件夹名
+         */
+        String programDir;
+        /**
+         * 程序的源代码名称
+         */
+        String programName;
+    }
+
+    @Value
+    private static class TestcaseItem {
+        /**
+         * 从 stdin 的输入
+         */
+        private String input;
+        /**
+         * 程序的 stdout
+         */
+        private String output;
+        /**
+         * 程序的参数
+         */
+        private String[] params;
+        /**
+         * 标识一个测试用例（没啥用处）
+         */
+        private String name;
+    }
+}
