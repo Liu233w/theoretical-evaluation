@@ -2,6 +2,7 @@
 # 构建并发布镜像，在使用前需要先用 docker login 登录
 
 set -e
+export DOCKER_BUILDKIT=0
 
 # 要执行的类名
 MAIN_CLASS=edu.nwpu.machunyan.theoreticalEvaluation.application.Main
