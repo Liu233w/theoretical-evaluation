@@ -25,9 +25,9 @@ BASE_IMAGE_TAG=liu233w/$BASE_IMAGE_TAG
 docker build -t $BASE_IMAGE_TAG --cache-from $BASE_IMAGE_TAG - < base.Dockerfile
 docker push $BASE_IMAGE_TAG
 
+    #-Djib.allowInsecureRegistries=true \
 MSYS2_ARG_CONV_EXCL='-Djib.container.workingDirectory' \
 mvn compile com.google.cloud.tools:jib-maven-plugin:1.0.2:dockerBuild \
-    #-Djib.allowInsecureRegistries=true \
     -Djib.useCurrentTimestamp=true \
     -Djib.from.image=$BASE_IMAGE_TAG \
     -Djib.to.image=$OUTPUT_IMAGE_TAG \
