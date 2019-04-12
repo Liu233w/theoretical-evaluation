@@ -20,18 +20,20 @@ OUTPUT_IMAGE_TAG=liu233w/private-project:theoretical-evaluation
 #trap finish EXIT
 #BASE_IMAGE_TAG=localhost:5000/$BASE_IMAGE_TAG
 
-BASE_IMAGE_TAG=liu233w/$BASE_IMAGE_TAG
+BASE_IMAGE_TAG=liu233w/${BASE_IMAGE_TAG}
 
-docker build -t $BASE_IMAGE_TAG --cache-from $BASE_IMAGE_TAG - < base.Dockerfile
-docker push $BASE_IMAGE_TAG
+docker build -t ${BASE_IMAGE_TAG} --cache-from ${BASE_IMAGE_TAG} - < base.Dockerfile
+docker push ${BASE_IMAGE_TAG}
 
     #-Djib.allowInsecureRegistries=true \
 MSYS2_ARG_CONV_EXCL='-Djib.container.workingDirectory' \
 mvn compile com.google.cloud.tools:jib-maven-plugin:1.0.2:dockerBuild \
     -Djib.useCurrentTimestamp=true \
-    -Djib.from.image=$BASE_IMAGE_TAG \
-    -Djib.to.image=$OUTPUT_IMAGE_TAG \
-    -Djib.container.mainClass=$MAIN_CLASS \
+    -Djib.from.image=${BASE_IMAGE_TAG} \
+    -Djib.to.image=${OUTPUT_IMAGE_TAG} \
+    -Djib.container.mainClass=${MAIN_CLASS} \
     -Djib.container.workingDirectory=/workdir \
     -Djib.container.args=-Dfile.encoding=UTF8 \
     -Djib.httpTimeout=60000
+
+docker push ${OUTPUT_IMAGE_TAG}
