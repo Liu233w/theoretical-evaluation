@@ -8,9 +8,12 @@ import one.util.streamex.StreamEx;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
+import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -28,7 +31,7 @@ public class TotInfoFaultLocationLoader {
         final CSVParser csvRecords = CSVFormat
             .EXCEL
             .withFirstRecordAsHeader()
-            .parse(new FileReader(faultLocationFile));
+            .parse(new InputStreamReader(new FileInputStream(faultLocationFile), Charset.forName("utf-8")));
 
         final List<FaultLocationForProgram> collect = StreamEx
             .of(csvRecords.getRecords())

@@ -1,103 +1,103 @@
-°æ±¾,Ó°ÏìµÄ´úÂëÐÐ,ÊÇ·ñÓÐÐ§£¨Ô¤²â£©,ÀàÐÍ,¶Ô±È£¨Ê¹ÓÃÃüÁî diff orig.c versionX.c Éú³É£©,×¢ÊÍ
-v1,341-342,Y,¿ØÖÆÁ÷,"343c343
+ç‰ˆæœ¬,å½±å“çš„ä»£ç è¡Œ,æ˜¯å¦æœ‰æ•ˆï¼ˆé¢„æµ‹ï¼‰,ç±»åž‹,å¯¹æ¯”ï¼ˆä½¿ç”¨å‘½ä»¤ diff orig.c versionX.c ç”Ÿæˆï¼‰,æ³¨é‡Š
+v1,341-342,Y,æŽ§åˆ¶æµ,"343c343
 <                            goto ret1;
 ---
-> /*                                 goto ret1; missing code */",ÕâÀïÊÇÓ°ÏìµÄÍË³öÑ­»·µÄÊ±»ú
-v2,85-91,Y,¿ØÖÆÁ÷,"85c85
+> /*                                 goto ret1; missing code */",è¿™é‡Œæ˜¯å½±å“çš„é€€å‡ºå¾ªçŽ¯çš„æ—¶æœº
+v2,85-91,Y,æŽ§åˆ¶æµ,"85c85
 <                            if ( scanf( "" %ld"", &x(i,j) ) != 1 )
 ---
->                            if ( scanf( "" %ld"", &x(i,j) ) == 0 )",Ó°Ïì¶ÁÈë£¨ÅÐ¶ÏÊäÈëÊý¾ÝÊÇ·ñºÏÀí£©
-v3,75-79,Y,¿ØÖÆÁ÷,"75c75
+>                            if ( scanf( "" %ld"", &x(i,j) ) == 0 )",å½±å“è¯»å…¥ï¼ˆåˆ¤æ–­è¾“å…¥æ•°æ®æ˜¯å¦åˆç†ï¼‰
+v3,75-79,Y,æŽ§åˆ¶æµ,"75c75
 <            if ( r * c > MAXTBL )
 ---
->            if ( r * c > MAXTBL-10)",¿ØÖÆÁ÷Ó¦µ±°üº¬ body ÄÚµÄÓï¾ä
-v4,233-234,Y,¿ØÖÆÁ÷,"233c233
+>            if ( r * c > MAXTBL-10)",æŽ§åˆ¶æµåº”å½“åŒ…å« body å†…çš„è¯­å¥
+v4,233-234,Y,æŽ§åˆ¶æµ,"233c233
 <                    if ( Abs( gold ) < EPS * Abs( g ) )
 ---
 >                    if ( Abs( gold ) < Abs( g ) )",
-v5,105,N,±äÁ¿,"105c105
+v5,105,N,å˜é‡,"105c105
 <                    totinfo += info;
 ---
->                    totinfo = info; /* removed + before = */",Ö»¸ÄÁË±äÁ¿£¨Ö±½ÓÊä³öµÄ£©£¬Ç°ºó¸²¸ÇÃ»ÓÐ±ä»¯¡£
-v6,55,N,±äÁ¿,"18c18
+>                    totinfo = info; /* removed + before = */",åªæ”¹äº†å˜é‡ï¼ˆç›´æŽ¥è¾“å‡ºçš„ï¼‰ï¼Œå‰åŽè¦†ç›–æ²¡æœ‰å˜åŒ–ã€‚
+v6,55,N,å˜é‡,"18c18
 < #define    MAXLINE 256
 ---
-> #define    MAXLINE 56","Ó°Ïì»º³åÇø³¤¶È£¨´úÂëÐÐÊÇÄÇ¸öÊ¹ÓÃÁËÕâ¸ö³£Á¿µÄÑ­»·£©
+> #define    MAXLINE 56","å½±å“ç¼“å†²åŒºé•¿åº¦ï¼ˆä»£ç è¡Œæ˜¯é‚£ä¸ªä½¿ç”¨äº†è¿™ä¸ªå¸¸é‡çš„å¾ªçŽ¯ï¼‰
 while ( fgets( line, MAXLINE, stdin ) != NULL ) /* start new table */"
-v7,378-379,Y,¿ØÖÆÁ÷,"378c378
+v7,378-379,Y,æŽ§åˆ¶æµ,"378c378
 <            if ( pi > 0.0 )
 ---
 >            if ( pi >= 0.0 ) /* added an = after > */",
-v8,201,N,±äÁ¿£¨¿ÉÄÜÓ°Ïì¿ØÖÆÁ÷£©,"200,201c200,201
+v8,201,N,å˜é‡ï¼ˆå¯èƒ½å½±å“æŽ§åˆ¶æµï¼‰,"200,201c200,201
 <            if ( Abs( del ) < Abs( sum ) * EPS )
 <                    return sum * exp( -x + a * log( x ) - LGamma( a ) );
 ---
 >            if ( Abs(del) < Abs(sum) * EPS )
 >                    return sum * exp(  x + a * log( x ) - LGamma( a ) );",
-v9,106,N,±äÁ¿£¨¿ÉÄÜÓ°Ïì¿ØÖÆÁ÷£©,"106c106
+v9,106,N,å˜é‡ï¼ˆå¯èƒ½å½±å“æŽ§åˆ¶æµï¼‰,"106c106
 <                    totdf += infodf;
 ---
->                    totdf = infodf;",ÕâÌõÓï¾äÎÞÂÛÈçºÎ¶¼»áÖ´ÐÐµÄ£¬¹À¼Æ²â²»³öÀ´
-v10,301,N,±äÁ¿£¨ÊýÖµ¾«¶È£©,"301c301
+>                    totdf = infodf;",è¿™æ¡è¯­å¥æ— è®ºå¦‚ä½•éƒ½ä¼šæ‰§è¡Œçš„ï¼Œä¼°è®¡æµ‹ä¸å‡ºæ¥
+v10,301,N,å˜é‡ï¼ˆæ•°å€¼ç²¾åº¦ï¼‰,"301c301
 <    double          N;              /* (double)n */
 ---
 >    float           N;              /* (double)n */",
-v11,198,N,±äÁ¿£¨¿ÉÄÜÓ°Ïì¿ØÖÆÁ÷£©,"198c198
+v11,198,N,å˜é‡ï¼ˆå¯èƒ½å½±å“æŽ§åˆ¶æµï¼‰,"198c198
 <            sum += del *= x / ++ap;
 ---
 >            sum = del *= x / ++ap;",
-v12,177,N,±äÁ¿£¨ÊýÖµ¾«¶È£©,"177c177
+v12,177,N,å˜é‡ï¼ˆæ•°å€¼ç²¾åº¦ï¼‰,"177c177
 <    return -tmp + log( 2.50662827465 * ser );
 ---
 >    return -tmp + log( 2.50663 * ser );",
-v13,394,N,¿ØÖÆÁ÷,"394c394
+v13,394,N,æŽ§åˆ¶æµ,"394c394
 <            if ( pj > 0.0 )
 ---
 >            if ( pj >= 0.0 )",
-v14,75-79,Y,¿ØÖÆÁ÷,"75c75
+v14,75-79,Y,æŽ§åˆ¶æµ,"75c75
 <            if ( r * c > MAXTBL )
 ---
 >            if ( r * c >= MAXTBL )",
-v15,200-202,Y,¿ØÖÆÁ÷,"200c200
+v15,200-202,Y,æŽ§åˆ¶æµ,"200c200
 <            if ( Abs( del ) < Abs( sum ) * EPS )
 ---
 >            if ( Abs( del ) < Abs( sum ) * (EPS-.000001) )",
-v16,99-115,Y,¿ØÖÆÁ÷,"99c99
+v16,99-115,Y,æŽ§åˆ¶æµ,"99c99
 <            if ( info >= 0.0 )
 ---
 >            if ( info >= 0.1 )",
-v17,223,N,±äÁ¿,"223c223
+v17,223,N,å˜é‡,"223c223
 <            anf = an * fac;
 ---
 >            anf = an - fac;",
-v18,308,Y,¿ØÖÆÁ÷,"308c308
+v18,308,Y,æŽ§åˆ¶æµ,"308c308
 <    if ( rdf <= 0 || cdf <= 0 )
 ---
 >    if ( rdf == 0 || cdf == 0 )",
-v19,55,N,±äÁ¿,"18c18
+v19,55,N,å˜é‡,"18c18
 < #define    MAXLINE 256
 ---
-> #define    MAXLINE 26",Í¬ v6£¬²»¹ýÐ§¹ûÓ¦¸Ã»á¸üÃ÷ÏÔÒ»Ð©
-v20,308-312,Y,¿ØÖÆÁ÷,"308c308
+> #define    MAXLINE 26",åŒ v6ï¼Œä¸è¿‡æ•ˆæžœåº”è¯¥ä¼šæ›´æ˜Žæ˜¾ä¸€äº›
+v20,308-312,Y,æŽ§åˆ¶æµ,"308c308
 <    if ( rdf <= 0 || cdf <= 0 )
 ---
 >    if ( rdf <= 0  )",
-v21,75,Y,±äÁ¿,"22c22
+v21,75,Y,å˜é‡,"22c22
 < #define    MAXTBL  1000
 ---
-> #define    MAXTBL  5000","Ê¹ÓÃ´¦£º
+> #define    MAXTBL  5000","ä½¿ç”¨å¤„ï¼š
   if ( r * c > MAXTBL )
    {
    (void)fputs( ""* table too large *\n"", stdout );
    return EXIT_FAILURE;
    }
-Ó¦¸Ã»áÓ°ÏìÊäÈë
+åº”è¯¥ä¼šå½±å“è¾“å…¥
 "
-v22,352-356,Y,¿ØÖÆÁ÷,"352c352
+v22,352-356,Y,æŽ§åˆ¶æµ,"352c352
 <    if ( N <= 0.0 )
 ---
 >    if ( N <= 1.0 )",
-v23,215,N,±äÁ¿,"215c215
+v23,215,N,å˜é‡,"215c215
 <    for ( n = 1; n <= ITMAX; ++n )
 ---
->    for ( n = 0; n <= ITMAX; ++n )",Ö»Ó°ÏìÑ­»·ÌåµÄÖ´ÐÐ´ÎÊý£¬¹À¼Æ²â²»³öÀ´
+>    for ( n = 0; n <= ITMAX; ++n )",åªå½±å“å¾ªçŽ¯ä½“çš„æ‰§è¡Œæ¬¡æ•°ï¼Œä¼°è®¡æµ‹ä¸å‡ºæ¥
