@@ -2,12 +2,12 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestSuitSubsetForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestSuitSubsetJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import lombok.EqualsAndHashCode;
-import lombok.NonNull;
-import lombok.ToString;
+import lombok.*;
+import me.tongfei.progressbar.ProgressBar;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 
@@ -50,55 +50,13 @@ public class TestSuitSubsetResolver {
     public TestSuitSubsetForProgram resolve(
         RunResultForProgram runResultForProgram) {
 
-        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
+        // 使用深度优先搜索划分子集
+        final RecursiveResolver result = RecursiveResolver.resolve(resolver, runResultForProgram);
 
         final List<RunResultForTestcase> rawRunResult = runResultForProgram.getRunResults();
+        final int usedCount = (int) result.getBestCount();
+        final Boolean[] useItem = result.getBestSubset();
 
-        final Boolean[] useItem = new Boolean[rawRunResult.size()];
-        Arrays.fill(useItem, true);
-
-        final double averagePerformanceBeforeDivide =
-            resolveAveragePerformance(
-                buildStreamSkipBy(rawRunResult, useItem),
-                statementCount);
-
-        double currentAveragePerformance = averagePerformanceBeforeDivide;
-
-        // 使用贪心算法划分子集
-        int lastRemovedIndex = -1;
-        while (true) {
-
-            boolean findOne = false;
-
-            for (int i = lastRemovedIndex + 1; i < useItem.length; ++i) {
-
-                useItem[i] = false;
-                final double averagePerformance =
-                    resolveAveragePerformance(
-                        buildStreamSkipBy(rawRunResult, useItem),
-                        statementCount);
-
-                if (averagePerformance <= currentAveragePerformance) {
-                    // 找到一个可以被移除的测试用例
-                    currentAveragePerformance = averagePerformance;
-                    lastRemovedIndex = i;
-                    findOne = true;
-                    break;
-                } else {
-                    // 这个测试用例不能被移除，检查下一个
-                    useItem[i] = true;
-                }
-            }
-
-            if (!findOne) {
-                // 没有能被移除的测试用例了，贪心结束
-                break;
-            }
-        }
-
-        final int usedCount = (int) Arrays.stream(useItem)
-            .filter(a -> a)
-            .count();
         final int[] toOldSetMap = new int[usedCount];
         final RunResultForTestcase[] res = new RunResultForTestcase[usedCount];
 
@@ -115,50 +73,144 @@ public class TestSuitSubsetResolver {
         return new TestSuitSubsetForProgram(
             runResultForProgram.getProgramTitle(),
             runResultForProgram.getStatementMap(),
-            currentAveragePerformance,
-            averagePerformanceBeforeDivide,
+            result.getBestAveragePerformance(),
+            result.getAveragePerformanceBeforeDivide(),
             toOldSetMap,
             list);
     }
 
     public TestSuitSubsetJam resolve(RunResultJam jam) {
+
+        final List<RunResultForProgram> runResultForPrograms = jam.getRunResultForPrograms();
+
+        @Cleanup final ProgressBar progressBar
+            = new ProgressBar("", runResultForPrograms.size());
+
         final List<TestSuitSubsetForProgram> list = StreamEx
-            .of(jam.getRunResultForPrograms())
+            .of(runResultForPrograms)
+            .parallel()
             .map(this::resolve)
+            .peek(a -> progressBar.step())
             .toImmutableList();
         return new TestSuitSubsetJam(list);
     }
 
-    private double resolveAveragePerformance(
-        StreamEx<RunResultForTestcase> stream,
-        int statementCount) {
-
-        return AveragePerformanceResolver.resolve(
-            VectorTableModelResolver.resolve(stream, statementCount),
-            resolver);
-    }
-
     /**
-     * 使用一个布尔数组来筛选输入，只有对应的布尔值为 true 的测试用例才会出现在结果的流里
-     *
-     * @param runResults
-     * @param useItem    是否使用下标对应的那个测试用例
-     * @return
+     * 用来进行递归的程序，使用类来共享变量，简化代码
      */
-    private static StreamEx<RunResultForTestcase> buildStreamSkipBy(
-        List<RunResultForTestcase> runResults,
-        Boolean[] useItem) {
-        // 这边不存在 BooleanStream，所以只能使用装箱过的布尔数组了
-        // 不过 java 会缓存 true 和 false 两个对象，所以这里应该不会影响 CPU 的 cache 优化
+    private static class RecursiveResolver {
 
-        if (useItem.length != runResults.size()) {
-            throw new IllegalArgumentException("useItem 必须和 runResults 一一对应");
+        private final SuspiciousnessFactorResolver resolver;
+        private final List<RunResultForTestcase> rawRunResults;
+        private final int statementCount;
+
+        @Getter
+        private Boolean[] bestSubset;
+        @Getter
+        private double bestAveragePerformance;
+        /**
+         * 最好的子集中的测试用例数量
+         */
+        @Getter
+        private long bestCount;
+
+        private Boolean[] currentSubset;
+        private double currentAveragePerformance;
+
+        @Getter
+        private final double averagePerformanceBeforeDivide;
+
+        public static RecursiveResolver resolve(SuspiciousnessFactorResolver resolver, RunResultForProgram runResultForProgram) {
+            final RecursiveResolver res = new RecursiveResolver(resolver, runResultForProgram);
+            res.resolve(-1);
+            return res;
         }
 
-        return EntryStream
-            .of(useItem)
-            .filterValues(a -> a)
-            .keys()
-            .map(runResults::get);
+        // init
+        private RecursiveResolver(SuspiciousnessFactorResolver resolver, RunResultForProgram runResultForProgram) {
+
+            this.resolver = resolver;
+
+            rawRunResults = runResultForProgram.getRunResults();
+            statementCount = runResultForProgram.getStatementMap().getStatementCount();
+
+            bestSubset = null;
+            bestAveragePerformance = Double.MAX_VALUE;
+            bestCount = Long.MAX_VALUE;
+
+            currentSubset = new Boolean[rawRunResults.size()];
+            Arrays.fill(currentSubset, true);
+
+            // 必须在 currentSubset 之后初始化
+            averagePerformanceBeforeDivide = resolveAveragePerformance();
+
+            currentAveragePerformance = averagePerformanceBeforeDivide;
+        }
+
+        // recursive resolve
+        private void resolve(int startIdx) {
+
+            // 使用深度优先搜索
+
+            for (int i = startIdx + 1; i < currentSubset.length; ++i) {
+
+                currentSubset[i] = false;
+                final double averagePerformance = resolveAveragePerformance();
+
+                if (averagePerformance <= currentAveragePerformance) {
+                    // 找到一个可以被移除的测试用例
+
+                    final double lastAveragePerformance = currentAveragePerformance;
+                    currentAveragePerformance = averagePerformance;
+
+                    // 递归：在移除了此元素之后的计算结果
+                    resolve(i);
+
+                    // 在不移除此元素的情况下的计算结果（下一个循环）
+                    currentSubset[i] = true;
+                    currentAveragePerformance = lastAveragePerformance;
+
+                } else {
+                    // 不需要计算移除此元素的计算结果，直接检查下一个
+
+                    currentSubset[i] = true;
+                }
+            }
+
+            // 所有分支已经枚举完毕， currentAveragePerformance 就是当前最好的结果
+            // 检查此结果是否比记录的最好结果还要好。
+
+            final long currentCount = StreamEx.of(currentSubset).filter(a -> a).count();
+
+            if (currentAveragePerformance < bestAveragePerformance
+                || currentAveragePerformance == bestAveragePerformance && currentCount < bestCount) {
+                // average performance 更小或者在相同的情况下选取的测试用例更少。
+
+                bestAveragePerformance = currentAveragePerformance;
+                bestSubset = Arrays.copyOf(currentSubset, currentSubset.length);
+                bestCount = currentCount;
+            }
+        }
+
+        // helper functions
+
+        /**
+         * 使用 {@link this#currentSubset} 来筛选输入，只有对应的布尔值为 true 的测试用例才会用来计算 average performance
+         *
+         * @return
+         */
+        private double resolveAveragePerformance() {
+            // 这边不存在 BooleanStream，所以只能使用装箱过的布尔数组了
+            // 不过 java 会缓存 true 和 false 两个对象，所以这里应该不会影响 CPU 的 cache 优化
+
+            final StreamEx<RunResultForTestcase> stream = EntryStream
+                .of(currentSubset)
+                .filterValues(a -> a)
+                .keys()
+                .map(rawRunResults::get);
+            final List<VectorTableModelForStatement> vtm =
+                VectorTableModelResolver.resolve(stream, statementCount);
+            return AveragePerformanceResolver.resolve(vtm, resolver);
+        }
     }
 }
