@@ -79,6 +79,9 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
             });
 
             executable = directoryPath.resolve("a");
+            if (!executable.toFile().exists()) {
+                executable = directoryPath.resolve("a.exe");
+            }
 
             final String fileName = filePath.getFileName().toString();
             gcovFile = directoryPath.resolve(fileName + ".gcov");
