@@ -76,7 +76,7 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
             final String compiler = decideCompilerFromFileExtension(program.getPath());
 
             waitToRunCommandAndGetProcess(new String[]{
-                compiler, "-I.", "-fprofile-arcs", "-ftest-coverage", filePath.toString()
+                compiler, "-I.", "-fprofile-arcs", "-ftest-coverage", "-lm", filePath.toString()
             });
 
             final String[] exeFileNames = new String[]{"a", "a.out", "a.exe"};
@@ -146,10 +146,23 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
     private Process waitToRunCommandAndGetProcess(String[] command, String input, boolean throwWhenNotExitWithZero) throws InterruptedException, IOException, CoverageRunnerException {
 
         Process process = Runtime.getRuntime().exec(command, null, directoryPath.toFile());
-        final OutputStream outputStream = process.getOutputStream();
-        outputStream.write(input.getBytes());
-        outputStream.flush();
-        outputStream.close();
+
+        try {
+            final OutputStream outputStream = process.getOutputStream();
+            if (input != null && !input.equals("")) {
+                outputStream.write(input.getBytes());
+                outputStream.flush();
+            }
+            // send EOF
+            outputStream.close();
+
+        } catch (IOException e) {
+            // 被测程序本身有可能异常退出，导致 broken pipe。
+            // 如果这个参数被设置，这里就不抛出异常
+            if (throwWhenNotExitWithZero) {
+                throw e;
+            }
+        }
 
         int returnCode = process.waitFor();
 
