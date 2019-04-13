@@ -54,14 +54,31 @@ public class TestcaseWeightHelper {
 
     /**
      * 在 run result 上运行每个 resolver，将结果收集到一起
+     * <p>
+     * 默认使用并行计算。
      */
     public static TestcaseWeightJam runOnAllResolvers(
         RunResultJam jam,
         List<TestcaseWeightResolver> resolvers) {
+        return runOnAllResolvers(jam, resolvers, true);
+    }
 
-        final List<TestcaseWeightForProgram> collect = StreamEx
-            .of(resolvers)
-            .parallel()
+    /**
+     * 在 run result 上运行每个 resolver，将结果收集到一起
+     */
+    public static TestcaseWeightJam runOnAllResolvers(
+        RunResultJam jam,
+        List<TestcaseWeightResolver> resolvers,
+        boolean useParallel) {
+
+        StreamEx<TestcaseWeightResolver> stream = StreamEx
+            .of(resolvers);
+
+        if (useParallel) {
+            stream = stream.parallel();
+        }
+
+        final List<TestcaseWeightForProgram> collect = stream
             .map(resolver -> resolver.resolve(jam))
             .map(TestcaseWeightJam::getTestcaseWeightForPrograms)
             .flatMap(Collection::stream)

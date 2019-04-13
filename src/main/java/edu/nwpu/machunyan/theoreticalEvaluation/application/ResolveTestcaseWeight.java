@@ -28,6 +28,8 @@ public class ResolveTestcaseWeight {
         "tot_info",
     };
 
+    private static final boolean USE_PARALLEL = false;
+
     public static void main(String[] args) throws IOException {
 
         for (String name : MAIN_LIST) {
@@ -66,13 +68,14 @@ public class ResolveTestcaseWeight {
                     .builder()
                     .provider(cacheLoader)
                     .reporter(cacheSaver)
+                    .useParallel(USE_PARALLEL)
             );
 
             final RunResultJam imports = Run.getResultFromFile(name);
             progressBar.maxHint(resolvers.size() * imports.getRunResultForPrograms().size());
 
             final TestcaseWeightJam result = TestcaseWeightHelper
-                .runOnAllResolvers(imports, resolvers);
+                .runOnAllResolvers(imports, resolvers, USE_PARALLEL);
 
             FileUtils.saveObject(resolveResultFilePath(name), result);
 

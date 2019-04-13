@@ -43,8 +43,13 @@ public class TestcaseWeightResolver {
      */
     private final Provider provider;
 
+    /**
+     * 是否使用并行计算
+     */
+    private final boolean useParallel;
+
     public TestcaseWeightResolver(@NonNull SuspiciousnessFactorFormula sfFormula) {
-        this(sfFormula, "", null, null);
+        this(sfFormula, "", null, null, true);
     }
 
     @Builder
@@ -52,10 +57,12 @@ public class TestcaseWeightResolver {
         @NonNull SuspiciousnessFactorFormula sfFormula,
         String formulaTitle,
         Reporter reporter,
-        Provider provider) {
+        Provider provider,
+        boolean useParallel) {
 
         this.reporter = reporter;
         this.provider = provider;
+        this.useParallel = useParallel;
 
         this.resolver = SuspiciousnessFactorResolver.builder()
             .formula(sfFormula)
@@ -98,8 +105,11 @@ public class TestcaseWeightResolver {
     public TestcaseWeightJam resolve(RunResultJam jam) {
 
         StreamEx<RunResultForProgram> stream = StreamEx
-            .of(jam.getRunResultForPrograms())
-            .parallel();
+            .of(jam.getRunResultForPrograms());
+
+        if (useParallel) {
+            stream = stream.parallel();
+        }
 
         StreamEx<TestcaseWeightForProgram> resStream;
         if (provider != null) {
