@@ -5,5 +5,9 @@ IMAGE=liu233w/private-project:theoretical-evaluation
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
+DOCKER_ENV_PARAM=""
+# un-comment the line below to disable parallel
+#DOCKER_ENV_PARAM="${DOCKER_ENV_PARAM} -e DISABLE_PARALLEL=1"
+
 docker pull ${IMAGE}
-docker run -m 600MB -it --rm -v ${DIR}:/app/target/outputs ${IMAGE} $1
+docker run -m 800MB -it --rm -v ${DIR}:/app/target/outputs ${DOCKER_ENV_PARAM} ${IMAGE} $1

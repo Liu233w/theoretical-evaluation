@@ -28,9 +28,11 @@ public class ResolveTestcaseWeight {
         "tot_info",
     };
 
-    private static final boolean USE_PARALLEL = false;
+    private static final boolean USE_PARALLEL = !"1".equals(System.getenv("DISABLE_PARALLEL"));
 
     public static void main(String[] args) throws IOException {
+
+        LogUtils.logInfo("USE_PARALLEL=" + USE_PARALLEL);
 
         for (String name : MAIN_LIST) {
 
@@ -41,7 +43,7 @@ public class ResolveTestcaseWeight {
             } catch (FileNotFoundException ignored) {
             }
 
-            System.out.println("Running on " + name);
+            LogUtils.logInfo("Running on " + name);
 
             final CacheHandler cache = new CacheHandler("testcase-weights-" + name);
 
