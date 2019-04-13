@@ -9,4 +9,4 @@ if [ $# -eq 0 ]; then
     exit 1
 fi
 
-mvn exec:java -Dexec.mainClass="${BASE_PACKAGE}$1"
+java -cp ./target/classes/:./target/dependency/* "${BASE_PACKAGE}$1"
