@@ -8,12 +8,14 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Cleanup;
 import me.tongfei.progressbar.ProgressBar;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 
 public class ResolveTestcaseWeight {
 
@@ -45,12 +47,17 @@ public class ResolveTestcaseWeight {
 
             final TestcaseWeightResolver.Reporter cacheSaver = item -> {
                 final String key = item.getFormulaTitle() + "-" + item.getTitle();
+                LogUtils.logFine("saving cache: " + key);
                 cache.saveCache(key, item);
                 progressBar.step();
             };
             final TestcaseWeightResolver.Provider cacheLoader = (resolver, input) -> {
                 final String key = resolver.getFormulaTitle() + "-" + input.getProgramTitle();
-                return cache.tryLoadCache(key, TestcaseWeightForProgram.class);
+                final Optional<TestcaseWeightForProgram> result = cache.tryLoadCache(key, TestcaseWeightForProgram.class);
+                if (result.isPresent()) {
+                    LogUtils.logFine("loaded item from cache: " + key);
+                }
+                return result;
             };
 
             final List<TestcaseWeightResolver> resolvers = TestcaseWeightResolver.of(
