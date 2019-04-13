@@ -4,8 +4,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForPr
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import lombok.Cleanup;
-import me.tongfei.progressbar.ProgressBar;
 import one.util.streamex.StreamEx;
 
 import java.util.Collection;
@@ -61,14 +59,11 @@ public class TestcaseWeightHelper {
         RunResultJam jam,
         List<TestcaseWeightResolver> resolvers) {
 
-        @Cleanup final ProgressBar progressBar = new ProgressBar("", resolvers.size());
-
         final List<TestcaseWeightForProgram> collect = StreamEx
             .of(resolvers)
             .parallel()
             .map(resolver -> resolver.resolve(jam))
             .map(TestcaseWeightJam::getTestcaseWeightForPrograms)
-            .peek(a -> progressBar.step())
             .flatMap(Collection::stream)
             .toImmutableList();
         return new TestcaseWeightJam(collect);
