@@ -34,6 +34,14 @@ public class ResolveSuspiciousnessFactor {
     public static void main(String[] args) throws IOException {
 
         for (String name : MAIN_LIST) {
+
+            // 跳过已经计算出的结果
+            try {
+                getResultFromFile(name);
+                break;
+            } catch (FileNotFoundException ignored) {
+            }
+
             final SuspiciousnessFactorJam json = runAndGetResult(name);
             final MultipleFormulaSuspiciousnessFactorJam csv = SuspiciousnessFactorUtils.collectAsMultipleFormula(json);
 

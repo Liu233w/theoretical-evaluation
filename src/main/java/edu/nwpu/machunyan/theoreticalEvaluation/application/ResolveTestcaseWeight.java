@@ -26,6 +26,13 @@ public class ResolveTestcaseWeight {
 
         for (String name : MAIN_LIST) {
 
+            // 跳过已经计算出的结果
+            try {
+                getResultFromFile(name);
+                break;
+            } catch (FileNotFoundException ignored) {
+            }
+
             System.out.println("Running on " + name);
 
             final RunResultJam imports = Run.getResultFromFile(name);
