@@ -124,6 +124,7 @@ public class TestSuitSubsetResolver {
     public TestSuitSubsetJam resolve(RunResultJam jam) {
         final List<TestSuitSubsetForProgram> list = StreamEx
             .of(jam.getRunResultForPrograms())
+            .parallel()
             .map(this::resolve)
             .toImmutableList();
         return new TestSuitSubsetJam(list);
