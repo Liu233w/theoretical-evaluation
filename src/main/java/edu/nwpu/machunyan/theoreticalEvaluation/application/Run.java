@@ -9,6 +9,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoInpu
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Value;
 import one.util.streamex.StreamEx;
 
@@ -43,6 +44,7 @@ public class Run {
 
         StreamEx
             .of(MAIN_LIST)
+            .peek(a -> LogUtils.logInfo("Running program: " + a))
             .mapToEntry(ProgramDefination::getProgramDir, Run::runAndGetResult)
             .filterValues(Optional::isPresent)
             .mapValues(Optional::get)
