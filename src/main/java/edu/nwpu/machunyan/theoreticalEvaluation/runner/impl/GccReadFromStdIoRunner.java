@@ -85,7 +85,7 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
                 final File file = executable.toFile();
                 if (file.exists()) {
                     file.setExecutable(true);
-                    return;
+                    break;
                 }
             }
 
