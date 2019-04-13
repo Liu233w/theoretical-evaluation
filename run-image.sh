@@ -3,5 +3,7 @@
 
 IMAGE=liu233w/private-project:theoretical-evaluation
 
-docker pull $IMAGE
-docker run -it --rm -v $(dirname $0):/app/target/outputs $IMAGE $1
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+docker pull ${IMAGE}
+docker run -it --rm -v ${DIR}:/app/target/outputs ${IMAGE} $1
