@@ -56,7 +56,7 @@ public class DiffTotInfoSfWeightedByCertainFormula {
     private static SuspiciousnessFactorJam resolveWeightedSf() throws FileNotFoundException {
 
         final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
-        final TestcaseWeightJam testcaseWeightJam = ResolveTotInfoTestcaseWeight.loadFromFile();
+        final TestcaseWeightJam testcaseWeightJam = ResolveTestcaseWeight.getResultFromFile("tot_info");
 
         final double testcaseWeightMultiply = jam
             .getRunResultForPrograms()

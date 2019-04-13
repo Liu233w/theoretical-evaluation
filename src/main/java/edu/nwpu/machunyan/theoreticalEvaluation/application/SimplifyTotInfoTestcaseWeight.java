@@ -12,7 +12,7 @@ public class SimplifyTotInfoTestcaseWeight {
 
     public static void main(String[] args) throws IOException {
 
-        final TestcaseWeightJam input = ResolveTotInfoTestcaseWeight.loadFromFile();
+        final TestcaseWeightJam input = ResolveTestcaseWeight.getResultFromFile("tot_info");
         final TestcaseWeightJam result = TestcaseWeightHelper.simplifyTestcaseWeights(input);
         FileUtils.saveObject(outputPath, result);
     }
