@@ -6,4 +6,4 @@ IMAGE=liu233w/private-project:theoretical-evaluation
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 docker pull ${IMAGE}
-docker run -it --rm -v ${DIR}:/app/target/outputs ${IMAGE} $1
+docker run -m 600MB -it --rm -v ${DIR}:/app/target/outputs ${IMAGE} $1
