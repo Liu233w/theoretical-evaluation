@@ -38,7 +38,7 @@ public class ResolveSuspiciousnessFactor {
             // 跳过已经计算出的结果
             try {
                 getResultFromFile(name);
-                break;
+                continue;
             } catch (FileNotFoundException ignored) {
             }
 
