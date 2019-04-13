@@ -44,33 +44,7 @@ public class DiffTotInfoSfWeightedByCertainFormula {
             "",
             faultLocations);
 
-        FileUtils.saveString(outputFile, toCsvString(diff));
-    }
-
-    private static String toCsvString(DiffRankJam diff) {
-        final ArrayList<CsvLine> csvLines = new ArrayList<>();
-        csvLines.add(new CsvLine(new Object[]{"program title", "statement index", "rank change", "rank diff"}));
-
-        StreamEx
-            .of(diff.getDiffRankForPrograms())
-            .sortedByInt(a -> Integer.parseInt(a.getProgramTitle().substring(1)))
-            .forEach(item -> {
-                final String programTitle = item.getProgramTitle();
-                item.getDiffRankForStatements().forEach(statement -> {
-                    if (statement.getLeft().getRank() == -1) {
-                        // 跳过不存在的语句
-                        return;
-                    }
-                    csvLines.add(new CsvLine(new Object[]{
-                        programTitle,
-                        statement.getStatementIndex(),
-                        statement.getLeft().getRank() + " -> " + statement.getRight().getRank(),
-                        statement.getRankDiff(),
-                    }));
-                });
-            });
-
-        return CsvExporter.toCsvString(csvLines);
+        FileUtils.saveString(outputFile, CsvExporter.toSimplifiedCsvString(diff));
     }
 
     /**

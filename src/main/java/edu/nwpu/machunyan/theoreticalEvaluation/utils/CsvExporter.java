@@ -1,6 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
+import one.util.streamex.StreamEx;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -121,6 +122,39 @@ public class CsvExporter {
         }
 
         return toCsvString(csvLines);
+    }
+
+    /**
+     * 输出一个简化后的 csv 语句，将 left 和 right 合成一个，并且移除 suspiciousness factor
+     *
+     * @param diff
+     * @return
+     */
+    public static String toSimplifiedCsvString(DiffRankJam diff) {
+        final ArrayList<CsvLine> csvLines = new ArrayList<>();
+        csvLines.add(new CsvLine(new Object[]{"program title", "formula", "statement index", "rank change", "rank diff"}));
+
+        StreamEx
+            .of(diff.getDiffRankForPrograms())
+            .sortedByInt(a -> Integer.parseInt(a.getProgramTitle().substring(1)))
+            .forEach(item -> {
+                final String programTitle = item.getProgramTitle();
+                item.getDiffRankForStatements().forEach(statement -> {
+                    if (statement.getLeft().getRank() == -1) {
+                        // 跳过不存在的语句
+                        return;
+                    }
+                    csvLines.add(new CsvLine(new Object[]{
+                        programTitle,
+                        item.getFormulaTitle(),
+                        statement.getStatementIndex(),
+                        statement.getLeft().getRank() + " -> " + statement.getRight().getRank(),
+                        statement.getRankDiff(),
+                    }));
+                });
+            });
+
+        return CsvExporter.toCsvString(csvLines);
     }
 }
 

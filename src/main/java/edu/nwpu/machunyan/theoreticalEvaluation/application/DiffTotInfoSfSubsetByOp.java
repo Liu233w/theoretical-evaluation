@@ -4,14 +4,12 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvLine;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -39,33 +37,7 @@ public class DiffTotInfoSfSubsetByOp {
             "",
             faultLocations);
 
-        FileUtils.saveString(outputFile, toCsvString(diff));
-    }
-
-    private static String toCsvString(DiffRankJam diff) {
-        final ArrayList<CsvLine> csvLines = new ArrayList<>();
-        csvLines.add(new CsvLine(new Object[]{"program title", "statement index", "rank change", "rank diff"}));
-
-        StreamEx
-            .of(diff.getDiffRankForPrograms())
-            .sortedByInt(a -> Integer.parseInt(a.getProgramTitle().substring(1)))
-            .forEach(item -> {
-                final String programTitle = item.getProgramTitle();
-                item.getDiffRankForStatements().forEach(statement -> {
-                    if (statement.getLeft().getRank() == -1) {
-                        // 跳过不存在的语句
-                        return;
-                    }
-                    csvLines.add(new CsvLine(new Object[]{
-                        programTitle,
-                        statement.getStatementIndex(),
-                        statement.getLeft().getRank() + " -> " + statement.getRight().getRank(),
-                        statement.getRankDiff(),
-                    }));
-                });
-            });
-
-        return CsvExporter.toCsvString(csvLines);
+        FileUtils.saveString(outputFile, CsvExporter.toSimplifiedCsvString(diff));
     }
 
     /**
@@ -76,7 +48,7 @@ public class DiffTotInfoSfSubsetByOp {
      */
     private static SuspiciousnessFactorJam resolveSubsetedSf() throws FileNotFoundException {
 
-        final TestSuitSubsetJam testSuitSubsetJam = ResolveTotInfoTestSuitSubset.loadFromFile();
+        final TestSuitSubsetJam testSuitSubsetJam = ResolveTestSuitSubsetByOp.getResultFromFile("tot_info");
         final RunResultJam runResultJam = testSuitSubsetJam.getRunResultJam();
         final VectorTableModelJam vectorTableModelJam = VectorTableModelResolver.resolve(runResultJam);
 
