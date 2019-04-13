@@ -134,7 +134,8 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
                 statementMap);
 
         } catch (IOException | InterruptedException e) {
-            throw new CoverageRunnerException(e);
+            throw new CoverageRunnerException("Error when execute " + program.getPath()
+                + " with input " + programInput.getInputDescription(), e);
         }
     }
 
