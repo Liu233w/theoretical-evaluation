@@ -5,7 +5,6 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
 
 import java.io.Reader;
-import java.lang.reflect.Type;
 
 public class JsonUtils {
 
@@ -30,7 +29,7 @@ public class JsonUtils {
      * @param <T>
      * @return
      */
-    public static <T> T fromJson(JsonElement json, Type type) {
+    public static <T> T fromJson(JsonElement json, Class<T> type) {
         return new Gson().fromJson(json, type);
     }
 
@@ -42,7 +41,7 @@ public class JsonUtils {
      * @param <T>
      * @return
      */
-    public static <T> T fromJson(Reader reader, Type type) {
+    public static <T> T fromJson(Reader reader, Class<T> type) {
         return new Gson().fromJson(reader, type);
     }
 }

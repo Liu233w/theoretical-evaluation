@@ -6,7 +6,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 
 import java.io.*;
-import java.lang.reflect.Type;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -76,7 +75,7 @@ public class FileUtils {
      * @return
      * @throws FileNotFoundException
      */
-    public static <T> T loadObject(Path path, Type type) throws FileNotFoundException {
+    public static <T> T loadObject(Path path, Class<T> type) throws FileNotFoundException {
         return JsonUtils.fromJson(new FileReader(path.toFile()), type);
     }
 
@@ -89,7 +88,7 @@ public class FileUtils {
      * @return
      * @throws FileNotFoundException
      */
-    public static <T> T loadObject(String path, Type type) throws FileNotFoundException {
+    public static <T> T loadObject(String path, Class<T> type) throws FileNotFoundException {
         return loadObject(Paths.get(path), type);
     }
 

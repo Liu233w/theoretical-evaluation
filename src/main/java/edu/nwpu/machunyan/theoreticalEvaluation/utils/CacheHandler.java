@@ -4,7 +4,6 @@ import lombok.*;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Type;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -42,7 +41,7 @@ public class CacheHandler {
         return resolveCacheLocation(key).toFile().exists();
     }
 
-    public <T> Optional<T> tryLoadCache(String key, Type type) {
+    public <T> Optional<T> tryLoadCache(String key, Class<T> type) {
         final Path path = resolveCacheLocation(key);
         try {
             final T res = FileUtils.loadObject(path, type);
@@ -61,10 +60,9 @@ public class CacheHandler {
      *
      * @param key
      * @param object
-     * @param <T>
      */
     @SneakyThrows(IOException.class)
-    public <T> void saveCache(String key, T object) {
+    public void saveCache(String key, Object object) {
         final Path path = resolveCacheLocation(key);
         FileUtils.saveObject(path, object);
     }
