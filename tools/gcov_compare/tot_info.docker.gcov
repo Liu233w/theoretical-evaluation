@@ -1,0 +1,411 @@
+        -:    0:Source:tot_info.c
+        -:    0:Graph:tot_info.gcno
+        -:    0:Data:tot_info.gcda
+        -:    0:Runs:1
+        -:    0:Programs:1
+        -:    1:/*
+        -:    2:        tot_info -- combine information statistics for multiple tables
+        -:    3:
+        -:    4:        last edit:      89/02/06        D A Gwyn
+        -:    5:
+        -:    6:        SCCS ID:        @(#)tot_info.c  1.1 (edited for publication)
+        -:    7:*/
+        -:    8:
+        -:    9:#include        <ctype.h>
+        -:   10:#include        <stdio.h>
+        -:   11:
+        -:   12:#include        "std.h"
+        -:   13:
+        -:   14:#include        "chisq.h"
+        -:   15:#include        "gamma.h"               /* for QChiSq() */
+        -:   16:
+        -:   17:
+        -:   18:#define MAXLINE 256
+        -:   19:
+        -:   20:
+        -:   21:#ifndef MAXTBL
+        -:   22:#define MAXTBL  1000
+        -:   23:#endif
+        -:   24:
+        -:   25:static char     line[MAXLINE];          /* row/column header input line */
+        -:   26:static long     f[MAXTBL];              /* frequency tallies */
+        -:   27:static int      r;                      /* # of rows */
+        -:   28:static int      c;                      /* # of columns */
+        -:   29:
+        -:   30:#define x(i,j)  f[(i)*c+(j)]            /* convenient way to access freqs */
+        -:   31:
+        -:   32:#define COMMENT '#'                     /* comment character */
+        -:   33:
+        -:   34:
+        -:   35:#ifndef NULL
+        -:   36:#define NULL 0
+        -:   37:#endif
+        -:   38:
+        -:   39:/*ARGSUSED*/
+        -:   40:int
+        1:   41:main( argc, argv )
+        -:   42:        int             argc;
+        -:   43:        char            *argv[];
+        -:   44:        {
+        -:   45:        char    *p;             /* input line scan location */
+        -:   46:        int     i;              /* row index */
+        -:   47:        int     j;              /* column index */
+        -:   48:        double          info;           /* computed information measure */
+        -:   49:        int             infodf;         /* degrees of freedom for information */
+        1:   50:        double          totinfo = 0.0;  /* accumulated information */
+        -:   51:        int             totdf;  /* accumulated degrees of freedom */
+        -:   52:
+        1:   53:        totdf = 0;
+        -:   54:
+       12:   55:        while ( fgets( line, MAXLINE, stdin ) != NULL ) /* start new table */
+        -:   56:                {
+       11:   57:                for ( p = line; *p != '\0' && isspace( (int)*p ); ++p )
+        -:   58:                        ;
+        -:   59:
+       11:   60:                if ( *p == '\0' )
+        6:   61:                        continue;       /* skip blank line */
+        -:   62:
+        5:   63:                if ( *p == COMMENT )
+        -:   64:                        {               /* copy comment through */
+    #####:   65:                        (void)fputs( line, stdout );
+    #####:   66:                        continue;
+        -:   67:                        }
+        -:   68:
+        5:   69:                if ( sscanf( p, "%d %d\n", &r, &c ) != 2 )
+        -:   70:                        {
+    #####:   71:                        (void)fputs( "* invalid row/column line *\n", stdout );
+    #####:   72:                        return EXIT_FAILURE;
+        -:   73:                        }
+        -:   74:
+        5:   75:                if ( r * c > MAXTBL )
+        -:   76:                        {
+    #####:   77:                        (void)fputs( "* table too large *\n", stdout );
+    #####:   78:                        return EXIT_FAILURE;
+        -:   79:                        }
+        -:   80:
+        -:   81:                /* input tallies */
+        -:   82:
+       15:   83:                for ( i = 0; i < r; ++i )
+       43:   84:                        for ( j = 0; j < c; ++j )
+       33:   85:                                if ( scanf( " %ld", &x(i,j) ) != 1 )
+        -:   86:                                        {
+        1:   87:                                        (void)fputs( "* EOF in table *\n",
+        -:   88:                                                     stdout
+        -:   89:                                                   );
+        1:   90:                                        return EXIT_FAILURE;
+        -:   91:                                        }
+        -:   92:
+        -:   93:                /* compute statistic */
+        -:   94:
+        4:   95:                info = InfoTbl( r, c, f, &infodf );
+        -:   96:
+        -:   97:                /* print results */
+        -:   98:
+        4:   99:                if ( info >= 0.0 )
+        -:  100:                        {
+        4:  101:                        (void)printf( "2info = %5.2f\tdf = %2d\tq = %7.4f\n",
+        -:  102:                                      info, infodf,
+        -:  103:                                      QChiSq( info, infodf )
+        -:  104:                                    );
+        4:  105:                        totinfo += info;
+        4:  106:                        totdf += infodf;
+        -:  107:                        }
+        -:  108:                else
+    #####:  109:                        (void)fputs( info < -3.5 ? "out of memory\n"
+    #####:  110:                                   : info < -2.5 ? "table too small\n"
+        -:  111:                                   : info < -1.5 ? "negative freq\n"
+        -:  112:                                   : "table all zeros\n",
+        -:  113:                                     stdout
+        -:  114:                                   );
+        -:  115:                }
+        -:  116:
+    #####:  117:        if ( totdf <= 0 )
+        -:  118:                {
+    #####:  119:                (void)fputs( "\n*** no information accumulated ***\n", stdout );
+    #####:  120:                return EXIT_FAILURE;
+        -:  121:                }
+        -:  122:
+    #####:  123:        (void)printf( "\ntotal 2info = %5.2f\tdf = %2d\tq = %7.4f\n",
+        -:  124:                      totinfo, totdf,
+        -:  125:                      QChiSq( totinfo, totdf )
+        -:  126:                    );
+    #####:  127:        return EXIT_SUCCESS;
+        -:  128:        }
+        -:  129:
+        -:  130:
+        -:  131:/*  -*- Last-Edit:  Tue Dec 15 14:48:14 1992 by Tarak S. Goradia; -*- */
+        -:  132:
+        -:  133:/*
+        -:  134:        Gamma -- gamma and related functions
+        -:  135:
+        -:  136:        last edit:      88/09/09        D A Gwyn
+        -:  137:
+        -:  138:        SCCS ID:        @(#)gamma.c     1.1 (edited for publication)
+        -:  139:
+        -:  140:Acknowledgement:
+        -:  141:        Code based on that found in "Numerical Methods in C".
+        -:  142:*/
+        -:  143:
+        -:  144:#include        <math.h>
+        -:  145:#include        <stdio.h>
+        -:  146:
+        -:  147:#include        "std.h"
+        -:  148:
+        -:  149:double
+        5:  150:LGamma( x )
+        -:  151:        double                  x;
+        -:  152:        {
+        -:  153:        static const double     cof[6] =
+        -:  154:                {
+        -:  155:                76.18009173,    -86.50532033,   24.01409822,
+        -:  156:                -1.231739516,   0.120858003e-2, -0.536382e-5
+        -:  157:                };
+        -:  158:        double                  tmp, ser;
+        -:  159:        int             j;
+        -:  160:
+        -:  161:
+        5:  162:        if ( --x < 0.0 )        /* use reflection formula for accuracy */
+        -:  163:                {
+        1:  164:                double  pix = PI * x;
+        -:  165:
+        1:  166:                return log( pix / sin( pix ) ) - LGamma( 1.0 - x );
+        -:  167:                }
+        -:  168:
+        4:  169:        tmp = x + 5.5;
+        4:  170:        tmp -= (x + 0.5) * log( tmp );
+        -:  171:
+        4:  172:        ser = 1.0;
+        -:  173:
+       28:  174:        for ( j = 0; j < 6; ++j )
+       24:  175:                ser += cof[j] / ++x;
+        -:  176:
+        4:  177:        return -tmp + log( 2.50662827465 * ser );
+        -:  178:        }
+        -:  179:
+        -:  180:#define ITMAX   100
+        -:  181:#define EPS     3.0e-7
+        -:  182:
+        -:  183:static double
+        3:  184:gser( a, x )
+        -:  185:        double          a, x;
+        -:  186:        {
+        -:  187:        double          ap, del, sum;
+        -:  188:        int     n;
+        -:  189:
+        -:  190:
+        3:  191:        if ( x <= 0.0 )
+    #####:  192:                return 0.0;
+        -:  193:
+        3:  194:        del = sum = 1.0 / (ap = a);
+        -:  195:
+       19:  196:        for ( n = 1; n <= ITMAX; ++n )
+        -:  197:                {
+       19:  198:                sum += del *= x / ++ap;
+        -:  199:
+       19:  200:                if ( Abs( del ) < Abs( sum ) * EPS )
+        3:  201:                        return sum * exp( -x + a * log( x ) - LGamma( a ) );
+        -:  202:                }
+        -:  203:
+        -:  204:        /*NOTREACHED*/
+    #####:  205:        }
+        -:  206:
+        -:  207:static double
+        1:  208:gcf( a, x )
+        -:  209:        double          a, x;
+        -:  210:        {
+        -:  211:        int     n;
+        1:  212:        double          gold = 0.0, fac = 1.0, b1 = 1.0,
+        1:  213:                        b0 = 0.0, a0 = 1.0, a1 = x;
+        -:  214:
+        2:  215:        for ( n = 1; n <= ITMAX; ++n )
+        -:  216:                {
+        -:  217:                double  anf;
+        2:  218:                double  an = (double)n;
+        2:  219:                double  ana = an - a;
+        -:  220:
+        2:  221:                a0 = (a1 + a0 * ana) * fac;
+        2:  222:                b0 = (b1 + b0 * ana) * fac;
+        2:  223:                anf = an * fac;
+        2:  224:                b1 = x * b0 + anf * b1;
+        2:  225:                a1 = x * a0 + anf * a1;
+        -:  226:
+        2:  227:                if ( a1 != 0.0 )
+        -:  228:                        {               /* renormalize */
+        2:  229:                        double  g = b1 * (fac = 1.0 / a1);
+        -:  230:
+        2:  231:                        gold = g - gold;
+        -:  232:
+        2:  233:                        if ( Abs( gold ) < EPS * Abs( g ) )
+        2:  234:                                return exp( -x + a * log( x ) - LGamma( a ) ) * g;
+        -:  235:
+        1:  236:                        gold = g;
+        -:  237:                        }
+        -:  238:                }
+        -:  239:
+        -:  240:        /*NOTREACHED*/
+    #####:  241:        }
+        -:  242:
+        -:  243:double
+        4:  244:QGamma( a, x )
+        -:  245:        double  a, x;
+        -:  246:        {
+        -:  247:
+        4:  248:        return x < a + 1.0 ? 1.0 - gser( a, x ) : gcf( a, x );
+        -:  249:        }
+        -:  250:
+        -:  251:double
+        4:  252:QChiSq( chisq, df )
+        -:  253:        double  chisq;
+        -:  254:        int     df;
+        -:  255:        {
+        4:  256:        return QGamma( (double)df / 2.0, chisq / 2.0 );
+        -:  257:        }
+        -:  258:
+        -:  259:
+        -:  260:/*
+        -:  261:        InfoTbl -- Kullback's information measure for a 2-way contingency table
+        -:  262:
+        -:  263:        last edit:      88/09/19        D A Gwyn
+        -:  264:
+        -:  265:        SCCS ID:        @(#)info.c      1.1 (edited for publication)
+        -:  266:
+        -:  267:        Special return values:
+        -:  268:                -1.0    entire table consisted of 0 entries
+        -:  269:                -2.0    invalid table entry (frequency less than 0)
+        -:  270:                -3.0    invalid table dimensions (r or c less than 2)
+        -:  271:                -4.0    unable to allocate enough working storage
+        -:  272:*/
+        -:  273:
+        -:  274:#include        <math.h>                /* for log() */
+        -:  275:#if __STDC__
+        -:  276:#include        <stdlib.h>              /* malloc, free */
+        -:  277:
+        -:  278:#include        "std.h"
+        -:  279:#else
+        -:  280:#include        "std.h"
+        -:  281:
+        -:  282:extern pointer  malloc();
+        -:  283:extern void     free();
+        -:  284:#endif
+        -:  285:
+        -:  286:#ifndef NULL
+        -:  287:#define NULL 0
+        -:  288:#endif
+        -:  289:
+        -:  290:#define x(i,j)  f[(i)*c+(j)]            /* convenient way to access freqs */
+        -:  291:
+        -:  292:double
+        4:  293:InfoTbl( r, c, f, pdf )
+        -:  294:        int             r;              /* # rows in table */
+        -:  295:        int             c;              /* # columns in table */
+        -:  296:        const long      *f;             /* -> r*c frequency tallies */
+        -:  297:        int             *pdf;           /* -> return # d.f. for chi-square */
+        -:  298:        {
+        -:  299:        int     i;              /* row index */
+        -:  300:        int     j;              /* column index */
+        -:  301:        double          N;              /* (double)n */
+        -:  302:        double          info;           /* accumulates information measure */
+        -:  303:        double          *xi;            /* row sums */
+        -:  304:        double          *xj;            /* col sums */
+        4:  305:        int             rdf = r - 1;    /* row degrees of freedom */
+        4:  306:        int             cdf = c - 1;    /* column degrees of freedom */
+        -:  307:
+        4:  308:        if ( rdf <= 0 || cdf <= 0 )
+        -:  309:                {
+    #####:  310:                info = -3.0;
+    #####:  311:                goto ret3;
+        -:  312:                }
+        -:  313:
+        4:  314:        *pdf = rdf * cdf;               /* total degrees of freedom */
+        -:  315:
+        4:  316:        if ( (xi = (double *)malloc( r * sizeof(double) )) == NULL )
+        -:  317:                {
+    #####:  318:                info = -4.0;
+    #####:  319:                goto ret3;
+        -:  320:                }
+        -:  321:
+        4:  322:        if ( (xj = (double *)malloc( c * sizeof(double) )) == NULL )
+        -:  323:                {
+    #####:  324:                info = -4.0;
+    #####:  325:                goto ret2;
+        -:  326:                }
+        -:  327:
+        -:  328:        /* compute row sums and total */
+        -:  329:
+        4:  330:        N = 0.0;
+        -:  331:
+       14:  332:        for ( i = 0; i < r; ++i )
+        -:  333:                {
+       10:  334:                double  sum = 0.0;      /* accumulator */
+        -:  335:
+       41:  336:                for ( j = 0; j < c; ++j )
+        -:  337:                        {
+       31:  338:                        long    k = x(i,j);
+        -:  339:
+       31:  340:                        if ( k < 0L )
+        -:  341:                                {
+    #####:  342:                                info = -2.0;
+        -:  343:/*                              goto ret1; missing code */
+        -:  344:                                }
+        -:  345:
+       31:  346:                        sum += (double)k;
+        -:  347:                        }
+        -:  348:
+       10:  349:                N += xi[i] = sum;
+        -:  350:                }
+        -:  351:
+        4:  352:        if ( N <= 0.0 )
+        -:  353:                {
+    #####:  354:                info = -1.0;
+    #####:  355:                goto ret1;
+        -:  356:                }
+        -:  357:
+        -:  358:        /* compute column sums */
+        -:  359:
+       16:  360:        for ( j = 0; j < c; ++j )
+        -:  361:                {
+       12:  362:                double  sum = 0.0;      /* accumulator */
+        -:  363:
+       43:  364:                for ( i = 0; i < r; ++i )
+       31:  365:                        sum += (double)x(i,j);
+        -:  366:
+       12:  367:                xj[j] = sum;
+        -:  368:                }
+        -:  369:
+        -:  370:        /* compute information measure (four parts) */
+        -:  371:
+        4:  372:        info = N * log( N );                                    /* part 1 */
+        -:  373:
+       14:  374:        for ( i = 0; i < r; ++i )
+        -:  375:                {
+       10:  376:                double  pi = xi[i];     /* row sum */
+        -:  377:
+       10:  378:                if ( pi > 0.0 )
+       10:  379:                        info -= pi * log( pi );                 /* part 2 */
+        -:  380:
+       41:  381:                for ( j = 0; j < c; ++j )
+        -:  382:                        {
+       31:  383:                        double  pij = (double)x(i,j);
+        -:  384:
+       31:  385:                        if ( pij > 0.0 )
+       30:  386:                                info += pij * log( pij );       /* part 3 */
+        -:  387:                        }
+        -:  388:                }
+        -:  389:
+       16:  390:        for ( j = 0; j < c; ++j )
+        -:  391:                {
+       12:  392:                double  pj = xj[j];     /* column sum */
+        -:  393:
+       12:  394:                if ( pj > 0.0 )
+       12:  395:                        info -= pj * log( pj );                 /* part 4 */
+        -:  396:                }
+        -:  397:
+        4:  398:        info *= 2.0;                    /* for comparability with chi-square */
+        -:  399:
+        -:  400:    ret1:
+        4:  401:        free( (pointer)xj );
+        -:  402:    ret2:
+        4:  403:        free( (pointer)xi );
+        -:  404:    ret3:
+        4:  405:        return info;
+        -:  406:        }
