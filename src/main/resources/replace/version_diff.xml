@@ -1,0 +1,222 @@
+<root>
+  <version name="v1">107c107
+&lt; 	if (src[*i - 1] == ESCAPE) {
+---
+&gt; 	if (src[*i] == ESCAPE) {
+</version>
+  <version name="v2">107c107
+&lt; 	if (src[*i - 1] == ESCAPE) {
+---
+&gt; /*	if (src[*i - 1] == ESCAPE) {
+110c110
+&lt; 	} else	
+---
+&gt; 	} else	*/
+</version>
+  <version name="v3">494c494
+&lt; 	    if ((m &gt;= 0) &amp;&amp; (lastm != m)) {
+---
+&gt; 	    if ((m &gt;= 0) /* &amp;&amp; (lastm != m) */) {
+</version>
+  <version name="v4">494c494
+&lt; 	    if ((m &gt;= 0) &amp;&amp; (lastm != m)) {
+---
+&gt; 	    if ((m &gt;= 0) &amp;&amp; (/* lastm BUG! */ i != m)) {
+</version>
+  <version name="v5">118c118
+&lt; 		    for (k = src[*i-1]+1; k&lt;=src[*i+1]; k++) 
+---
+&gt; 		    for (k = src[*i-1]+1; k&lt; /* = BUG! */ src[*i+1]; k++) 
+</version>
+  <version name="v6">315c315
+&lt;     while ((i &gt; offset))
+---
+&gt;     while ((i &gt;= offset)) /* off by 1 BUG!*/
+319c319
+&lt; 	    i = offset;
+---
+&gt; 	    break; /*i = offset;*/
+</version>
+  <version name="v7">176c176
+&lt;   return (c == BOL || c == EOL || c == CLOSURE);
+---
+&gt;   return (c == BOL || c == ANY/*EOL mutation BUG!*/ || c == CLOSURE);
+</version>
+  <version name="v8">176c176
+&lt;   return (c == BOL || c == EOL || c == CLOSURE);
+---
+&gt;   return (c == BOL || c == EOL /* || c == CLOSURE BUG! */);
+</version>
+  <version name="v9">115,116c115,116
+&lt; 	    else if ((isalnum(src[*i - 1])) &amp;&amp; (isalnum(src[*i + 1])) 
+&lt; 		&amp;&amp; (src[*i - 1] &lt;= src[*i + 1]))
+---
+&gt; 	    else if ((isalnum(src[*i - 1])) &amp;&amp; (isalnum(src[*i + 1]))) 
+&gt; 		/* &amp;&amp; (src[*i - 1] &lt;= src[*i + 1])) missing code */
+</version>
+  <version name="v10">115c115,116
+&lt; 	    else if ((isalnum(src[*i - 1])) &amp;&amp; (isalnum(src[*i + 1])) 
+---
+&gt; 	    else if ((isalnum(src[*i - 1])) 
+&gt; 		     /* missing code &amp;&amp; (isalnum(src[*i + 1])) */
+</version>
+  <version name="v11">116c116
+&lt; 		&amp;&amp; (src[*i - 1] &lt;= src[*i + 1]))
+---
+&gt; 		&amp;&amp; (src[*i - 1] &gt; src[*i])) /* operator mutation and off by one */
+</version>
+  <version name="v12">14c14,15
+&lt; # define MAXPAT MAXSTR
+---
+&gt;       /* was MAXPAT MAXSTR, but did a constant mutation */
+&gt; # define MAXPAT 50 
+</version>
+  <version name="v13">500c500,503
+&lt; 		i = i + 1;
+---
+&gt; 		if (m == -1) 
+&gt; 		    i = i + 1;
+&gt; 		else 
+&gt; 		    i = i + 2;  /* added code */
+</version>
+  <version name="v14">370c370
+&lt; 		 if ((lin[*i] != NEWLINE) &amp;&amp; (!locate(lin[*i], pat, j+1)))
+---
+&gt; 		 if ((lin[*i] != NEWLINE)) /* missing code  &amp;&amp; (!locate(lin[*i], pat, j+1))) */
+</version>
+  <version name="v15">241c241
+&lt; 	    result = i;
+---
+&gt; 	    result = i + 1; /* off by one error */
+</version>
+  <version name="v16">176c176
+&lt;   return (c == BOL || c == EOL || c == CLOSURE);
+---
+&gt;   return (c == BOL || c == EOL || c == CLOSURE || c == ANY); /* added code */
+</version>
+  <version name="v17">75c75
+&lt; 	    result = ESCAPE;
+---
+&gt; 	    result = NEWLINE; /* constant mutation ESCAPE; */
+</version>
+  <version name="v18">370c370,372
+&lt; 		 if ((lin[*i] != NEWLINE) &amp;&amp; (!locate(lin[*i], pat, j+1)))
+---
+&gt;        /* removed this code from the following if:
+&gt;           ((lin[*i] != NEWLINE) &amp;&amp;  missing code */
+&gt; 		 if ((!locate(lin[*i], pat, j+1)))
+</version>
+  <version name="v19">38,39c38
+&lt; bool
+&lt; my_getline(s, maxsize)
+---
+&gt; void my_getline(s, maxsize, result)
+41a41
+&gt; bool *result;
+43,45c43,46
+&lt;     char *result;
+&lt;     result = fgets(s, maxsize, stdin);
+&lt;     return (result != NULL);
+---
+&gt;     *result = true;
+&gt;     if (!fgets(s, 104, stdin)) {
+&gt;       *result = 0;
+&gt;     }
+513c514
+&lt;     result = my_getline(line, MAXSTR);
+---
+&gt;     my_getline(line, MAXSTR, &amp;result);
+516c517
+&lt; 	result = my_getline(line, MAXSTR);
+---
+&gt; 	my_getline(line, MAXSTR, &amp;result);
+</version>
+  <version name="v20">75c75
+&lt; 	    result = ESCAPE;
+---
+&gt; 	  result = ENDSTR;	/* NOTE JMW replaced ESCAPE with ENDSTR. */
+</version>
+  <version name="v21">14c14
+&lt; # define MAXPAT MAXSTR
+---
+&gt; # define MAXPAT 99
+44c44
+&lt;     result = fgets(s, maxsize, stdin);
+---
+&gt;     result = fgets(s, maxsize - 1, stdin);
+55c55
+&lt;     if (*j &gt;= maxset)
+---
+&gt;     if (*j &gt; maxset)
+209c209
+&lt; 	else if ((arg[i] == EOL) &amp;&amp; (arg[i+1] == delim))
+---
+&gt; 	else if ((arg[i] == EOL))
+</version>
+  <version name="v22">140,141c140
+&lt;     *i = *i + 1;
+&lt;     if (arg[*i] == NEGATE) {
+---
+&gt;     if (arg[*i + 1] == NEGATE)
+143,144c142
+&lt; 	*i = *i + 1;
+&lt;     } else
+---
+&gt;     else
+145a144
+&gt;     *i = *i + 1;
+</version>
+  <version name="v23">74c74
+&lt; 	if (s[*i + 1] == ENDSTR)
+---
+&gt; 	if (s[*i] == ENDSTR)
+</version>
+  <version name="v24">362,363c362
+&lt; 		 if (lin[*i] == NEWLINE)
+&lt; 		     advance = 0;
+---
+&gt; 		 advance = 0;
+</version>
+  <version name="v25">362c362
+&lt; 		 if (lin[*i] == NEWLINE)
+---
+&gt; 		 if (lin[*i] &lt;= NEWLINE)
+</version>
+  <version name="v26">370c370
+&lt; 		 if ((lin[*i] != NEWLINE) &amp;&amp; (!locate(lin[*i], pat, j+1)))
+---
+&gt; 		 if ((lin[*i] != NEWLINE) &amp;&amp; (!locate(lin[*i], pat, j)))
+</version>
+  <version name="v27">182c182
+&lt;   return (   c == LITCHAR || c == BOL  || c == EOL || c == ANY 
+---
+&gt;   return (   c == LITCHAR || c == BOL  || c == ANY 
+</version>
+  <version name="v28">176c176
+&lt;   return (c == BOL || c == EOL || c == CLOSURE);
+---
+&gt;   return (c == BOL || c == EOL || c == CLOSURE || c == CCL);
+</version>
+  <version name="v29">176c176
+&lt;   return (c == BOL || c == EOL || c == CLOSURE);
+---
+&gt;   return (c == BOL || c == EOL || c == CLOSURE || c == NCCL);
+</version>
+  <version name="v30">176c176
+&lt;   return (c == BOL || c == EOL || c == CLOSURE);
+---
+&gt;   return (c == BOL || c == EOL || c == CLOSURE || c != LITCHAR);
+</version>
+  <version name="v31">370c370
+&lt; 		 if ((lin[*i] != NEWLINE) &amp;&amp; (!locate(lin[*i], pat, j+1)))
+---
+&gt; 		 if ((lin[*i] &gt;= NEWLINE) &amp;&amp; (!locate(lin[*i], pat, j+1)))
+</version>
+  <version name="v32">115c115,116
+&lt; 	    else if ((isalnum(src[*i - 1])) &amp;&amp; (isalnum(src[*i + 1])) 
+---
+&gt; 	    else if ((isalnum(src[*i - 1])) &amp; (isalnum(src[*i + 1]))
+&gt;                     /*  Replaced logical AND with bitwise AND  */
+</version>
+</root>
+

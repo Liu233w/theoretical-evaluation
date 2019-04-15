@@ -1,0 +1,52 @@
+<root>
+  <version name="v1">135c135
+&lt;     if(prio &lt; 1 || prio &gt; MAXLOPRIO) return(BADPRIO);
+---
+&gt; /*    if(prio &lt; 1 || prio &gt; MAXLOPRIO) return(BADPRIO); MISSING CODE */
+</version>
+  <version name="v2">295c295
+&lt;     index = index &gt;= length ? length -1 : index; /* If ratio == 1.0 */
+---
+&gt; /*    index = index &gt;= length ? length -1 : index; MISSING CODE *//* If ratio == 1.0 */
+</version>
+  <version name="v3">292c292
+&lt;     if(ratio &lt; 0.0 || ratio &gt; 1.0) return(BADRATIO); /* Somebody else goofed */
+---
+&gt; /*     if(ratio &lt; 0.0 || ratio &gt; 1.0) return(BADRATIO); MISSING CODE *//* Somebody else goofed */
+</version>
+  <version name="v4">92c92
+&lt; 	while(buf[strlen(buf)-1] != '\n' &amp;&amp; fgets(buf, CMDSIZE, stdin));
+---
+&gt; /*	while(buf[strlen(buf)-1] != '\n' &amp;&amp; fgets(buf, CMDSIZE, stdin)); MISSING CODE */
+</version>
+  <version name="v5">110a111
+&gt;     if(prio &lt; 1) return(BADPRIO); /* Mustn't allow 0 */
+</version>
+  <version name="v6">77c77
+&lt; 	*prio = *command = -1; *ratio =-1.0;
+---
+&gt; 	*prio = 1; *command = -1; *ratio =1.0;
+</version>
+  <version name="v7">292c292,293
+&lt;     if(ratio &lt; 0.0 || ratio &gt; 1.0) return(BADRATIO); /* Somebody else goofed */
+---
+&gt;     if(ratio &lt; 0.0 || ratio &gt;= 1.0) return(BADRATIO); /* Somebody else goofed */
+&gt;     /* operator mutation */
+</version>
+  <version name="v8">275c275
+&lt;     if(prio &gt; MAXPRIO || prio &lt; 0) return(BADPRIO); /* Somebody goofed */
+---
+&gt; /*     if(prio &gt; MAXPRIO || prio &lt; 0) return(BADPRIO); *//* Somebody goofed */ 
+</version>
+  <version name="v9">187c187
+&lt; 	reschedule(0);
+---
+&gt; 	get_current();
+</version>
+  <version name="v10">28c28
+&lt;     if(status = put_end(prio, new_process)) return(status); /* Error */
+---
+&gt;     put_end(prio, new_process); /* removed status code */
+</version>
+</root>
+

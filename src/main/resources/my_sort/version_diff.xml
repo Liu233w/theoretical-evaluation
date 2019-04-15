@@ -1,0 +1,38 @@
+<root>
+  <version name="v1">2274c2274
+&lt;     for (i = 1U; i &lt; n; ++i) {
+---
+&gt;     for (i = 1U; i &lt; n-1; ++i) {//11111111111
+</version>
+  <version name="v2">2276c2276
+&lt;         SORT_SWAP(dst[i - 1U], dst[i]);
+---
+&gt;         SORT_SWAP(dst[i], dst[i - 1U]);//22222222222222222
+</version>
+  <version name="v3">311c311
+&lt;     if (SORT_CMP(dst[i - 1], dst[i]) &lt;= 0) {
+---
+&gt;     if (SORT_CMP(dst[i - 1], dst[i]) &lt; 0) {//333333333333333
+</version>
+  <version name="v4">2249c2249
+&lt;     p0 = 0;
+---
+&gt;     p0 = 1;//4444444444444
+</version>
+  <version name="v5">319c319
+&lt;     for (j = i - 1; j &gt;= location; j--) {
+---
+&gt;     for (j = i - 1; j &gt; location; j--) {//555555555555
+</version>
+  <version name="v6">289c289
+&lt;       if (r - c &lt;= 1) {
+---
+&gt;       if (r - c &lt;= 2) {//66666666666
+</version>
+  <version name="source">2274c2274
+&lt;     for (i = 1U; i &lt; n; ++i) {
+---
+&gt;     for (i = 1U; i &lt; n-1; ++i) {//11111111111
+</version>
+</root>
+

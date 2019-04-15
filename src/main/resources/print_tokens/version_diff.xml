@@ -1,0 +1,38 @@
+<root>
+  <version name="v1">224c224,225
+&lt;                  case 16 : ch=get_char(tstream_ptr-&gt;ch_stream);
+---
+&gt;                  case 16 :
+&gt;                  case 32 : ch=get_char(tstream_ptr-&gt;ch_stream);
+240,241c241
+&lt;                  case 25 :
+&lt;                  case 32 : token_ptr-&gt;token_id=special(next_st);
+---
+&gt;                  case 25 : token_ptr-&gt;token_id=special(next_st);
+365a366
+&gt;           case 32: return(EQUALGREATER);
+393d393
+&lt;          case 32: return(EQUALGREATER);
+</version>
+  <version name="v2">223a224
+&gt; 		 case 12 : /* added code */
+</version>
+  <version name="v3">232c232
+&lt;                            unget_char(ch,tstream_ptr-&gt;ch_stream);
+---
+&gt;                            /*unget_char(ch,tstream_ptr-&gt;ch_stream);*/
+</version>
+  <version name="v4" />
+  <version name="v5">251c251
+&lt;                            token_ind=next_st=0;
+---
+&gt;                            /* missing code token_ind= */ next_st=0;
+</version>
+  <version name="v6" />
+  <version name="v7">279c279
+&lt; 		if(token_ind &gt;= 80) break; /* Added protection - hf */
+---
+&gt; 		if(token_ind &gt;= 10) break; /* Added protection - hf */
+</version>
+</root>
+

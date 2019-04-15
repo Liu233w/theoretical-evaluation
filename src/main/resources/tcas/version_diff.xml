@@ -1,0 +1,273 @@
+<root>
+  <version name="v1">75c75
+&lt; 	result = !(Own_Below_Threat()) || ((Own_Below_Threat()) &amp;&amp; (!(Down_Separation &gt;= ALIM())));
+---
+&gt; 	result = !(Own_Below_Threat()) || ((Own_Below_Threat()) &amp;&amp; (!(Down_Separation &gt; ALIM()))); /* opertor mutation */
+</version>
+  <version name="v2">63c63
+&lt;     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
+---
+&gt;     return (Climb_Inhibit ? Up_Separation + MINSEP /* operand mutation NOZCROSS */ : Up_Separation);
+</version>
+  <version name="v3">120c120
+&lt;     intent_not_known = Two_of_Three_Reports_Valid &amp;&amp; Other_RAC == NO_INTENT;
+---
+&gt;     intent_not_known = Two_of_Three_Reports_Valid || Other_RAC == NO_INTENT; /* logic change */
+</version>
+  <version name="v4">79c79
+&lt; 	result = Own_Above_Threat() &amp;&amp; (Cur_Vertical_Sep &gt;= MINSEP) &amp;&amp; (Up_Separation &gt;= ALIM());
+---
+&gt; 	result = Own_Above_Threat() &amp;&amp; (Cur_Vertical_Sep &gt;= MINSEP) || (Up_Separation &gt;= ALIM()); /* logic change */
+</version>
+  <version name="v5">118c118
+&lt;     enabled = High_Confidence &amp;&amp; (Own_Tracked_Alt_Rate &lt;= OLEV) &amp;&amp; (Cur_Vertical_Sep &gt; MAXALTDIFF);
+---
+&gt;     enabled = High_Confidence &amp;&amp; (Own_Tracked_Alt_Rate &lt;= OLEV); /* &amp;&amp; (Cur_Vertical_Sep &gt; MAXALTDIFF); missing code */
+</version>
+  <version name="v6">104c104
+&lt;     return (Own_Tracked_Alt &lt; Other_Tracked_Alt);
+---
+&gt;     return (Own_Tracked_Alt &lt;= Other_Tracked_Alt); /* operator mutation */
+</version>
+  <version name="v7">51c51
+&lt;     Positive_RA_Alt_Thresh[1] = 500;
+---
+&gt;     Positive_RA_Alt_Thresh[1] = 550; /* constant mutation */
+</version>
+  <version name="v8">53c53
+&lt;     Positive_RA_Alt_Thresh[3] = 740;
+---
+&gt;     Positive_RA_Alt_Thresh[3] = 700; /* constant mutation */
+</version>
+  <version name="v9">1d0
+&lt; 
+90c89
+&lt;     upward_preferred = Inhibit_Biased_Climb() &gt; Down_Separation;
+---
+&gt;     upward_preferred = Inhibit_Biased_Climb() &gt;= Down_Separation; /* operator mutation */
+</version>
+  <version name="v10">104c104,105
+&lt;     return (Own_Tracked_Alt &lt; Other_Tracked_Alt);
+---
+&gt;     /* NOTE JMW replaced LESS-THAN with LESS-THAN-EQUAL. */
+&gt;     return (Own_Tracked_Alt &lt;= Other_Tracked_Alt);
+109c110,111
+&lt;     return (Other_Tracked_Alt &lt; Own_Tracked_Alt);
+---
+&gt;     /* NOTE JMW replaced LESS-THAN with LESS-THAN-EQUAL. */
+&gt;     return (Other_Tracked_Alt &lt;= Own_Tracked_Alt);
+</version>
+  <version name="v11">104c104,106
+&lt;     return (Own_Tracked_Alt &lt; Other_Tracked_Alt);
+---
+&gt;  /* NOTE JMW added equality to the condition. */
+&gt; 
+&gt;     return (Own_Tracked_Alt &lt;= Other_Tracked_Alt);
+109c111,113
+&lt;     return (Other_Tracked_Alt &lt; Own_Tracked_Alt);
+---
+&gt;  /* NOTE JMW added equality to the condition. */
+&gt; 
+&gt;     return (Other_Tracked_Alt &lt;= Own_Tracked_Alt);
+128c132,136
+&lt; 	if (need_upward_RA &amp;&amp; need_downward_RA)
+---
+&gt; 
+&gt;      /* NOTE JMW removed exclusive-or condition from upward and downward
+&gt;              computations. */
+&gt; 
+&gt; 	if (need_upward_RA)
+132,133d139
+&lt; 	    alt_sep = UNRESOLVED;
+&lt; 	else if (need_upward_RA)
+</version>
+  <version name="v12">2c2
+&lt; /*  -*- Last-Edit:  Fri Jan 29 11:13:27 1993 by Tarak S. Goradia; -*- */
+---
+&gt; /*  -*- Last-Edit:  Tue Apr 20 11:22:37 1993 by Michael Greenberg; -*- */
+118c118
+&lt;     enabled = High_Confidence &amp;&amp; (Own_Tracked_Alt_Rate &lt;= OLEV) &amp;&amp; (Cur_Vertical_Sep &gt; MAXALTDIFF);
+---
+&gt;     enabled = High_Confidence || (Own_Tracked_Alt_Rate &lt;= OLEV) &amp;&amp; (Cur_Vertical_Sep &gt; MAXALTDIFF);
+</version>
+  <version name="v13">10c10
+&lt; #define OLEV       600		/* in feets/minute */
+---
+&gt; #define OLEV       600+100		/* in feets/minute */
+</version>
+  <version name="v14">11c11
+&lt; #define MAXALTDIFF 600		/* max altitude difference in feet */
+---
+&gt; #define MAXALTDIFF 600+50		/* max altitude difference in feet */
+</version>
+  <version name="v15">12c12
+&lt; #define MINSEP     300          /* min separation in feet */
+---
+&gt; #define MINSEP     300+350          /* min separation in feet */
+118c118
+&lt;     enabled = High_Confidence &amp;&amp; (Own_Tracked_Alt_Rate &lt;= OLEV) &amp;&amp; (Cur_Vertical_Sep &gt; MAXALTDIFF);
+---
+&gt;     enabled = High_Confidence &amp;&amp; (Own_Tracked_Alt_Rate &lt;= OLEV); 
+</version>
+  <version name="v16">50c50
+&lt;     Positive_RA_Alt_Thresh[0] = 400;
+---
+&gt;     Positive_RA_Alt_Thresh[0] = 400+1;
+</version>
+  <version name="v17">51c51
+&lt;     Positive_RA_Alt_Thresh[1] = 500;
+---
+&gt;     Positive_RA_Alt_Thresh[1] = 500+1;
+</version>
+  <version name="v18">52c52
+&lt;     Positive_RA_Alt_Thresh[2] = 640;
+---
+&gt;     Positive_RA_Alt_Thresh[2] = 640+50;
+</version>
+  <version name="v19">53c53
+&lt;     Positive_RA_Alt_Thresh[3] = 740;
+---
+&gt;     Positive_RA_Alt_Thresh[3] = 740+20;
+</version>
+  <version name="v20">72c72
+&lt;     upward_preferred = Inhibit_Biased_Climb() &gt; Down_Separation;
+---
+&gt;     upward_preferred = Inhibit_Biased_Climb() &gt;= Down_Separation;
+</version>
+  <version name="v21">72c72
+&lt;     upward_preferred = Inhibit_Biased_Climb() &gt; Down_Separation;
+---
+&gt;     upward_preferred = (Up_Separation + NOZCROSS) &gt; Down_Separation;
+</version>
+  <version name="v22">72c72
+&lt;     upward_preferred = Inhibit_Biased_Climb() &gt; Down_Separation;
+---
+&gt;     upward_preferred = Up_Separation &gt; Down_Separation;
+</version>
+  <version name="v23">90c90
+&lt;     upward_preferred = Inhibit_Biased_Climb() &gt; Down_Separation;
+---
+&gt;     upward_preferred = (Up_Separation + NOZCROSS) &gt; Down_Separation;
+</version>
+  <version name="v24">90c90
+&lt;     upward_preferred = Inhibit_Biased_Climb() &gt; Down_Separation;
+---
+&gt;     upward_preferred = Up_Separation &gt; Down_Separation;
+</version>
+  <version name="v25">97c97
+&lt; 	result = !(Own_Above_Threat()) || ((Own_Above_Threat()) &amp;&amp; (Up_Separation &gt;= ALIM()));
+---
+&gt; 	result = !(Own_Above_Threat()) || ((Own_Above_Threat()) &amp;&amp; (Up_Separation &gt; ALIM()));
+</version>
+  <version name="v26">118c118
+&lt;     enabled = High_Confidence &amp;&amp; (Own_Tracked_Alt_Rate &lt;= OLEV) &amp;&amp; (Cur_Vertical_Sep &gt; MAXALTDIFF);
+---
+&gt;     enabled = High_Confidence &amp;&amp; (Cur_Vertical_Sep &gt; MAXALTDIFF);
+</version>
+  <version name="v27">118c118
+&lt;     enabled = High_Confidence &amp;&amp; (Own_Tracked_Alt_Rate &lt;= OLEV) &amp;&amp; (Cur_Vertical_Sep &gt; MAXALTDIFF);
+---
+&gt;     enabled = High_Confidence &amp;&amp; (Own_Tracked_Alt_Rate &lt;= OLEV) ;
+</version>
+  <version name="v28">63c63
+&lt;     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
+---
+&gt;     return ((Climb_Inhibit == 0) ? Up_Separation + NOZCROSS : Up_Separation);
+</version>
+  <version name="v29">63c63
+&lt;     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
+---
+&gt;     return (Up_Separation);
+</version>
+  <version name="v30">63c63
+&lt;     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
+---
+&gt;     return (Up_Separation + NOZCROSS);
+</version>
+  <version name="v31">75a76
+&gt; 	result = result &amp;&amp; (Own_Tracked_Alt &lt;= Other_Tracked_Alt);
+79a81
+&gt; 	result = result &amp;&amp; (Own_Tracked_Alt &lt; Other_Tracked_Alt);
+126c128
+&lt; 	need_upward_RA = Non_Crossing_Biased_Climb() &amp;&amp; Own_Below_Threat();
+---
+&gt; 	need_upward_RA = Non_Crossing_Biased_Climb();
+</version>
+  <version name="v32">93a94
+&gt; 	result = result &amp;&amp; (Other_Tracked_Alt &lt; Own_Tracked_Alt);
+97a99
+&gt; 	result = result &amp;&amp; (Other_Tracked_Alt &lt;= Own_Tracked_Alt);
+127c129
+&lt; 	need_downward_RA = Non_Crossing_Biased_Descend() &amp;&amp; Own_Above_Threat();
+---
+&gt; 	need_downward_RA = Non_Crossing_Biased_Descend();
+</version>
+  <version name="v33">50,53c50,53
+&lt;     Positive_RA_Alt_Thresh[0] = 400;
+&lt;     Positive_RA_Alt_Thresh[1] = 500;
+&lt;     Positive_RA_Alt_Thresh[2] = 640;
+&lt;     Positive_RA_Alt_Thresh[3] = 740;
+---
+&gt;     Positive_RA_Alt_Thresh[1] = 400;
+&gt;     Positive_RA_Alt_Thresh[2] = 500;
+&gt;     Positive_RA_Alt_Thresh[3] = 640;
+&gt;     Positive_RA_Alt_Thresh[4] = 740;
+</version>
+  <version name="v34">124c124
+&lt;     if (enabled &amp;&amp; ((tcas_equipped &amp;&amp; intent_not_known) || !tcas_equipped))
+---
+&gt;     if (enabled &amp;&amp; tcas_equipped &amp;&amp; intent_not_known || !tcas_equipped)
+</version>
+  <version name="v35">63c63
+&lt;     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
+---
+&gt;     return (Climb_Inhibit ? Up_Separation : Up_Separation + NOZCROSS);
+</version>
+  <version name="v36">46c46
+&lt; #define DOWNWARD_RA 2
+---
+&gt; #define DOWNWARD_RA 1
+</version>
+  <version name="v37">58c58
+&lt;  return Positive_RA_Alt_Thresh[Alt_Layer_Value];
+---
+&gt;  return Positive_RA_Alt_Thresh[0];
+</version>
+  <version name="v38">27c27
+&lt; int Positive_RA_Alt_Thresh[4];
+---
+&gt; int Positive_RA_Alt_Thresh[3];
+</version>
+  <version name="v39">2c2
+&lt; /*  -*- Last-Edit:  Fri Jan 29 11:13:27 1993 by Tarak S. Goradia; -*- */
+---
+&gt; /*  -*- Last-Edit:  Wed Apr  7 14:06:41 1993 by Tarak S. Goradia; -*- */
+97c97
+&lt; 	result = !(Own_Above_Threat()) || ((Own_Above_Threat()) &amp;&amp; (Up_Separation &gt;= ALIM()));
+---
+&gt; 	result = !(Own_Above_Threat()) || ((Own_Above_Threat()) &amp;&amp; (Up_Separation &gt; ALIM()));
+</version>
+  <version name="v40">2c2
+&lt; /*  -*- Last-Edit:  Fri Jan 29 11:13:27 1993 by Tarak S. Goradia; -*- */
+---
+&gt; /*  -*- Last-Edit:  Wed Apr  7 17:44:49 1993 by Tarak S. Goradia; -*- */
+75c75
+&lt; 	result = !(Own_Below_Threat()) || ((Own_Below_Threat()) &amp;&amp; (!(Down_Separation &gt;= ALIM())));
+---
+&gt; 	result = ((Own_Below_Threat()) &amp;&amp; (!(Down_Separation &gt;= ALIM())));
+126c126
+&lt; 	need_upward_RA = Non_Crossing_Biased_Climb() &amp;&amp; Own_Below_Threat();
+---
+&gt; 	need_upward_RA = Non_Crossing_Biased_Climb();
+</version>
+  <version name="v41">2c2
+&lt; /*  -*- Last-Edit:  Fri Jan 29 11:13:27 1993 by Tarak S. Goradia; -*- */
+---
+&gt; /*  -*- Last-Edit:  Wed Apr  7 17:14:13 1993 by Tarak S. Goradia; -*- */
+79c79
+&lt; 	result = Own_Above_Threat() &amp;&amp; (Cur_Vertical_Sep &gt;= MINSEP) &amp;&amp; (Up_Separation &gt;= ALIM());
+---
+&gt; 	result = (Cur_Vertical_Sep &gt;= MINSEP) &amp;&amp; (Up_Separation &gt;= ALIM());
+</version>
+</root>
+
