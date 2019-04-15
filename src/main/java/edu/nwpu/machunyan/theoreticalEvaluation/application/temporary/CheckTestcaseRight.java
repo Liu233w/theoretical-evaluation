@@ -21,15 +21,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * 使用本项目的 runner 来运行 schedule2 的正确程序，来检测 cases.json 的正确性
+ * 使用本项目的 runner 来运行测试程序的正确代码，来检测 cases.json 的正确性
  */
-public class DiffSchedule2Right {
+public class CheckTestcaseRight {
+
+    private static final String sourceFile = "print_tokens/origin/orig/print_tokens.c";
+
+    private static final String programName = "print_tokens";
 
     public static void main(String[] args) throws URISyntaxException, IOException, CoverageRunnerException {
 
-        final Path file = FileUtils.getFilePathFromResources("schedule2/origin/schedule2.c");
-
-        final List<TestcaseItem> list = TestcaseResolver.resolve("schedule2");
+        final Path file = FileUtils.getFilePathFromResources(sourceFile);
+        final List<TestcaseItem> list = TestcaseResolver.resolve(programName);
 
         final List<IProgramInput> inputs = StreamEx
             .of(list)
@@ -44,7 +47,7 @@ public class DiffSchedule2Right {
         @Cleanup final ProgressBar progressBar = new ProgressBar("", inputs.size());
 
         final RunningScheduler scheduler = new RunningScheduler(
-            new Program("orig", file.toString()),
+            new Program(programName, file.toString()),
             GccReadFromStdIoRunner::new,
             inputs,
             progressBar
