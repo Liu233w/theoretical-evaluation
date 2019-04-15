@@ -61,6 +61,11 @@ public class ResolveTestcaseWeight {
                 final String key = resolver.getFormulaTitle() + "-" + input.getProgramTitle();
                 final Optional<TestcaseWeightForProgram> result = cache.tryLoadCache(key, TestcaseWeightForProgram.class);
                 if (result.isPresent()) {
+
+                    // 避免缓存影响对剩余时间的计算
+                    progressBar.maxHint(progressBar.getMax() - 1);
+                    progressBar.stepBy(-1);
+
                     LogUtils.logFine("loaded item from cache: " + key);
                 }
                 return result;
