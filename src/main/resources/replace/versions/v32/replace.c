@@ -36,7 +36,7 @@ typedef char	character;
 typedef char string[MAXSTR];
 
 bool
-getline(s, maxsize)
+my_getline(s, maxsize)
 char	*s;
 int	maxsize;
 {
@@ -511,10 +511,10 @@ char *pat, *sub;
     string  line;
     bool result;
     
-    result = getline(line, MAXSTR);
+    result = my_getline(line, MAXSTR);
     while ((result)) {
 	subline(line, pat, sub);
-	result = getline(line, MAXSTR);
+	result = my_getline(line, MAXSTR);
     }
 }
 
