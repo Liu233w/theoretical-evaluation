@@ -28,6 +28,8 @@ public class ResolveTestcaseWeight {
         "schedule2",
         "tcas",
         "tot_info",
+        "replace",
+        "print_tokens",
     };
 
     private static final boolean USE_PARALLEL = !"1".equals(System.getenv("DISABLE_PARALLEL"));

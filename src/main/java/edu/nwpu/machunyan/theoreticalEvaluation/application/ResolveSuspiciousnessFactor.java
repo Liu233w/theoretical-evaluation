@@ -31,6 +31,8 @@ public class ResolveSuspiciousnessFactor {
         "schedule2",
         "tcas",
         "tot_info",
+        "replace",
+        "print_tokens",
     };
 
     public static void main(String[] args) throws IOException {

@@ -34,6 +34,8 @@ public class Run {
         new ProgramDefination("schedule2", "schedule2.c"),
         new ProgramDefination("my_sort", "my_sort.c"),
         new ProgramDefination("tot_info", "tot_info.c"),
+        new ProgramDefination("replace", "replace.c"),
+        new ProgramDefination("print_tokens", "print_tokens.c"),
     };
 
     private static final String resultDir = "./target/outputs/run-results";
