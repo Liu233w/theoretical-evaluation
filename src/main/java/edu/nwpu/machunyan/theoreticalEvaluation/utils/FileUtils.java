@@ -2,8 +2,6 @@ package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -25,21 +23,6 @@ public class FileUtils {
     }
 
     /**
-     * 把 json 按照美化的格式输出到指定的文件。会自动创建父文件夹。
-     *
-     * @param json
-     * @param path
-     */
-    public static void printJsonToFile(Path path, JsonElement json) throws IOException {
-        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        final File outputFile = path.toFile();
-        outputFile.getParentFile().mkdirs();
-        try (FileWriter fileWriter = new FileWriter(outputFile)) {
-            gson.toJson(json, fileWriter);
-        }
-    }
-
-    /**
      * 如果 path 是一个文件夹（没有后缀名），将创建它和它的所有父文件夹。否则创建它的父文件夹。
      * 如果相应的文件夹存在，什么都不做。
      *
@@ -55,18 +38,6 @@ public class FileUtils {
     }
 
     /**
-     * 从路径中读取json
-     *
-     * @param path
-     * @return
-     * @throws FileNotFoundException
-     */
-    public static JsonElement getJsonFromFile(String path) throws FileNotFoundException {
-        final File file = Paths.get(path).toFile();
-        return new JsonParser().parse(new FileReader(file));
-    }
-
-    /**
      * 从路径读取指定类型的对象
      *
      * @param path
@@ -76,7 +47,7 @@ public class FileUtils {
      * @throws FileNotFoundException
      */
     public static <T> T loadObject(Path path, Class<T> type) throws FileNotFoundException {
-        return JsonUtils.fromJson(new FileReader(path.toFile()), type);
+        return new Gson().fromJson(new FileReader(path.toFile()), type);
     }
 
     /**
@@ -100,7 +71,18 @@ public class FileUtils {
      * @throws IOException
      */
     public static void saveObject(Path path, Object obj) throws IOException {
-        printJsonToFile(path, JsonUtils.toJson(obj));
+
+        final Gson gson = new GsonBuilder()
+            .setPrettyPrinting()
+            .serializeSpecialFloatingPointValues()
+            .create();
+
+        final File outputFile = path.toFile();
+        outputFile.getParentFile().mkdirs();
+
+        try (FileWriter fileWriter = new FileWriter(outputFile)) {
+            gson.toJson(obj, fileWriter);
+        }
     }
 
     /**

@@ -1,10 +1,10 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application.temporary;
 
+import com.google.gson.GsonBuilder;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.DiffRankResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.DiffRankJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.JsonUtils;
 import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
@@ -26,7 +26,11 @@ public class DiffSuspiciousnessFactor {
             .filter(a -> a.getDiffRankForStatements().size() != 0)
             .toImmutableList());
 
-        final String s = JsonUtils.toJson(filteredDiff).toString();
+        final String s = new GsonBuilder()
+            .serializeSpecialFloatingPointValues()
+            .create()
+            .toJsonTree(filteredDiff)
+            .toString();
         System.out.println(s);
     }
 }
