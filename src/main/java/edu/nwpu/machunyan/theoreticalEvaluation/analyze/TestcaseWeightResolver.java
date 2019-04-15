@@ -129,16 +129,17 @@ public class TestcaseWeightResolver {
 
         // 1. prepare
         final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
+        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
 
         // 2. resolve average performance
         final double overall = AveragePerformanceResolver.resolve(
-            VectorTableModelResolver.resolve(runResultForProgram).getRecords(),
+            VectorTableModelResolver.resolve(runResults, statementCount),
             resolver);
 
         final double[] result = new double[runResults.size()];
         for (int i = 0; i < runResults.size(); i++) {
             final List<VectorTableModelForStatement> vtm =
-                VectorTableModelResolver.resolveSkipBy(runResultForProgram, i).getRecords();
+                VectorTableModelResolver.resolveSkipBy(runResults, statementCount, i);
             final double ap = AveragePerformanceResolver.resolve(vtm, resolver);
             result[i] = ap - overall;
         }

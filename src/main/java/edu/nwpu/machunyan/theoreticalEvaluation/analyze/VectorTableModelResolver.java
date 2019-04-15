@@ -20,17 +20,25 @@ public class VectorTableModelResolver {
         RunResultForProgram runResultForProgram) {
 
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
+
+        return new VectorTableModelForProgram(
+            runResultForProgram.getProgramTitle(),
+            resolve(runResultForProgram.getRunResults(), statementCount));
+    }
+
+    public static List<VectorTableModelForStatement> resolve(
+        List<RunResultForTestcase> runResults,
+        int statementCount) {
+
         final VectorTableModelForStatement.Builder[] builders = resolveBuilders(statementCount, false);
 
-        for (RunResultForTestcase runResult : runResultForProgram.getRunResults()) {
+        for (RunResultForTestcase runResult : runResults) {
             for (VectorTableModelForStatement.Builder builder : builders) {
                 builder.processRunResultForTestcase(runResult);
             }
         }
 
-        return new VectorTableModelForProgram(
-            runResultForProgram.getProgramTitle(),
-            buildVtm(builders));
+        return buildVtm(builders);
     }
 
     /**
@@ -46,6 +54,17 @@ public class VectorTableModelResolver {
 
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
         final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
+
+        return new VectorTableModelForProgram(
+            runResultForProgram.getProgramTitle(),
+            resolveSkipBy(runResults, statementCount, skipAt));
+    }
+
+    public static List<VectorTableModelForStatement> resolveSkipBy(
+        List<RunResultForTestcase> runResults,
+        int statementCount,
+        int skipAt) {
+
         final VectorTableModelForStatement.Builder[] builders = resolveBuilders(statementCount, false);
 
         for (int i = 0; i < skipAt; i++) {
@@ -59,9 +78,7 @@ public class VectorTableModelResolver {
             }
         }
 
-        return new VectorTableModelForProgram(
-            runResultForProgram.getProgramTitle(),
-            buildVtm(builders));
+        return buildVtm(builders);
     }
 
     /**
