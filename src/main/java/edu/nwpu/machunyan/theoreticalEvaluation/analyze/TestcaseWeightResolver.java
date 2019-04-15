@@ -3,6 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForStatement;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
@@ -10,17 +11,11 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
-import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * 生成测试用例的权重
@@ -134,27 +129,30 @@ public class TestcaseWeightResolver {
 
         // 1. prepare
         final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
-        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
 
         // 2. resolve average performance
         final double overall = AveragePerformanceResolver.resolve(
-            VectorTableModelResolver.resolve(runResults.stream(), statementCount),
+            VectorTableModelResolver.resolve(runResultForProgram).getRecords(),
             resolver);
 
-        final double[] result = IntStream.range(0, runResults.size())
-            .mapToObj(i -> buildStreamSkipAt(runResults, i))
-            .map(stream -> VectorTableModelResolver.resolve(stream, statementCount))
-            .map(vtm -> AveragePerformanceResolver.resolve(vtm, resolver))
-            .mapToDouble(averagePerformance -> averagePerformance - overall)
-            .toArray();
+        final double[] result = new double[runResults.size()];
+        for (int i = 0; i < runResults.size(); i++) {
+            final List<VectorTableModelForStatement> vtm =
+                VectorTableModelResolver.resolveSkipBy(runResultForProgram, i).getRecords();
+            final double ap = AveragePerformanceResolver.resolve(vtm, resolver);
+            result[i] = ap - overall;
+        }
 
         // 3. normalize average performance
-        final double improvedAverage = Arrays.stream(result)
-            .filter(a -> a < 0)
-            .reduce(0.0, Double::sum);
-        final double reducedAverage = Arrays.stream(result)
-            .filter(a -> a > 0)
-            .reduce(0.0, Double::sum);
+        double improvedAverage = 0;
+        double reducedAverage = 0;
+        for (double value : result) {
+            if (value < 0) {
+                improvedAverage += value;
+            } else if (value > 0) {
+                reducedAverage += value;
+            }
+        }
 
         for (int i = 0; i < result.length; i++) {
             final double a = result[i];
@@ -168,20 +166,14 @@ public class TestcaseWeightResolver {
         }
 
         // 4. output
-        final List<TestcaseWeightForTestcase> testcaseWeights = IntStreamEx
-            .range(0, result.length)
-            .mapToObj(i -> new TestcaseWeightForTestcase(i, result[i]))
-            .toImmutableList();
+        final TestcaseWeightForTestcase[] testcaseWeights = new TestcaseWeightForTestcase[result.length];
+        for (int i = 0; i < result.length; i++) {
+            testcaseWeights[i] = new TestcaseWeightForTestcase(i, result[i]);
+        }
         return new TestcaseWeightForProgram(
             runResultForProgram.getProgramTitle(),
             getFormulaTitle(),
-            testcaseWeights);
-    }
-
-    private static Stream<RunResultForTestcase> buildStreamSkipAt(List<RunResultForTestcase> runResults, int index) {
-        return IntStream.range(0, runResults.size())
-            .filter(i -> i != index)
-            .mapToObj(runResults::get);
+            Collections.unmodifiableList(Arrays.asList(testcaseWeights)));
     }
 
     public interface Reporter extends Consumer<TestcaseWeightForProgram> {
