@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,15 +42,8 @@ public class Run {
 
         StreamEx
             .of(MAIN_LIST)
-            .filter(a->{
-                // 跳过已经计算出的结果
-                try {
-                    getResultFromFile(a.getProgramName());
-                    return false;
-                } catch (FileNotFoundException e) {
-                    return true;
-                }
-            })
+            // 跳过已经计算出的结果
+            .filter(a -> !Files.exists(Paths.get(resolveResultFilePath(a.programDir))))
             .peek(a -> LogUtils.logInfo("Running program: " + a))
             .mapToEntry(ProgramDefination::getProgramDir, Run::runAndGetResult)
             .filterValues(Optional::isPresent)

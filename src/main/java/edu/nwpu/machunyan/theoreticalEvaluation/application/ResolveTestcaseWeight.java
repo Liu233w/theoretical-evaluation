@@ -14,6 +14,8 @@ import me.tongfei.progressbar.ProgressBar;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,10 +39,8 @@ public class ResolveTestcaseWeight {
         for (String name : MAIN_LIST) {
 
             // 跳过已经计算出的结果
-            try {
-                getResultFromFile(name);
+            if (Files.exists(Paths.get(resolveResultFilePath(name)))) {
                 continue;
-            } catch (FileNotFoundException ignored) {
             }
 
             LogUtils.logInfo("Running on " + name);

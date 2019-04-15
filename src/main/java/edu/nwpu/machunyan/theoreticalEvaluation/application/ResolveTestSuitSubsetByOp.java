@@ -9,6 +9,8 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 /**
  * 获取划分之后的测试用例子集，使用 Op 来划分
@@ -30,10 +32,8 @@ public class ResolveTestSuitSubsetByOp {
         for (String name : MAIN_LIST) {
 
             // 跳过已经计算出的结果
-            try {
-                getResultFromFile(name);
+            if (Files.exists(Paths.get(resolveResultFilePath(name)))) {
                 continue;
-            } catch (FileNotFoundException ignored) {
             }
 
             LogUtils.logInfo("working on " + name);

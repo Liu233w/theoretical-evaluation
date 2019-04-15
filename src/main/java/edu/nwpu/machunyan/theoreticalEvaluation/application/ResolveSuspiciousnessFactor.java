@@ -13,6 +13,8 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.List;
 
 /**
@@ -36,10 +38,8 @@ public class ResolveSuspiciousnessFactor {
         for (String name : MAIN_LIST) {
 
             // 跳过已经计算出的结果
-            try {
-                getResultFromFile(name);
+            if (Files.exists(Paths.get(resolveResultFilePath(name)))) {
                 continue;
-            } catch (FileNotFoundException ignored) {
             }
 
             final SuspiciousnessFactorJam json = runAndGetResult(name);
