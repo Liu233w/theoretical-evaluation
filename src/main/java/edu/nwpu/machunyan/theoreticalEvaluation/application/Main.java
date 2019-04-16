@@ -11,7 +11,8 @@ public class Main {
 
         Run.main(args);
         ResolveSuspiciousnessFactor.main(args);
-        ResolveTestcaseWeight.main(args);
+        ResolveTestcaseWeightByOp.main(args);
         ResolveTestSuitSubsetByOp.main(args);
+        ResolveTestcaseWeight.main(args);
     }
 }
