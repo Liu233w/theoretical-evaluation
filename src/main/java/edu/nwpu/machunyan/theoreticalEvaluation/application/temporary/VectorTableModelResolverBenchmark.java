@@ -1,8 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application.temporary;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightResolver;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.Run;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
@@ -16,39 +15,32 @@ import java.io.FileNotFoundException;
 import java.util.concurrent.TimeUnit;
 
 /*
-比较重构之前和之后的运行速度
-Benchmark   Mode  Cnt     Score     Error  Units
-Before      avgt    5  4940.753 ± 599.973  ms/op
-After       avgt    5  6766.989 ± 191.981  ms/op
+Benchmark   Mode  Cnt  Score   Error  Units
+Before      avgt    5  4.480 ± 0.176  ms/op
  */
-
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
-public class TestcaseWeightResolverBenchmark {
+public class VectorTableModelResolverBenchmark {
 
     public static void main(String[] args) throws RunnerException {
         final Options options = new OptionsBuilder()
-            .include(TestcaseWeightResolverBenchmark.class.getSimpleName())
+            .include(VectorTableModelResolverBenchmark.class.getSimpleName())
             .forks(1)
             .build();
         new Runner(options).run();
     }
 
     private RunResultForProgram runResultForProgram;
-    private TestcaseWeightResolver resolver;
 
     @Setup
     public void setup() throws FileNotFoundException {
-        final RunResultJam imports = Run.getResultFromFile("tot_info");
-        runResultForProgram = imports.getRunResultForPrograms().get(0);
-
-        resolver = new TestcaseWeightResolver(SuspiciousnessFactorFormulas::op);
+        final RunResultJam tot_info = Run.getResultFromFile("tot_info");
+        runResultForProgram = tot_info.getRunResultForPrograms().get(0);
     }
 
     @Benchmark
-    public void profile() {
-
-        final TestcaseWeightForProgram result = resolver.resolve(runResultForProgram);
+    public void perfile() {
+        final VectorTableModelForProgram resolve = VectorTableModelResolver.resolve(runResultForProgram);
     }
 }
