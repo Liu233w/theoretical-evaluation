@@ -2,33 +2,52 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application.temporary;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightResolver;
-import edu.nwpu.machunyan.theoreticalEvaluation.application.RunTotInfo;
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.Run;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
+import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.io.FileNotFoundException;
+import java.util.concurrent.TimeUnit;
 
+/*
+比较重构之前和之后的运行速度
+Benchmark   Mode  Cnt     Score     Error  Units
+After       avgt    5  6766.989 ± 191.981  ms/op
+ */
+
+@BenchmarkMode(Mode.AverageTime)
+@OutputTimeUnit(TimeUnit.MILLISECONDS)
+@State(Scope.Benchmark)
 public class TestcaseWeightResolverBenchmark {
 
-    public static void main(String[] args) throws FileNotFoundException {
-
-        final RunResultJam imports = RunTotInfo.getRunResultsFromSavedFile();
-
-        final TestcaseWeightResolver resolver = new TestcaseWeightResolver(SuspiciousnessFactorFormulas::o);
-
-        // Code took 7.4316307 seconds
-        System.out.println("a program");
-        profile(() -> resolver.resolve(imports.getRunResultForPrograms().get(0)));
-
-        // Code took 34.8370996 seconds
-        System.out.println("all program");
-        profile(() -> resolver.resolve(imports));
+    public static void main(String[] args) throws RunnerException {
+        final Options options = new OptionsBuilder()
+            .include(TestcaseWeightResolverBenchmark.class.getSimpleName())
+            .forks(1)
+            .build();
+        new Runner(options).run();
     }
 
-    private static void profile(Runnable runnable) {
+    private RunResultForProgram runResultForProgram;
+    private TestcaseWeightResolver resolver;
 
-        final long endTime, startTime = System.nanoTime();
-        runnable.run();
-        endTime = System.nanoTime();
-        System.out.println("Code took " + (endTime - startTime) / 1000000000.0 + " seconds");
+    @Setup
+    public void setup() throws FileNotFoundException {
+        final RunResultJam imports = Run.getResultFromFile("tot_info");
+        runResultForProgram = imports.getRunResultForPrograms().get(0);
+
+        resolver = new TestcaseWeightResolver(SuspiciousnessFactorFormulas::op);
+    }
+
+    @Benchmark
+    public void profile() {
+
+        final TestcaseWeightForProgram result = resolver.resolve(runResultForProgram);
     }
 }
