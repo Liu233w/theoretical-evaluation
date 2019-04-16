@@ -11,7 +11,7 @@ import java.util.HashMap;
  */
 @EqualsAndHashCode
 @ToString
-public class Coverage {
+public final class Coverage {
 
     /**
      * 1 语句编号
