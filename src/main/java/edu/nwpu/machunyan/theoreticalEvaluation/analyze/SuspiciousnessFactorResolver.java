@@ -6,7 +6,9 @@ import lombok.Data;
 import lombok.NonNull;
 import one.util.streamex.StreamEx;
 
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * 统计一次运行中所有语句的可疑因子，忽略从来没有运行过的语句 (aep+aef==0)
@@ -87,25 +89,19 @@ public class SuspiciousnessFactorResolver {
 
     public List<SuspiciousnessFactorForStatement> resolve(List<VectorTableModelForStatement> records) {
 
-        final int start = records.get(0) == null ? 1 : 0;
-        final ArrayList<SuspiciousnessFactorForStatement> result = new ArrayList<>(records.size() - start);
-
-        for (int i = start; i < records.size(); i++) {
-            final VectorTableModelForStatement item = records.get(i);
-
-            if (isStatementEvaluated(item)) {
-                result.add(new SuspiciousnessFactorForStatement(
-                    item.getStatementIndex(),
-                    formula.apply(item)));
-            }
-        }
+        StreamEx<SuspiciousnessFactorForStatement> stream = StreamEx
+            .of(records)
+            .filter(Objects::nonNull)
+            .filter(SuspiciousnessFactorResolver::isStatementEvaluated)
+            .map(item -> new SuspiciousnessFactorForStatement(
+                item.getStatementIndex(),
+                formula.apply(item)
+            ));
 
         if (sort) {
-            result.sort(Comparator.comparingDouble(
-                SuspiciousnessFactorForStatement::getSuspiciousnessFactor)
-                .reversed());
+            stream = SuspiciousnessFactorUtils.rankedStream(stream);
         }
-        return Collections.unmodifiableList(result);
+        return stream.toImmutableList();
     }
 
     public SuspiciousnessFactorJam resolve(VectorTableModelJam jam) {

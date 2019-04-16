@@ -4,113 +4,40 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
+import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 
-import java.util.Arrays;
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 /**
  * 生成 {@link VectorTableModelForProgram}
  */
 public class VectorTableModelResolver {
 
-    public static VectorTableModelForProgram resolve(
-        RunResultForProgram runResultForProgram) {
-
-        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
-
-        return new VectorTableModelForProgram(
-            runResultForProgram.getProgramTitle(),
-            resolve(runResultForProgram.getRunResults(), statementCount));
-    }
-
+    /**
+     * 从 runResults 的流中构建 vtm
+     *
+     * @param runResult
+     * @param statementCount
+     * @return
+     */
     public static List<VectorTableModelForStatement> resolve(
-        List<RunResultForTestcase> runResults,
+        Stream<RunResultForTestcase> runResult,
         int statementCount) {
 
-        final VectorTableModelForStatement.Builder[] builders = resolveBuilders(statementCount, false);
+        final List<VectorTableModelForStatement.Builder> builders = IntStreamEx
+            .range(0, statementCount)
+            .mapToObj(i -> new VectorTableModelForStatement.Builder(i + 1))
+            .toImmutableList();
 
-        for (RunResultForTestcase runResult : runResults) {
-            for (VectorTableModelForStatement.Builder builder : builders) {
-                builder.processRunResultForTestcase(runResult);
-            }
-        }
-
-        return buildVtm(builders);
-    }
-
-    /**
-     * 从运行结果获取 VTM，跳过 skipAt 位置的结果
-     *
-     * @param runResultForProgram
-     * @param skipAt
-     * @return
-     */
-    public static VectorTableModelForProgram resolveSkipBy(
-        RunResultForProgram runResultForProgram,
-        int skipAt) {
-
-        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
-        final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
-
-        return new VectorTableModelForProgram(
-            runResultForProgram.getProgramTitle(),
-            resolveSkipBy(runResults, statementCount, skipAt));
-    }
-
-    public static List<VectorTableModelForStatement> resolveSkipBy(
-        List<RunResultForTestcase> runResults,
-        int statementCount,
-        int skipAt) {
-
-        final VectorTableModelForStatement.Builder[] builders = resolveBuilders(statementCount, false);
-
-        for (int i = 0; i < skipAt; i++) {
-            for (VectorTableModelForStatement.Builder builder : builders) {
-                builder.processRunResultForTestcase(runResults.get(i));
-            }
-        }
-        for (int i = skipAt + 1; i < runResults.size(); i++) {
-            for (VectorTableModelForStatement.Builder builder : builders) {
-                builder.processRunResultForTestcase(runResults.get(i));
-            }
-        }
+        runResult.forEach(runResultItem ->
+            builders.forEach(builder ->
+                builder.processRunResultForTestcase(runResultItem)));
 
         return buildVtm(builders);
-    }
-
-    /**
-     * 从运行结果获取 VTM，只有对应的 useItem 为 true 的运行结果会被使用
-     *
-     * @param runResultForProgram
-     * @param useItem             下标和 runResults 一一对应，为 true 的那个 runResult 才会被使用。
-     * @return
-     */
-    public static VectorTableModelForProgram resolveSkipBy(
-        RunResultForProgram runResultForProgram,
-        boolean[] useItem) {
-
-        final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
-        if (useItem.length != runResults.size()) {
-            throw new IllegalArgumentException("useItem 必须和 runResults 一一对应");
-        }
-
-        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
-        final VectorTableModelForStatement.Builder[] builders = resolveBuilders(statementCount, false);
-
-        for (int i = 0; i < runResults.size(); i++) {
-            if (useItem[i]) {
-                for (VectorTableModelForStatement.Builder builder : builders) {
-                    builder.processRunResultForTestcase(runResults.get(i));
-                }
-            }
-        }
-
-        return new VectorTableModelForProgram(
-            runResultForProgram.getProgramTitle(),
-            buildVtm(builders));
     }
 
     /**
@@ -129,7 +56,10 @@ public class VectorTableModelResolver {
         }
 
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
-        final VectorTableModelForStatement.Builder[] builders = resolveBuilders(statementCount, true);
+        final List<VectorTableModelForStatement.Builder> builders = IntStreamEx
+            .range(0, statementCount)
+            .mapToObj(i -> new VectorTableModelForStatement.Builder(i + 1, true))
+            .toImmutableList();
 
         final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
         for (int i = 0; i < runResults.size(); i++) {
@@ -138,9 +68,20 @@ public class VectorTableModelResolver {
             }
         }
 
-        return new VectorTableModelForProgram(
-            runResultForProgram.getProgramTitle(),
-            buildVtm(builders));
+        return new VectorTableModelForProgram(runResultForProgram.getProgramTitle(), buildVtm(builders));
+    }
+
+    /**
+     * 从 {@link RunResultForProgram} 批量生成
+     *
+     * @param runResultForProgram
+     * @return
+     */
+    public static VectorTableModelForProgram resolve(RunResultForProgram runResultForProgram) {
+        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
+        final Stream<RunResultForTestcase> stream = runResultForProgram.getRunResults().stream();
+        final List<VectorTableModelForStatement> vectorTableModelForStatements = resolve(stream, statementCount);
+        return new VectorTableModelForProgram(runResultForProgram.getProgramTitle(), vectorTableModelForStatements);
     }
 
     /**
@@ -161,7 +102,7 @@ public class VectorTableModelResolver {
         RunResultJam runResultJam,
         TestcaseWeightJam testcaseWeightJam) {
 
-        final Map<String, List<TestcaseWeightForTestcase>> programTitleToWeights = StreamEx
+        final Map<String, List<TestcaseWeightForTestcase>> titleToWeights = StreamEx
             .of(testcaseWeightJam.getTestcaseWeightForPrograms())
             .toMap(
                 TestcaseWeightForProgram::getTitle,
@@ -170,32 +111,19 @@ public class VectorTableModelResolver {
 
         final List<VectorTableModelForProgram> collect = StreamEx
             .of(runResultJam.getRunResultForPrograms())
-            .map(a -> resolveWithWeights(a, programTitleToWeights.get(a.getProgramTitle())))
+            .map(a -> resolveWithWeights(a, titleToWeights.get(a.getProgramTitle())))
             .toImmutableList();
 
         return new VectorTableModelJam(collect);
     }
 
-    private static List<VectorTableModelForStatement> buildVtm(
-        VectorTableModelForStatement.Builder[] builders) {
-
-        final VectorTableModelForStatement[] result = new VectorTableModelForStatement[builders.length + 1];
-        result[0] = null;
-        for (int i = 0; i < builders.length; i++) {
-            result[i + 1] = builders[i].build();
+    private static List<VectorTableModelForStatement> buildVtm(List<VectorTableModelForStatement.Builder> builders) {
+        final ArrayList<VectorTableModelForStatement> result = new ArrayList<>(builders.size() + 1);
+        result.add(null);
+        for (VectorTableModelForStatement.Builder builder :
+            builders) {
+            result.add(builder.build());
         }
-
-        return Collections.unmodifiableList(Arrays.asList(result));
-    }
-
-    private static VectorTableModelForStatement.Builder[] resolveBuilders(
-        int statementCount,
-        boolean useWeight) {
-
-        final VectorTableModelForStatement.Builder[] builders = new VectorTableModelForStatement.Builder[statementCount];
-        for (int i = 0; i < statementCount; i++) {
-            builders[i] = new VectorTableModelForStatement.Builder(i + 1, useWeight);
-        }
-        return builders;
+        return result;
     }
 }

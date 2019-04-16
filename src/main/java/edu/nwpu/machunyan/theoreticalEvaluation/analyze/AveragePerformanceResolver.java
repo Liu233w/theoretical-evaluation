@@ -51,18 +51,14 @@ public class AveragePerformanceResolver {
         final List<SuspiciousnessFactorForStatement> sfs = sfResolver.resolve(vtmRecords);
         final Map<Integer, Double> examScore = resolveExamScore(sfs, sfResolver.isSort());
 
-        double sum = 0;
-        int denominator = 0;
-        for (int i = vtmRecords.get(0) == null ? 1 : 0; i < vtmRecords.size(); i++) {
-
-            final VectorTableModelForStatement record = vtmRecords.get(i);
-            if (!isStatementNeeded(record)) {
-                continue;
-            }
-            sum += examScore.get(record.getStatementIndex());
-            ++denominator;
-        }
-        return denominator == 0 ? 0 : sum / denominator;
+        return vtmRecords.stream()
+            .filter(Objects::nonNull)
+            .filter(AveragePerformanceResolver::isStatementNeeded)
+            .map(VectorTableModelForStatement::getStatementIndex)
+            .map(examScore::get)
+            .mapToDouble(Double::doubleValue)
+            .average()
+            .orElse(0);
     }
 
     private static boolean isStatementNeeded(VectorTableModelForStatement record) {

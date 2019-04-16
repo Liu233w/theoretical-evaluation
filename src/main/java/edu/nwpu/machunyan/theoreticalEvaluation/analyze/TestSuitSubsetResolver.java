@@ -8,6 +8,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
+import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 
 import java.util.Arrays;
@@ -49,13 +50,17 @@ public class TestSuitSubsetResolver {
     public TestSuitSubsetForProgram resolve(
         RunResultForProgram runResultForProgram) {
 
+        final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
+
         final List<RunResultForTestcase> rawRunResult = runResultForProgram.getRunResults();
 
-        final boolean[] useItem = new boolean[rawRunResult.size()];
+        final Boolean[] useItem = new Boolean[rawRunResult.size()];
         Arrays.fill(useItem, true);
 
         final double averagePerformanceBeforeDivide =
-            resolveAveragePerformance(runResultForProgram, useItem);
+            resolveAveragePerformance(
+                buildStreamSkipBy(rawRunResult, useItem),
+                statementCount);
 
         double currentAveragePerformance = averagePerformanceBeforeDivide;
 
@@ -69,7 +74,9 @@ public class TestSuitSubsetResolver {
 
                 useItem[i] = false;
                 final double averagePerformance =
-                    resolveAveragePerformance(runResultForProgram, useItem);
+                    resolveAveragePerformance(
+                        buildStreamSkipBy(rawRunResult, useItem),
+                        statementCount);
 
                 if (averagePerformance <= currentAveragePerformance) {
                     // 找到一个可以被移除的测试用例
@@ -89,13 +96,9 @@ public class TestSuitSubsetResolver {
             }
         }
 
-        int usedCount = 0;
-        for (boolean b : useItem) {
-            if (b) {
-                ++usedCount;
-            }
-        }
-
+        final int usedCount = (int) Arrays.stream(useItem)
+            .filter(a -> a)
+            .count();
         final int[] toOldSetMap = new int[usedCount];
         final RunResultForTestcase[] res = new RunResultForTestcase[usedCount];
 
@@ -128,11 +131,35 @@ public class TestSuitSubsetResolver {
     }
 
     private double resolveAveragePerformance(
-        RunResultForProgram runResults,
-        boolean[] useItem) {
+        StreamEx<RunResultForTestcase> stream,
+        int statementCount) {
 
         return AveragePerformanceResolver.resolve(
-            VectorTableModelResolver.resolveSkipBy(runResults, useItem).getRecords(),
+            VectorTableModelResolver.resolve(stream, statementCount),
             resolver);
+    }
+
+    /**
+     * 使用一个布尔数组来筛选输入，只有对应的布尔值为 true 的测试用例才会出现在结果的流里
+     *
+     * @param runResults
+     * @param useItem    是否使用下标对应的那个测试用例
+     * @return
+     */
+    private static StreamEx<RunResultForTestcase> buildStreamSkipBy(
+        List<RunResultForTestcase> runResults,
+        Boolean[] useItem) {
+        // 这边不存在 BooleanStream，所以只能使用装箱过的布尔数组了
+        // 不过 java 会缓存 true 和 false 两个对象，所以这里应该不会影响 CPU 的 cache 优化
+
+        if (useItem.length != runResults.size()) {
+            throw new IllegalArgumentException("useItem 必须和 runResults 一一对应");
+        }
+
+        return EntryStream
+            .of(useItem)
+            .filterValues(a -> a)
+            .keys()
+            .map(runResults::get);
     }
 }
