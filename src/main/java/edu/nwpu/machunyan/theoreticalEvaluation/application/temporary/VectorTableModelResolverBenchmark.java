@@ -17,7 +17,8 @@ import java.util.concurrent.TimeUnit;
 /*
 Benchmark   Mode  Cnt  Score   Error  Units
 Before      avgt    5  4.480 ± 0.176  ms/op
- */
+After       avgt    5  4.726 ± 0.303  ms/op
+*/
 @BenchmarkMode(Mode.AverageTime)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 @State(Scope.Benchmark)
