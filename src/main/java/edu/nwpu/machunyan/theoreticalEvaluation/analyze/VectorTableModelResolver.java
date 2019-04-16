@@ -27,7 +27,7 @@ public class VectorTableModelResolver {
     }
 
     public static List<VectorTableModelForStatement> resolve(
-        List<RunResultForTestcase> runResults,
+        RunResultForTestcase[] runResults,
         int statementCount) {
 
         final VectorTableModelForStatement.Builder[] builders = resolveBuilders(statementCount, false);
@@ -53,7 +53,7 @@ public class VectorTableModelResolver {
         int skipAt) {
 
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
-        final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
+        final RunResultForTestcase[] runResults = runResultForProgram.getRunResults();
 
         return new VectorTableModelForProgram(
             runResultForProgram.getProgramTitle(),
@@ -61,7 +61,7 @@ public class VectorTableModelResolver {
     }
 
     public static List<VectorTableModelForStatement> resolveSkipBy(
-        List<RunResultForTestcase> runResults,
+        RunResultForTestcase[] runResults,
         int statementCount,
         int skipAt) {
 
@@ -69,12 +69,12 @@ public class VectorTableModelResolver {
 
         for (int i = 0; i < skipAt; i++) {
             for (VectorTableModelForStatement.Builder builder : builders) {
-                builder.processRunResultForTestcase(runResults.get(i));
+                builder.processRunResultForTestcase(runResults[i]);
             }
         }
-        for (int i = skipAt + 1; i < runResults.size(); i++) {
+        for (int i = skipAt + 1; i < runResults.length; i++) {
             for (VectorTableModelForStatement.Builder builder : builders) {
-                builder.processRunResultForTestcase(runResults.get(i));
+                builder.processRunResultForTestcase(runResults[i]);
             }
         }
 
@@ -92,18 +92,18 @@ public class VectorTableModelResolver {
         RunResultForProgram runResultForProgram,
         boolean[] useItem) {
 
-        final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
-        if (useItem.length != runResults.size()) {
+        final RunResultForTestcase[] runResults = runResultForProgram.getRunResults();
+        if (useItem.length != runResults.length) {
             throw new IllegalArgumentException("useItem 必须和 runResults 一一对应");
         }
 
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
         final VectorTableModelForStatement.Builder[] builders = resolveBuilders(statementCount, false);
 
-        for (int i = 0; i < runResults.size(); i++) {
+        for (int i = 0; i < runResults.length; i++) {
             if (useItem[i]) {
                 for (VectorTableModelForStatement.Builder builder : builders) {
-                    builder.processRunResultForTestcase(runResults.get(i));
+                    builder.processRunResultForTestcase(runResults[i]);
                 }
             }
         }
@@ -124,17 +124,17 @@ public class VectorTableModelResolver {
         RunResultForProgram runResultForProgram,
         List<TestcaseWeightForTestcase> testcaseWeights) {
 
-        if (runResultForProgram.getRunResults().size() != testcaseWeights.size()) {
+        if (runResultForProgram.getRunResults().length != testcaseWeights.size()) {
             throw new IllegalArgumentException("运行结果和权重必须一一对应（一个 RunResultForTestcase 对应一个 testcaseWeight）");
         }
 
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
         final VectorTableModelForStatement.Builder[] builders = resolveBuilders(statementCount, true);
 
-        final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
-        for (int i = 0; i < runResults.size(); i++) {
+        final RunResultForTestcase[] runResults = runResultForProgram.getRunResults();
+        for (int i = 0; i < runResults.length; i++) {
             for (VectorTableModelForStatement.Builder builder : builders) {
-                builder.processRunResultForTestcase(runResults.get(i), testcaseWeights.get(i).getTestcaseWeight());
+                builder.processRunResultForTestcase(runResults[i], testcaseWeights.get(i).getTestcaseWeight());
             }
         }
 

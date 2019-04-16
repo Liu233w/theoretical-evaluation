@@ -19,7 +19,7 @@ fun buildRunResultsFromMatrix(matrix: Array<Array<Int>>, oc: Array<Int>): RunRes
 
     val result = IntStreamEx.range(0, matrix[0].size)
         .mapToObj { i -> RunResultForTestcase(oc[i] == 1, Coverage(), null) }
-        .toImmutableList()
+        .toArray(RunResultForTestcase::class.java)
 
     // row: s -- statement; column: t -- singleRun
     matrix.forEachIndexed { row, line ->
@@ -68,7 +68,7 @@ class AnalyzeUtilsTest : FreeSpec({
             ), arrayOf(1, 0, 0)) shouldBe RunResultForProgram(
                 "mock program",
                 mockStatementMap,
-                arrayListOf(
+                arrayOf(
                     RunResultForTestcase(true, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null),
                     RunResultForTestcase(false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null),
                     RunResultForTestcase(false, Coverage(hashMapOf(1 to 0, 2 to 1, 3 to 0)), null)

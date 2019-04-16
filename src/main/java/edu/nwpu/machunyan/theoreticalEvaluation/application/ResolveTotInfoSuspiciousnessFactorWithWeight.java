@@ -50,10 +50,9 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
 
         // 权重加成倍数：测试用例的个数
         final double testcaseWeightMultiply = jam
-            .getRunResultForPrograms()
-            .get(0)
+            .getRunResultForPrograms()[0]
             .getRunResults()
-            .size();
+            .length;
 
         final List<SuspiciousnessFactorResolver> resolvers = SuspiciousnessFactorResolver.of(
             SuspiciousnessFactorFormulas.getAllFormulas()

@@ -37,7 +37,7 @@ public class VectorTableModelResolverBenchmark {
     @Setup
     public void setup() throws FileNotFoundException {
         final RunResultJam tot_info = Run.getResultFromFile("tot_info");
-        runResultForProgram = tot_info.getRunResultForPrograms().get(0);
+        runResultForProgram = tot_info.getRunResultForPrograms()[0];
     }
 
     @Benchmark

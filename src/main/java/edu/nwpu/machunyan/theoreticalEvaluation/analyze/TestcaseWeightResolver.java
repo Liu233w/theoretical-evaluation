@@ -128,7 +128,7 @@ public class TestcaseWeightResolver {
     public TestcaseWeightForProgram resolve(RunResultForProgram runResultForProgram) {
 
         // 1. prepare
-        final List<RunResultForTestcase> runResults = runResultForProgram.getRunResults();
+        final RunResultForTestcase[] runResults = runResultForProgram.getRunResults();
         final int statementCount = runResultForProgram.getStatementMap().getStatementCount();
 
         // 2. resolve average performance
@@ -136,8 +136,8 @@ public class TestcaseWeightResolver {
             VectorTableModelResolver.resolve(runResults, statementCount),
             resolver);
 
-        final double[] result = new double[runResults.size()];
-        for (int i = 0; i < runResults.size(); i++) {
+        final double[] result = new double[runResults.length];
+        for (int i = 0; i < runResults.length; i++) {
             final List<VectorTableModelForStatement> vtm =
                 VectorTableModelResolver.resolveSkipBy(runResults, statementCount, i);
             final double ap = AveragePerformanceResolver.resolve(vtm, resolver);

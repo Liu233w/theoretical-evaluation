@@ -3,8 +3,6 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap;
 import lombok.Value;
 
-import java.util.List;
-
 /**
  * 一个程序的运行结果
  */
@@ -21,5 +19,5 @@ public class RunResultForProgram {
      */
     StatementMap statementMap;
 
-    List<RunResultForTestcase> runResults;
+    RunResultForTestcase[] runResults;
 }

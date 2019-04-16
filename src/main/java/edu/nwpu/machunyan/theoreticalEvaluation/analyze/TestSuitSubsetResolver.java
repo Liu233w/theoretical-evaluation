@@ -49,9 +49,9 @@ public class TestSuitSubsetResolver {
     public TestSuitSubsetForProgram resolve(
         RunResultForProgram runResultForProgram) {
 
-        final List<RunResultForTestcase> rawRunResult = runResultForProgram.getRunResults();
+        final RunResultForTestcase[] rawRunResult = runResultForProgram.getRunResults();
 
-        final boolean[] useItem = new boolean[rawRunResult.size()];
+        final boolean[] useItem = new boolean[rawRunResult.length];
         Arrays.fill(useItem, true);
 
         final double averagePerformanceBeforeDivide =
@@ -103,19 +103,18 @@ public class TestSuitSubsetResolver {
         for (int i = 0; i < useItem.length; ++i) {
             if (useItem[i]) {
                 toOldSetMap[tail] = i;
-                res[tail] = rawRunResult.get(i);
+                res[tail] = rawRunResult[i];
                 ++tail;
             }
         }
 
-        final List<RunResultForTestcase> list = Collections.unmodifiableList(Arrays.asList(res));
         return new TestSuitSubsetForProgram(
             runResultForProgram.getProgramTitle(),
             runResultForProgram.getStatementMap(),
             currentAveragePerformance,
             averagePerformanceBeforeDivide,
             toOldSetMap,
-            list);
+            res);
     }
 
     public TestSuitSubsetJam resolve(RunResultJam jam) {

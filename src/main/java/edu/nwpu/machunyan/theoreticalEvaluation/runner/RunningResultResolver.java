@@ -27,11 +27,11 @@ public class RunningResultResolver {
      * @param runnerFactory
      * @return
      */
-    public static RunResultJam runProgramForAllVersions(List<Program> programs, List<IProgramInput> inputs, Supplier<ICoverageRunner> runnerFactory) {
+    public static RunResultJam runProgramForAllVersions(List<Program> programs, IProgramInput[] inputs, Supplier<ICoverageRunner> runnerFactory) {
 
-        final ProgressBar progressBar = new ProgressBar("", inputs.size() * programs.size());
+        final ProgressBar progressBar = new ProgressBar("", inputs.length * programs.size());
 
-        final List<RunResultForProgram> result = StreamEx
+        final RunResultForProgram[] result = StreamEx
             .of(programs)
             .parallel()
             .map(program -> new RunningScheduler(program, runnerFactory, inputs, progressBar))
@@ -46,7 +46,7 @@ public class RunningResultResolver {
             })
             .filter(Objects::nonNull)
             .map(RunningResultResolver::mapFromRunResult)
-            .toImmutableList();
+            .toArray(RunResultForProgram[]::new);
 
         progressBar.close();
 
@@ -84,13 +84,13 @@ public class RunningResultResolver {
      * @param runResults
      * @return
      */
-    public static RunResultForProgram mapFromRunResult(List<RunResultFromRunner> runResults) {
-        final String title = runResults.get(0).getProgram().getTitle();
-        final StatementMap defaultStatememtMap = runResults.get(0).getStatementMap();
-        final List<RunResultForTestcase> runResultForTestcases = StreamEx
+    public static RunResultForProgram mapFromRunResult(RunResultFromRunner[] runResults) {
+        final String title = runResults[0].getProgram().getTitle();
+        final StatementMap defaultStatememtMap = runResults[0].getStatementMap();
+        final RunResultForTestcase[] runResultForTestcases = StreamEx
             .of(runResults)
             .map(item -> mapFromRunResult(item, defaultStatememtMap))
-            .toImmutableList();
+            .toArray(RunResultForTestcase[]::new);
         return new RunResultForProgram(title, defaultStatememtMap, runResultForTestcases);
     }
 }

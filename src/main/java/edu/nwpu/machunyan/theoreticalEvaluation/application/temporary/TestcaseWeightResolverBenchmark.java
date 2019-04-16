@@ -41,7 +41,7 @@ public class TestcaseWeightResolverBenchmark {
     @Setup
     public void setup() throws FileNotFoundException {
         final RunResultJam imports = Run.getResultFromFile("tot_info");
-        runResultForProgram = imports.getRunResultForPrograms().get(0);
+        runResultForProgram = imports.getRunResultForPrograms()[0];
 
         resolver = new TestcaseWeightResolver(SuspiciousnessFactorFormulas::op);
     }

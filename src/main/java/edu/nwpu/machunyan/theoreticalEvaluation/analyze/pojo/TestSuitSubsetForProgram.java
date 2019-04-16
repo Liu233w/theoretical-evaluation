@@ -5,9 +5,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import lombok.Value;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * 由 {@link edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestSuitSubsetResolver} 处理过的结果。
  */
@@ -43,7 +40,7 @@ public class TestSuitSubsetForProgram {
      */
     int[] toOldSetMap;
 
-    List<RunResultForTestcase> runResults;
+    RunResultForTestcase[] runResults;
 
     /**
      * 生成 {@link RunResultForProgram}，便于参与其他的计算

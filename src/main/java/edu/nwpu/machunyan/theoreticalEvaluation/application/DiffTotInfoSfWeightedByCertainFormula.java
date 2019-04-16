@@ -59,10 +59,9 @@ public class DiffTotInfoSfWeightedByCertainFormula {
         final TestcaseWeightJam testcaseWeightJam = ResolveTestcaseWeight.getResultFromFile("tot_info");
 
         final double testcaseWeightMultiply = jam
-            .getRunResultForPrograms()
-            .get(0)
+            .getRunResultForPrograms()[0]
             .getRunResults()
-            .size()
+            .length
             * mm;
 
         final TestcaseWeightJam multipliedWeight = TestcaseWeightMultiplyingResolver.resolve(

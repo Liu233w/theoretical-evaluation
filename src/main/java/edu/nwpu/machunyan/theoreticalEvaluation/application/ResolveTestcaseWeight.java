@@ -81,7 +81,7 @@ public class ResolveTestcaseWeight {
             );
 
             final RunResultJam imports = Run.getResultFromFile(name);
-            progressBar.maxHint(resolvers.size() * imports.getRunResultForPrograms().size());
+            progressBar.maxHint(resolvers.size() * imports.getRunResultForPrograms().length);
 
             final TestcaseWeightJam result = TestcaseWeightHelper
                 .runOnAllResolvers(imports, resolvers, USE_PARALLEL);

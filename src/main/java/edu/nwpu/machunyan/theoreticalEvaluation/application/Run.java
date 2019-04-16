@@ -77,7 +77,7 @@ public class Run {
             final Path versionsDir = FileUtils.getFilePathFromResources(
                 defination.getProgramDir() + "/versions");
 
-            final List<IProgramInput> inputs = StreamEx
+            final IProgramInput[] inputs = StreamEx
                 .of(TestcaseResolver.resolve(defination.getProgramDir()))
                 .map(a -> new GccReadFromStdIoInput(
                     a.getParams(),
@@ -85,7 +85,7 @@ public class Run {
                     a.getOutput()
                 ))
                 .map(a -> (IProgramInput) a)
-                .toImmutableList();
+                .toArray(IProgramInput[]::new);
 
             final List<String> subDirName = resolveSubDirName(versionsDir);
             final List<Program> programs = StreamEx

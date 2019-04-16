@@ -34,7 +34,7 @@ public class RunTotInfo {
         // 存版本的文件夹
         final Path versionsDir = FileUtils.getFilePathFromResources("tot_info/versions");
 
-        final List<IProgramInput> inputs = StreamEx
+        final IProgramInput[] inputs = StreamEx
             .of(resolveTestcases())
             .map(a -> new GccReadFromStdIoInput(
                 new String[]{},
@@ -42,7 +42,7 @@ public class RunTotInfo {
                 a.getOutput()
             ))
             .map(a -> (IProgramInput) a)
-            .toImmutableList();
+            .toArray(IProgramInput[]::new);
 
         final List<Program> programs = IntStreamEx.range(1, lastVersionNumber + 1)
             .mapToObj(i -> "v" + i)

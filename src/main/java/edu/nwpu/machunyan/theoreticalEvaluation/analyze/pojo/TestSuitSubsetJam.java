@@ -14,10 +14,10 @@ public class TestSuitSubsetJam {
 
     public RunResultJam getRunResultJam() {
 
-        final List<RunResultForProgram> list = StreamEx
+        final RunResultForProgram[] list = StreamEx
             .of(testSuitSubsetForPrograms)
             .map(TestSuitSubsetForProgram::getRunResultForProgram)
-            .toImmutableList();
+            .toArray(RunResultForProgram[]::new);
         return new RunResultJam(list);
     }
 }

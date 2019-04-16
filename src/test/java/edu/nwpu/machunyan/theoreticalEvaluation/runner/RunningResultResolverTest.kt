@@ -16,7 +16,7 @@ class RunningResultResolverTest : FreeSpec({
             val programs = listOf(
                 Program("1.cpp", getTestFilePath("1.cpp").toString())
             )
-            val inputs = listOf(
+            val inputs = arrayOf(
                 GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),
                 GccReadFromStdIoInput(arrayOf("2"), "else\n"),
                 GccReadFromStdIoInput(arrayOf("2"), "wrong\n")

@@ -6,8 +6,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Getter;
 import me.tongfei.progressbar.ProgressBar;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.function.Supplier;
 
 public class RunningScheduler {
@@ -15,14 +13,14 @@ public class RunningScheduler {
     @Getter
     private final ICoverageRunner runner;
     @Getter
-    private final List<IProgramInput> inputs;
+    private final IProgramInput[] inputs;
     @Getter
     private final Program program;
     @Getter
     private final ProgressBar progressBar;
-    private ArrayList<RunResultFromRunner> runResults;
+    private RunResultFromRunner[] runResults;
 
-    public RunningScheduler(Program program, Supplier<ICoverageRunner> runnerFactory, List<IProgramInput> inputs) {
+    public RunningScheduler(Program program, Supplier<ICoverageRunner> runnerFactory, IProgramInput[] inputs) {
         this(program, runnerFactory, inputs, null);
     }
 
@@ -34,7 +32,7 @@ public class RunningScheduler {
      * @param inputs
      * @param progressBar   进度条信息。如果为 null （省略），将不会汇报进度条信息。
      */
-    public RunningScheduler(Program program, Supplier<ICoverageRunner> runnerFactory, List<IProgramInput> inputs, ProgressBar progressBar) {
+    public RunningScheduler(Program program, Supplier<ICoverageRunner> runnerFactory, IProgramInput[] inputs, ProgressBar progressBar) {
         this.runner = runnerFactory.get();
         this.inputs = inputs;
         this.program = program;
@@ -47,18 +45,17 @@ public class RunningScheduler {
      * @return
      * @throws CoverageRunnerException 运行中出现的所有错误
      */
-    public ArrayList<RunResultFromRunner> runAndGetResults() throws CoverageRunnerException {
+    public RunResultFromRunner[] runAndGetResults() throws CoverageRunnerException {
 
-        runResults = new ArrayList<>(inputs.size());
+        runResults = new RunResultFromRunner[inputs.length];
 
         try {
             progressReport("start preparing");
             runner.prepare(program);
 
-            for (IProgramInput input :
-                inputs) {
-                final RunResultFromRunner result = runner.runWithInput(input);
-                runResults.add(result);
+            for (int i = 0; i < inputs.length; i++) {
+                final RunResultFromRunner result = runner.runWithInput(inputs[i]);
+                runResults[i] = result;
                 stepProgressBar();
             }
         } finally {

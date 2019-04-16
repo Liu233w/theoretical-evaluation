@@ -17,7 +17,6 @@ import one.util.streamex.StreamEx;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -34,7 +33,7 @@ public class CheckTestcaseRight {
         final Path file = FileUtils.getFilePathFromResources(sourceFile);
         final List<TestcaseItem> list = TestcaseResolver.resolve(programName);
 
-        final List<IProgramInput> inputs = StreamEx
+        final IProgramInput[] inputs = StreamEx
             .of(list)
             .map(a -> new GccReadFromStdIoInput(
                 a.getParams(),
@@ -42,9 +41,9 @@ public class CheckTestcaseRight {
                 a.getOutput()
             ))
             .map(a -> (IProgramInput) a)
-            .toImmutableList();
+            .toArray(IProgramInput[]::new);
 
-        @Cleanup final ProgressBar progressBar = new ProgressBar("", inputs.size());
+        @Cleanup final ProgressBar progressBar = new ProgressBar("", inputs.length);
 
         final RunningScheduler scheduler = new RunningScheduler(
             new Program(programName, file.toString()),
@@ -52,7 +51,7 @@ public class CheckTestcaseRight {
             inputs,
             progressBar
         );
-        final ArrayList<RunResultFromRunner> result = scheduler.runAndGetResults();
+        final RunResultFromRunner[] result = scheduler.runAndGetResults();
 
         StreamEx
             .of(result)
