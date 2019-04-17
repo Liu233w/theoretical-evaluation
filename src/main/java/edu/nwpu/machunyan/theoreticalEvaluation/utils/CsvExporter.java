@@ -1,8 +1,15 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
+import lombok.Lombok;
+import lombok.SneakyThrows;
 import one.util.streamex.StreamEx;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -12,15 +19,14 @@ import java.util.Map;
  */
 public class CsvExporter {
 
+    @SneakyThrows(IOException.class)
     public static String toCsvString(List<CsvLine> lines) {
-        final StringBuilder sb = new StringBuilder();
+        StringWriter out = new StringWriter();
+        CSVPrinter printer = CSVFormat.DEFAULT.print(out);
         for (CsvLine line : lines) {
-            for (Object item : line.getLineItems()) {
-                sb.append(item).append(",");
-            }
-            sb.append(System.lineSeparator());
+            printer.printRecord(line.getLineItems());
         }
-        return sb.toString();
+        return out.toString();
     }
 
     public static String toCsvString(VectorTableModelJam jam) {
@@ -189,23 +195,51 @@ public class CsvExporter {
             .forEach(item -> {
                 final String programTitle = item.getProgramTitle();
 
-                FaultLocationForProgram location = titleToLocations.remove(programTitle);
+                final FaultLocationForProgram location = titleToLocations.remove(programTitle);
+                final String diffStr, commentsStr;
+                if (location == null) {
+                    diffStr = "";
+                    commentsStr = "";
+                } else {
+                    diffStr = location.getDiff();
+                    commentsStr = location.getComments();
+                }
 
-                item.getDiffRankForStatements().forEach(statement -> {
+                // 确保每个程序的 diff 打印了并且只打印了一次
+                boolean printed = false;
+
+                for (DiffRankForStatement statement : item.getDiffRankForStatements()) {
                     if (statement.getLeft().getRank() == -1) {
                         // 跳过不存在的语句
-                        return;
+                        continue;
                     }
+
                     csvLines.add(new CsvLine(new Object[]{
                         programTitle,
-                        location.getDiff(),
-                        location.getComments(),
+                        printed ? "" : diffStr,
+                        printed ? "" : commentsStr,
                         item.getFormulaTitle(),
                         statement.getStatementIndex(),
                         statement.getLeft().getRank() + " -> " + statement.getRight().getRank(),
                         statement.getRankDiff(),
                     }));
-                });
+
+                    printed = true;
+                }
+
+                if (!printed) {
+                    // 这个程序的每一条语句都跳过去了
+
+                    csvLines.add(new CsvLine(new Object[]{
+                        programTitle,
+                        diffStr,
+                        commentsStr,
+                        item.getFormulaTitle(),
+                        "None",
+                        "",
+                        "",
+                    }));
+                }
             });
 
         return CsvExporter.toCsvString(csvLines);
