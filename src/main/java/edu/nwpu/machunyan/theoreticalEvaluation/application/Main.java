@@ -14,5 +14,6 @@ public class Main {
         ResolveTestcaseWeightByOp.main(args);
         ResolveTestSuitSubsetByOp.main(args);
         ResolveTestcaseWeight.main(args);
+        ResolveTestSuitSubset.main(args);
     }
 }
