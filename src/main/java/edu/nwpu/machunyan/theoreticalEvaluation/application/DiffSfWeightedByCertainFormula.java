@@ -6,11 +6,14 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvLine;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,6 +45,12 @@ public class DiffSfWeightedByCertainFormula {
     public static void main(String[] args) throws IOException, URISyntaxException {
 
         for (String name : MAIN_LIST) {
+
+            if (Files.exists(Paths.get(outputDir + "/" + name + ".csv"))) {
+                continue;
+            }
+
+            LogUtils.logInfo("Working on " + name);
             resolveAndSave(name);
         }
     }
