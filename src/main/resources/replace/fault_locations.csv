@@ -1,0 +1,188 @@
+name,version,line_number,comments
+v1,"107c107
+< 	if (src[*i - 1] == ESCAPE) {
+---
+> 	if (src[*i] == ESCAPE) {",107-109,
+v2,"107c107
+< 	if (src[*i - 1] == ESCAPE) {
+---
+> /*	if (src[*i - 1] == ESCAPE) {
+110c110
+< 	} else	
+---
+> 	} else	*/",107-125,这里去掉了第一个if判断条件，应该会影响后面的整个else部分
+v3,"494c494
+< 	    if ((m >= 0) && (lastm != m)) {
+---
+> 	    if ((m >= 0) /* && (lastm != m) */) {",494-497,
+v4,"494c494
+< 	    if ((m >= 0) && (lastm != m)) {
+---
+> 	    if ((m >= 0) && (/* lastm BUG! */ i != m)) {",494-497,
+v5,"118c118
+< 		    for (k = src[*i-1]+1; k<=src[*i+1]; k++) 
+---
+> 		    for (k = src[*i-1]+1; k< /* = BUG! */ src[*i+1]; k++)",118-121,
+v6,"315c315
+<     while ((i > offset))
+---
+>     while ((i >= offset)) /* off by 1 BUG!*/
+319c319
+< 	    i = offset;
+---
+> 	    break; /*i = offset;*/",315-322,
+v7,"176c176
+<   return (c == BOL || c == EOL || c == CLOSURE);
+---
+>   return (c == BOL || c == ANY/*EOL mutation BUG!*/ || c == CLOSURE);",176,
+v8,"176c176
+<   return (c == BOL || c == EOL || c == CLOSURE);
+---
+>   return (c == BOL || c == EOL /* || c == CLOSURE BUG! */);",176,
+v9,"115,116c115,116
+< 	    else if ((isalnum(src[*i - 1])) && (isalnum(src[*i + 1])) 
+< 		&& (src[*i - 1] <= src[*i + 1]))
+---
+> 	    else if ((isalnum(src[*i - 1])) && (isalnum(src[*i + 1]))) 
+> 		/* && (src[*i - 1] <= src[*i + 1])) missing code */",115-123,
+v10,"115c115,116
+< 	    else if ((isalnum(src[*i - 1])) && (isalnum(src[*i + 1])) 
+---
+> 	    else if ((isalnum(src[*i - 1])) 
+> 		     /* missing code && (isalnum(src[*i + 1])) */",115-124,
+v11,"116c116
+< 		&& (src[*i - 1] <= src[*i + 1]))
+---
+> 		&& (src[*i - 1] > src[*i])) /* operator mutation and off by one */",115-123,
+v12,"14c14,15
+< # define MAXPAT MAXSTR
+---
+>       /* was MAXPAT MAXSTR, but did a constant mutation */
+> # define MAXPAT 50",55-57,最终会影响 addstr 里的一个 if 条件
+v13,"500c500,503
+< 		i = i + 1;
+---
+> 		if (m == -1) 
+> 		    i = i + 1;
+> 		else 
+> 		    i = i + 2;  /* added code */",500-503,
+v14,"370c370
+< 		 if ((lin[*i] != NEWLINE) && (!locate(lin[*i], pat, j+1)))
+---
+> 		 if ((lin[*i] != NEWLINE)) /* missing code  && (!locate(lin[*i], pat, j+1))) */",370-371,
+v15,"241c241
+< 	    result = i;
+---
+> 	    result = i + 1; /* off by one error */",241,
+v16,"176c176
+<   return (c == BOL || c == EOL || c == CLOSURE);
+---
+>   return (c == BOL || c == EOL || c == CLOSURE || c == ANY); /* added code */",176,
+v17,"75c75
+< 	    result = ESCAPE;
+---
+> 	    result = NEWLINE; /* constant mutation ESCAPE; */",75,
+v18,"370c370,372
+< 		 if ((lin[*i] != NEWLINE) && (!locate(lin[*i], pat, j+1)))
+---
+>        /* removed this code from the following if:
+>           ((lin[*i] != NEWLINE) &&  missing code */
+> 		 if ((!locate(lin[*i], pat, j+1)))",372-373,
+v19,"38,39c38
+< bool
+< my_getline(s, maxsize)
+---
+> void my_getline(s, maxsize, result)
+41a41
+> bool *result;
+43,45c43,46
+<     char *result;
+<     result = fgets(s, maxsize, stdin);
+<     return (result != NULL);
+---
+>     *result = true;
+>     if (!fgets(s, 104, stdin)) {
+>       *result = 0;
+>     }
+513c514
+<     result = my_getline(line, MAXSTR);
+---
+>     my_getline(line, MAXSTR, &result);
+516c517
+< 	result = my_getline(line, MAXSTR);
+---
+> 	my_getline(line, MAXSTR, &result);",44-46,其实就是把 44 行那个 maxsize 改成固定的 104 了。剩下的都是修改接口。
+v20,"75c75
+< 	    result = ESCAPE;
+---
+> 	  result = ENDSTR;	/* NOTE JMW replaced ESCAPE with ENDSTR. */",75,
+v21,"14c14
+< # define MAXPAT MAXSTR
+---
+> # define MAXPAT 99
+44c44
+<     result = fgets(s, maxsize, stdin);
+---
+>     result = fgets(s, maxsize - 1, stdin);
+55c55
+<     if (*j >= maxset)
+---
+>     if (*j > maxset)
+209c209
+< 	else if ((arg[i] == EOL) && (arg[i+1] == delim))
+---
+> 	else if ((arg[i] == EOL))","14,44,55-61,209-210",
+v22,"140,141c140
+<     *i = *i + 1;
+<     if (arg[*i] == NEGATE) {
+---
+>     if (arg[*i + 1] == NEGATE)
+143,144c142
+< 	*i = *i + 1;
+<     } else
+---
+>     else
+145a144
+>     *i = *i + 1;",140-145,这边是变量修改，不知道能不能测出来。
+v23,"74c74
+< 	if (s[*i + 1] == ENDSTR)
+---
+> 	if (s[*i] == ENDSTR)",74-75,
+v24,"362,363c362
+< 		 if (lin[*i] == NEWLINE)
+< 		     advance = 0;
+---
+> 		 advance = 0;",362,
+v25,"362c362
+< 		 if (lin[*i] == NEWLINE)
+---
+> 		 if (lin[*i] <= NEWLINE)",362-363,
+v26,"370c370
+< 		 if ((lin[*i] != NEWLINE) && (!locate(lin[*i], pat, j+1)))
+---
+> 		 if ((lin[*i] != NEWLINE) && (!locate(lin[*i], pat, j)))",370-371,
+v27,"182c182
+<   return (   c == LITCHAR || c == BOL  || c == EOL || c == ANY 
+---
+>   return (   c == LITCHAR || c == BOL  || c == ANY",182,
+v28,"176c176
+<   return (c == BOL || c == EOL || c == CLOSURE);
+---
+>   return (c == BOL || c == EOL || c == CLOSURE || c == CCL);",176,
+v29,"176c176
+<   return (c == BOL || c == EOL || c == CLOSURE);
+---
+>   return (c == BOL || c == EOL || c == CLOSURE || c == NCCL);",176,
+v30,"176c176
+<   return (c == BOL || c == EOL || c == CLOSURE);
+---
+>   return (c == BOL || c == EOL || c == CLOSURE || c != LITCHAR);",176,
+v31,"370c370
+< 		 if ((lin[*i] != NEWLINE) && (!locate(lin[*i], pat, j+1)))
+---
+> 		 if ((lin[*i] >= NEWLINE) && (!locate(lin[*i], pat, j+1)))",370-371,
+v32,"115c115,116
+< 	    else if ((isalnum(src[*i - 1])) && (isalnum(src[*i + 1])) 
+---
+> 	    else if ((isalnum(src[*i - 1])) & (isalnum(src[*i + 1]))
+>                     /*  Replaced logical AND with bitwise AND  */",115-123,

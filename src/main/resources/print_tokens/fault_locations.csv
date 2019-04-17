@@ -1,0 +1,31 @@
+version,diff,line_number,comments
+v1,"224c224,225
+<                  case 16 : ch=get_char(tstream_ptr->ch_stream);
+---
+>                  case 16 :
+>                  case 32 : ch=get_char(tstream_ptr->ch_stream);
+240,241c241
+<                  case 25 :
+<                  case 32 : token_ptr->token_id=special(next_st);
+---
+>                  case 25 : token_ptr->token_id=special(next_st);
+365a366
+>           case 32: return(EQUALGREATER);
+393d393
+<          case 32: return(EQUALGREATER);",217-253,这个和下面那个都是修改了 switch 的条件，有可能会影响switch-body里所有的功能，所以把 switch-body 都算上。
+v2,"223a224
+> 		 case 12 : /* added code */",217-253,
+v3,"232c232
+<                            unget_char(ch,tstream_ptr->ch_stream);
+---
+>                            /*unget_char(ch,tstream_ptr->ch_stream);*/",,232
+v4,,,在 token.h 里面，先不放上
+v5,"251c251
+<                            token_ind=next_st=0;
+---
+>                            /* missing code token_ind= */ next_st=0;",,
+v6,,,
+v7,"279c279
+< 		if(token_ind >= 80) break; /* Added protection - hf */
+---
+> 		if(token_ind >= 10) break; /* Added protection - hf */",,

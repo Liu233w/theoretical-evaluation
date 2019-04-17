@@ -1,0 +1,40 @@
+version,diff,line_number,comments
+v1,"135c135
+<     if(prio < 1 || prio > MAXLOPRIO) return(BADPRIO);
+---
+> /*    if(prio < 1 || prio > MAXLOPRIO) return(BADPRIO); MISSING CODE */",135,这里直接少了一行，估计是测不出来，但是有可能测出之后的行来
+v2,"295c295
+<     index = index >= length ? length -1 : index; /* If ratio == 1.0 */
+---
+> /*    index = index >= length ? length -1 : index; MISSING CODE *//* If ratio == 1.0 */",295,
+v3,"292c292
+<     if(ratio < 0.0 || ratio > 1.0) return(BADRATIO); /* Somebody else goofed */
+---
+> /*     if(ratio < 0.0 || ratio > 1.0) return(BADRATIO); MISSING CODE *//* Somebody else goofed */",292,
+v4,"92c92
+< 	while(buf[strlen(buf)-1] != '\n' && fgets(buf, CMDSIZE, stdin));
+---
+> /*	while(buf[strlen(buf)-1] != '\n' && fgets(buf, CMDSIZE, stdin)); MISSING CODE */",92,
+v5,"110a111
+>     if(prio < 1) return(BADPRIO); /* Mustn't allow 0 */",111,
+v6,"77c77
+< 	*prio = *command = -1; *ratio =-1.0;
+---
+> 	*prio = 1; *command = -1; *ratio =1.0;",77,
+v7,"292c292,293
+<     if(ratio < 0.0 || ratio > 1.0) return(BADRATIO); /* Somebody else goofed */
+---
+>     if(ratio < 0.0 || ratio >= 1.0) return(BADRATIO); /* Somebody else goofed */
+>     /* operator mutation */",292,
+v8,"275c275
+<     if(prio > MAXPRIO || prio < 0) return(BADPRIO); /* Somebody goofed */
+---
+> /*     if(prio > MAXPRIO || prio < 0) return(BADPRIO); *//* Somebody goofed */",275,
+v9,"187c187
+< 	reschedule(0);
+---
+> 	get_current();",187,
+v10,"28c28
+<     if(status = put_end(prio, new_process)) return(status); /* Error */
+---
+>     put_end(prio, new_process); /* removed status code */",28,

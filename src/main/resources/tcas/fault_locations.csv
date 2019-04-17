@@ -1,0 +1,230 @@
+version,diff,line_number,comments
+v1,"75c75
+< 	result = !(Own_Below_Threat()) || ((Own_Below_Threat()) && (!(Down_Separation >= ALIM())));
+---
+> 	result = !(Own_Below_Threat()) || ((Own_Below_Threat()) && (!(Down_Separation > ALIM()))); /* opertor mutation */",75,
+v2,"63c63
+<     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
+---
+>     return (Climb_Inhibit ? Up_Separation + MINSEP /* operand mutation NOZCROSS */ : Up_Separation);",63,
+v3,"120c120
+<     intent_not_known = Two_of_Three_Reports_Valid && Other_RAC == NO_INTENT;
+---
+>     intent_not_known = Two_of_Three_Reports_Valid || Other_RAC == NO_INTENT; /* logic change */",120,
+v4,"79c79
+< 	result = Own_Above_Threat() && (Cur_Vertical_Sep >= MINSEP) && (Up_Separation >= ALIM());
+---
+> 	result = Own_Above_Threat() && (Cur_Vertical_Sep >= MINSEP) || (Up_Separation >= ALIM()); /* logic change */",79,
+v5,"118c118
+<     enabled = High_Confidence && (Own_Tracked_Alt_Rate <= OLEV) && (Cur_Vertical_Sep > MAXALTDIFF);
+---
+>     enabled = High_Confidence && (Own_Tracked_Alt_Rate <= OLEV); /* && (Cur_Vertical_Sep > MAXALTDIFF); missing code */",118,
+v6,"104c104
+<     return (Own_Tracked_Alt < Other_Tracked_Alt);
+---
+>     return (Own_Tracked_Alt <= Other_Tracked_Alt); /* operator mutation */",104,
+v7,"51c51
+<     Positive_RA_Alt_Thresh[1] = 500;
+---
+>     Positive_RA_Alt_Thresh[1] = 550; /* constant mutation */",51,
+v8,"53c53
+<     Positive_RA_Alt_Thresh[3] = 740;
+---
+>     Positive_RA_Alt_Thresh[3] = 700; /* constant mutation */",53,
+v9,"1d0
+< 
+90c89
+<     upward_preferred = Inhibit_Biased_Climb() > Down_Separation;
+---
+>     upward_preferred = Inhibit_Biased_Climb() >= Down_Separation; /* operator mutation */",89,
+v10,"104c104,105
+<     return (Own_Tracked_Alt < Other_Tracked_Alt);
+---
+>     /* NOTE JMW replaced LESS-THAN with LESS-THAN-EQUAL. */
+>     return (Own_Tracked_Alt <= Other_Tracked_Alt);
+109c110,111
+<     return (Other_Tracked_Alt < Own_Tracked_Alt);
+---
+>     /* NOTE JMW replaced LESS-THAN with LESS-THAN-EQUAL. */
+>     return (Other_Tracked_Alt <= Own_Tracked_Alt);","105,111",
+v11,"104c104,106
+<     return (Own_Tracked_Alt < Other_Tracked_Alt);
+---
+>  /* NOTE JMW added equality to the condition. */
+> 
+>     return (Own_Tracked_Alt <= Other_Tracked_Alt);
+109c111,113
+<     return (Other_Tracked_Alt < Own_Tracked_Alt);
+---
+>  /* NOTE JMW added equality to the condition. */
+> 
+>     return (Other_Tracked_Alt <= Own_Tracked_Alt);
+128c132,136
+< 	if (need_upward_RA && need_downward_RA)
+---
+> 
+>      /* NOTE JMW removed exclusive-or condition from upward and downward
+>              computations. */
+> 
+> 	if (need_upward_RA)
+132,133d139
+< 	    alt_sep = UNRESOLVED;
+< 	else if (need_upward_RA)","106,113,136-144",这里影响了后续的多个 if 分支，先把它们都算上了
+v12,"2c2
+< /*  -*- Last-Edit:  Fri Jan 29 11:13:27 1993 by Tarak S. Goradia; -*- */
+---
+> /*  -*- Last-Edit:  Tue Apr 20 11:22:37 1993 by Michael Greenberg; -*- */
+118c118
+<     enabled = High_Confidence && (Own_Tracked_Alt_Rate <= OLEV) && (Cur_Vertical_Sep > MAXALTDIFF);
+---
+>     enabled = High_Confidence || (Own_Tracked_Alt_Rate <= OLEV) && (Cur_Vertical_Sep > MAXALTDIFF);",118,
+v13,"10c10
+< #define OLEV       600		/* in feets/minute */
+---
+> #define OLEV       600+100		/* in feets/minute */",118,只有118行用到了这个宏
+v14,"11c11
+< #define MAXALTDIFF 600		/* max altitude difference in feet */
+---
+> #define MAXALTDIFF 600+50		/* max altitude difference in feet */",118,同上
+v15,"12c12
+< #define MINSEP     300          /* min separation in feet */
+---
+> #define MINSEP     300+350          /* min separation in feet */
+118c118
+<     enabled = High_Confidence && (Own_Tracked_Alt_Rate <= OLEV) && (Cur_Vertical_Sep > MAXALTDIFF);
+---
+>     enabled = High_Confidence && (Own_Tracked_Alt_Rate <= OLEV);","93,79,118",
+v16,"50c50
+<     Positive_RA_Alt_Thresh[0] = 400;
+---
+>     Positive_RA_Alt_Thresh[0] = 400+1;",50,
+v17,"51c51
+<     Positive_RA_Alt_Thresh[1] = 500;
+---
+>     Positive_RA_Alt_Thresh[1] = 500+1;",51,
+v18,"52c52
+<     Positive_RA_Alt_Thresh[2] = 640;
+---
+>     Positive_RA_Alt_Thresh[2] = 640+50;",52,
+v19,"53c53
+<     Positive_RA_Alt_Thresh[3] = 740;
+---
+>     Positive_RA_Alt_Thresh[3] = 740+20;",53,
+v20,"72c72
+<     upward_preferred = Inhibit_Biased_Climb() > Down_Separation;
+---
+>     upward_preferred = Inhibit_Biased_Climb() >= Down_Separation;",72,
+v21,"72c72
+<     upward_preferred = Inhibit_Biased_Climb() > Down_Separation;
+---
+>     upward_preferred = (Up_Separation + NOZCROSS) > Down_Separation;",72,
+v22,"72c72
+<     upward_preferred = Inhibit_Biased_Climb() > Down_Separation;
+---
+>     upward_preferred = Up_Separation > Down_Separation;",72,
+v23,"90c90
+<     upward_preferred = Inhibit_Biased_Climb() > Down_Separation;
+---
+>     upward_preferred = (Up_Separation + NOZCROSS) > Down_Separation;",90,
+v24,"90c90
+<     upward_preferred = Inhibit_Biased_Climb() > Down_Separation;
+---
+>     upward_preferred = Up_Separation > Down_Separation;",90,
+v25,"97c97
+< 	result = !(Own_Above_Threat()) || ((Own_Above_Threat()) && (Up_Separation >= ALIM()));
+---
+> 	result = !(Own_Above_Threat()) || ((Own_Above_Threat()) && (Up_Separation > ALIM()));",97,
+v26,"118c118
+<     enabled = High_Confidence && (Own_Tracked_Alt_Rate <= OLEV) && (Cur_Vertical_Sep > MAXALTDIFF);
+---
+>     enabled = High_Confidence && (Cur_Vertical_Sep > MAXALTDIFF);",118,
+v27,"118c118
+<     enabled = High_Confidence && (Own_Tracked_Alt_Rate <= OLEV) && (Cur_Vertical_Sep > MAXALTDIFF);
+---
+>     enabled = High_Confidence && (Own_Tracked_Alt_Rate <= OLEV) ;",118,
+v28,"63c63
+<     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
+---
+>     return ((Climb_Inhibit == 0) ? Up_Separation + NOZCROSS : Up_Separation);",63,
+v29,"63c63
+<     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
+---
+>     return (Up_Separation);",63,
+v30,"63c63
+<     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
+---
+>     return (Up_Separation + NOZCROSS);",63,
+v31,"75a76
+> 	result = result && (Own_Tracked_Alt <= Other_Tracked_Alt);
+79a81
+> 	result = result && (Own_Tracked_Alt < Other_Tracked_Alt);
+126c128
+< 	need_upward_RA = Non_Crossing_Biased_Climb() && Own_Below_Threat();
+---
+> 	need_upward_RA = Non_Crossing_Biased_Climb();","76,81,128",76行和81行都是覆盖了上面一行的result，相当于修改了那一行。
+v32,"93a94
+> 	result = result && (Other_Tracked_Alt < Own_Tracked_Alt);
+97a99
+> 	result = result && (Other_Tracked_Alt <= Own_Tracked_Alt);
+127c129
+< 	need_downward_RA = Non_Crossing_Biased_Descend() && Own_Above_Threat();
+---
+> 	need_downward_RA = Non_Crossing_Biased_Descend();","94,99,129",同上
+v33,"50,53c50,53
+<     Positive_RA_Alt_Thresh[0] = 400;
+<     Positive_RA_Alt_Thresh[1] = 500;
+<     Positive_RA_Alt_Thresh[2] = 640;
+<     Positive_RA_Alt_Thresh[3] = 740;
+---
+>     Positive_RA_Alt_Thresh[1] = 400;
+>     Positive_RA_Alt_Thresh[2] = 500;
+>     Positive_RA_Alt_Thresh[3] = 640;
+>     Positive_RA_Alt_Thresh[4] = 740;",50-53,
+v34,"124c124
+<     if (enabled && ((tcas_equipped && intent_not_known) || !tcas_equipped))
+---
+>     if (enabled && tcas_equipped && intent_not_known || !tcas_equipped)",124-139,
+v35,"63c63
+<     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
+---
+>     return (Climb_Inhibit ? Up_Separation : Up_Separation + NOZCROSS);",63,
+v36,"46c46
+< #define DOWNWARD_RA 2
+---
+> #define DOWNWARD_RA 1",136,宏定义只会影响 136 行
+v37,"58c58
+<  return Positive_RA_Alt_Thresh[Alt_Layer_Value];
+---
+>  return Positive_RA_Alt_Thresh[0];",58,
+v38,"27c27
+< int Positive_RA_Alt_Thresh[4];
+---
+> int Positive_RA_Alt_Thresh[3];",27,
+v39,"2c2
+< /*  -*- Last-Edit:  Fri Jan 29 11:13:27 1993 by Tarak S. Goradia; -*- */
+---
+> /*  -*- Last-Edit:  Wed Apr  7 14:06:41 1993 by Tarak S. Goradia; -*- */
+97c97
+< 	result = !(Own_Above_Threat()) || ((Own_Above_Threat()) && (Up_Separation >= ALIM()));
+---
+> 	result = !(Own_Above_Threat()) || ((Own_Above_Threat()) && (Up_Separation > ALIM()));",97,
+v40,"2c2
+< /*  -*- Last-Edit:  Fri Jan 29 11:13:27 1993 by Tarak S. Goradia; -*- */
+---
+> /*  -*- Last-Edit:  Wed Apr  7 17:44:49 1993 by Tarak S. Goradia; -*- */
+75c75
+< 	result = !(Own_Below_Threat()) || ((Own_Below_Threat()) && (!(Down_Separation >= ALIM())));
+---
+> 	result = ((Own_Below_Threat()) && (!(Down_Separation >= ALIM())));
+126c126
+< 	need_upward_RA = Non_Crossing_Biased_Climb() && Own_Below_Threat();
+---
+> 	need_upward_RA = Non_Crossing_Biased_Climb();","75,126",
+v41,"2c2
+< /*  -*- Last-Edit:  Fri Jan 29 11:13:27 1993 by Tarak S. Goradia; -*- */
+---
+> /*  -*- Last-Edit:  Wed Apr  7 17:14:13 1993 by Tarak S. Goradia; -*- */
+79c79
+< 	result = Own_Above_Threat() && (Cur_Vertical_Sep >= MINSEP) && (Up_Separation >= ALIM());
+---
+> 	result = (Cur_Vertical_Sep >= MINSEP) && (Up_Separation >= ALIM());",79,
