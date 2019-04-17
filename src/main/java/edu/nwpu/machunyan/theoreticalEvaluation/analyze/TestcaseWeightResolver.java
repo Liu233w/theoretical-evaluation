@@ -141,12 +141,14 @@ public class TestcaseWeightResolver {
             VectorTableModelResolver.resolve(runResults.stream(), statementCount),
             resolver);
 
-        final double[] result = IntStream.range(0, runResults.size())
-            .mapToObj(i -> buildStreamSkipAt(runResults, i))
-            .map(stream -> VectorTableModelResolver.resolve(stream, statementCount))
-            .map(vtm -> AveragePerformanceResolver.resolve(vtm, resolver))
-            .mapToDouble(averagePerformance -> averagePerformance - overall)
-            .toArray();
+        final double[] result = new double[runResults.size()];
+        for (int i = 0; i < result.length; i++) {
+
+            final double ap = AveragePerformanceResolver.resolve(
+                VectorTableModelResolver.resolve(buildStreamSkipAt(runResults, i), statementCount),
+                resolver);
+            result[i] = ap - overall;
+        }
 
         // 3. normalize average performance
         final double improvedAverage = Arrays.stream(result)

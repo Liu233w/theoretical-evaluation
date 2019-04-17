@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 比较重构之前和之后的运行速度
 Benchmark   Mode  Cnt     Score     Error  Units
 Before      avgt    5  4940.753 ± 599.973  ms/op
-After       avgt    5  6766.989 ± 191.981  ms/op
+Optimize1   avgt    5  4809.650 ± 138.368  ms/op
  */
 
 @BenchmarkMode(Mode.AverageTime)
