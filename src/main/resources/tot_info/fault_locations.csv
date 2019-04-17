@@ -1,4 +1,4 @@
-版本,影响的代码行,是否有效（预测）,类型,对比（使用命令 diff orig.c versionX.c 生成）,注释
+version,line_number,是否有效（预测）,类型,diff,comments
 v1,341-342,Y,控制流,"343c343
 <                            goto ret1;
 ---
