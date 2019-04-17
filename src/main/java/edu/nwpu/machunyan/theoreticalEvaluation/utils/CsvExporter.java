@@ -5,6 +5,7 @@ import one.util.streamex.StreamEx;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 将数据输出成 csv 格式
@@ -146,6 +147,59 @@ public class CsvExporter {
                     }
                     csvLines.add(new CsvLine(new Object[]{
                         programTitle,
+                        item.getFormulaTitle(),
+                        statement.getStatementIndex(),
+                        statement.getLeft().getRank() + " -> " + statement.getRight().getRank(),
+                        statement.getRankDiff(),
+                    }));
+                });
+            });
+
+        return CsvExporter.toCsvString(csvLines);
+    }
+
+    /**
+     * 输出一个简化后的 csv 语句，将 left 和 right 合成一个，并且移除 suspiciousness factor
+     * <p>
+     * 加上diff和comments
+     *
+     * @param diff
+     * @return
+     */
+    public static String toSimplifiedCsvString(DiffRankJam diff, FaultLocationJam faultLocations) {
+        final ArrayList<CsvLine> csvLines = new ArrayList<>();
+        csvLines.add(new CsvLine(new Object[]{"program title", "diff", "diff comments", "formula", "statement index", "rank change", "rank diff"}));
+
+        Map<String, FaultLocationForProgram> titleToLocations
+            = StreamEx.of(faultLocations.getFaultLocationForPrograms())
+            .toMap(
+                FaultLocationForProgram::getProgramTitle,
+                a -> a
+            );
+
+        StreamEx
+            .of(diff.getDiffRankForPrograms())
+            .sortedByInt(a -> {
+                try {
+                    return Integer.parseInt(a.getProgramTitle().substring(1));
+                } catch (NumberFormatException e) {
+                    return Integer.MAX_VALUE;
+                }
+            })
+            .forEach(item -> {
+                final String programTitle = item.getProgramTitle();
+
+                FaultLocationForProgram location = titleToLocations.remove(programTitle);
+
+                item.getDiffRankForStatements().forEach(statement -> {
+                    if (statement.getLeft().getRank() == -1) {
+                        // 跳过不存在的语句
+                        return;
+                    }
+                    csvLines.add(new CsvLine(new Object[]{
+                        programTitle,
+                        location.getDiff(),
+                        location.getComments(),
                         item.getFormulaTitle(),
                         statement.getStatementIndex(),
                         statement.getLeft().getRank() + " -> " + statement.getRight().getRank(),

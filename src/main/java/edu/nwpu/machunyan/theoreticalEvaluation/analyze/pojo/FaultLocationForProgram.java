@@ -16,4 +16,14 @@ public class FaultLocationForProgram {
      * 每一个元素代表一个可能的错误位置，用语句序号(statementIndex)表示
      */
     Set<Integer> locations;
+
+    /**
+     * 此版本和原先版本的比较
+     */
+    String diff;
+
+    /**
+     * 对这一部分错误的注释（可空）
+     */
+    String comments;
 }

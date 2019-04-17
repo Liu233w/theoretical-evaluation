@@ -37,7 +37,9 @@ public class TotInfoFaultLocationLoader {
             .of(csvRecords.getRecords())
             .map(a -> new FaultLocationForProgram(
                 a.get(0),
-                splitLines(a.get(1))
+                splitLines(a.get(1)),
+                "",
+                ""
             ))
             .toImmutableList();
         return new FaultLocationJam(collect);

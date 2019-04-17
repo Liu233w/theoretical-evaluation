@@ -18,7 +18,16 @@ import java.util.List;
  * 最简化版本的比较代码，只比较使用 特定公式 加权、并且使用 该公式 计算结果的代码。
  * 能够输出比较好看的结果。
  */
-public class DiffTotInfoSfWeightedByCertainFormula {
+public class DiffSfWeightedByCertainFormula {
+
+    private static final String[] MAIN_LIST = new String[]{
+        "my_sort",
+        "schedule2",
+        "tcas",
+        "tot_info",
+        "replace",
+        "print_tokens",
+    };
 
     // 权重加成倍数：测试用例的个数 * mm
     private static final double mm = 1.0;
@@ -27,15 +36,22 @@ public class DiffTotInfoSfWeightedByCertainFormula {
         SuspiciousnessFactorFormulas::op;
     private static final String formulaTitle = "op";
 
-    private static final String outputFile = "./target/outputs/totInfoSfWeightDiffBy-" + formulaTitle + ".csv";
+    private static final String outputDir = "./target/outputs/sf-weight-diff-by-" + formulaTitle;
 
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
-        final FaultLocationJam faultLocations = TotInfoFaultLocationLoader.getFaultLocations();
-        final SuspiciousnessFactorJam sfUnweighted = ResolveTotInfoSuspiciousnessFactor.getResultFromFile();
+        for (String name : MAIN_LIST) {
+            resolveAndSave(name);
+        }
+    }
 
-        final SuspiciousnessFactorJam sfWeighted = resolveWeightedSf();
+    public static void resolveAndSave(String name) throws IOException, URISyntaxException {
+
+        final FaultLocationJam faultLocations = FaultLocationLoader.getFaultLocations(name);
+        final SuspiciousnessFactorJam sfUnweighted = ResolveSuspiciousnessFactor.getResultFromFile(name);
+
+        final SuspiciousnessFactorJam sfWeighted = resolveWeightedSf(name);
 
         final DiffRankJam diff = DiffRankResolver.resolve(
             filterSf(sfUnweighted),
@@ -44,7 +60,8 @@ public class DiffTotInfoSfWeightedByCertainFormula {
             "",
             faultLocations);
 
-        FileUtils.saveString(outputFile, CsvExporter.toSimplifiedCsvString(diff));
+        FileUtils.saveString(outputDir + "/" + name + ".csv",
+            CsvExporter.toSimplifiedCsvString(diff, faultLocations));
     }
 
     /**
@@ -53,10 +70,10 @@ public class DiffTotInfoSfWeightedByCertainFormula {
      * @return
      * @throws FileNotFoundException
      */
-    private static SuspiciousnessFactorJam resolveWeightedSf() throws FileNotFoundException {
+    private static SuspiciousnessFactorJam resolveWeightedSf(String name) throws FileNotFoundException {
 
-        final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
-        final TestcaseWeightJam testcaseWeightJam = ResolveTestcaseWeight.getResultFromFile("tot_info");
+        final RunResultJam jam = Run.getResultFromFile(name);
+        final TestcaseWeightJam testcaseWeightJam = ResolveTestcaseWeight.getResultFromFile(name);
 
         final double testcaseWeightMultiply = jam
             .getRunResultForPrograms()
