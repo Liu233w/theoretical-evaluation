@@ -69,7 +69,7 @@ v11,"104c104,106
 > 	if (need_upward_RA)
 132,133d139
 < 	    alt_sep = UNRESOLVED;
-< 	else if (need_upward_RA)","106,113,136-144",ÕâÀïÓ°ÏìÁËºóĞøµÄ¶à¸ö if ·ÖÖ§£¬ÏÈ°ÑËüÃÇ¶¼ËãÉÏÁË
+< 	else if (need_upward_RA)","106,113,136-144",è¿™é‡Œå½±å“äº†åç»­çš„å¤šä¸ª if åˆ†æ”¯ï¼Œå…ˆæŠŠå®ƒä»¬éƒ½ç®—ä¸Šäº†
 v12,"2c2
 < /*  -*- Last-Edit:  Fri Jan 29 11:13:27 1993 by Tarak S. Goradia; -*- */
 ---
@@ -81,11 +81,11 @@ v12,"2c2
 v13,"10c10
 < #define OLEV       600		/* in feets/minute */
 ---
-> #define OLEV       600+100		/* in feets/minute */",118,Ö»ÓĞ118ĞĞÓÃµ½ÁËÕâ¸öºê
+> #define OLEV       600+100		/* in feets/minute */",118,åªæœ‰118è¡Œç”¨åˆ°äº†è¿™ä¸ªå®
 v14,"11c11
 < #define MAXALTDIFF 600		/* max altitude difference in feet */
 ---
-> #define MAXALTDIFF 600+50		/* max altitude difference in feet */",118,Í¬ÉÏ
+> #define MAXALTDIFF 600+50		/* max altitude difference in feet */",118,åŒä¸Š
 v15,"12c12
 < #define MINSEP     300          /* min separation in feet */
 ---
@@ -161,7 +161,7 @@ v31,"75a76
 126c128
 < 	need_upward_RA = Non_Crossing_Biased_Climb() && Own_Below_Threat();
 ---
-> 	need_upward_RA = Non_Crossing_Biased_Climb();","76,81,128",76ĞĞºÍ81ĞĞ¶¼ÊÇ¸²¸ÇÁËÉÏÃæÒ»ĞĞµÄresult£¬Ïàµ±ÓÚĞŞ¸ÄÁËÄÇÒ»ĞĞ¡£
+> 	need_upward_RA = Non_Crossing_Biased_Climb();","76,81,128",76è¡Œå’Œ81è¡Œéƒ½æ˜¯è¦†ç›–äº†ä¸Šé¢ä¸€è¡Œçš„resultï¼Œç›¸å½“äºä¿®æ”¹äº†é‚£ä¸€è¡Œã€‚
 v32,"93a94
 > 	result = result && (Other_Tracked_Alt < Own_Tracked_Alt);
 97a99
@@ -169,7 +169,7 @@ v32,"93a94
 127c129
 < 	need_downward_RA = Non_Crossing_Biased_Descend() && Own_Above_Threat();
 ---
-> 	need_downward_RA = Non_Crossing_Biased_Descend();","94,99,129",Í¬ÉÏ
+> 	need_downward_RA = Non_Crossing_Biased_Descend();","94,99,129",åŒä¸Š
 v33,"50,53c50,53
 <     Positive_RA_Alt_Thresh[0] = 400;
 <     Positive_RA_Alt_Thresh[1] = 500;
@@ -191,7 +191,7 @@ v35,"63c63
 v36,"46c46
 < #define DOWNWARD_RA 2
 ---
-> #define DOWNWARD_RA 1",136,ºê¶¨ÒåÖ»»áÓ°Ïì 136 ĞĞ
+> #define DOWNWARD_RA 1",136,å®å®šä¹‰åªä¼šå½±å“ 136 è¡Œ
 v37,"58c58
 <  return Positive_RA_Alt_Thresh[Alt_Layer_Value];
 ---
