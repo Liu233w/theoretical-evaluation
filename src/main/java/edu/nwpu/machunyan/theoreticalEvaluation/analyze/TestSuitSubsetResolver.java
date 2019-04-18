@@ -5,6 +5,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestSuitSubsetJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
+import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
@@ -14,6 +15,9 @@ import one.util.streamex.StreamEx;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Consumer;
 
 /**
  * 从一个大的测试用例中去除掉无效的测试用例
@@ -24,13 +28,35 @@ public class TestSuitSubsetResolver {
 
     private final SuspiciousnessFactorResolver resolver;
 
+    /**
+     * 设置汇报器，在 resolve(jam) 时，每生成一个 {@link TestSuitSubsetForProgram} 都会用其
+     * 调用汇报器。
+     */
+    private final Reporter reporter;
+
+    /**
+     * 设置提供器。每个 {@link TestSuitSubsetForProgram} 生成之前，都会将其参数传递给这个提供器。
+     * 如果提供器返回了 {@link Optional#of(Object)}，则不再进行计算，直接使用提供器的结果。
+     */
+    private final Provider provider;
+
+    /**
+     * 是否使用并行计算
+     */
+    private final boolean useParallel;
+
     public TestSuitSubsetResolver(@NonNull SuspiciousnessFactorFormula sfFormula) {
-        this(sfFormula, "");
+        this(sfFormula, "", null, null, true);
     }
 
+    @Builder
     public TestSuitSubsetResolver(
         @NonNull SuspiciousnessFactorFormula sfFormula,
-        String formulaTitle) {
+        String formulaTitle, Reporter reporter, Provider provider, boolean useParallel) {
+
+        this.reporter = reporter;
+        this.provider = provider;
+        this.useParallel = useParallel;
 
         this.resolver = SuspiciousnessFactorResolver.builder()
             .formula(sfFormula)
@@ -122,12 +148,31 @@ public class TestSuitSubsetResolver {
     }
 
     public TestSuitSubsetJam resolve(RunResultJam jam) {
-        final List<TestSuitSubsetForProgram> list = StreamEx
-            .of(jam.getRunResultForPrograms())
-            .parallel()
-            .map(this::resolve)
+        StreamEx<RunResultForProgram> stream = StreamEx
+            .of(jam.getRunResultForPrograms());
+
+        if (useParallel) {
+            stream = stream
+                .parallel();
+        }
+
+        StreamEx<TestSuitSubsetForProgram> resStream;
+        if (provider != null) {
+            resStream = stream.map(item -> provider
+                .apply(this, item)
+                .orElseGet(() -> this.resolve(item))
+            );
+        } else {
+            resStream = stream.map(this::resolve);
+        }
+
+        if (reporter != null) {
+            resStream = resStream.peek(reporter);
+        }
+
+        final List<TestSuitSubsetForProgram> collect = resStream
             .toImmutableList();
-        return new TestSuitSubsetJam(list);
+        return new TestSuitSubsetJam(collect);
     }
 
     private double resolveAveragePerformance(
@@ -161,5 +206,11 @@ public class TestSuitSubsetResolver {
             .filterValues(a -> a)
             .keys()
             .map(runResults::get);
+    }
+
+    public interface Reporter extends Consumer<TestSuitSubsetForProgram> {
+    }
+
+    public interface Provider extends BiFunction<TestSuitSubsetResolver, RunResultForProgram, Optional<TestSuitSubsetForProgram>> {
     }
 }
