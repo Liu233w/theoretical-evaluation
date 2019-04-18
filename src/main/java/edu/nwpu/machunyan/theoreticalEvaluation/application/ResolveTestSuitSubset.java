@@ -94,6 +94,8 @@ public class ResolveTestSuitSubset {
                 final TestSuitSubsetJam result = resolver.resolve(imports);
 
                 FileUtils.saveObject(resolveResultFilePath(name, formulaTitle), result);
+
+                cache.deleteAllCaches();
             }
         }
     }
