@@ -12,11 +12,25 @@ public class TestSuitSubsetJam {
 
     List<TestSuitSubsetForProgram> testSuitSubsetForPrograms;
 
-    public RunResultJam getRunResultJam() {
+    /**
+     * 从原始的运行结果生成划分过子集的运行结果。参数必须和当前的数据一一对应（拥有相同的 programTitle）
+     *
+     * @param origin
+     * @return
+     */
+    public RunResultJam getRunResultJam(RunResultJam origin) {
+
+        final List<RunResultForProgram> origins = origin.getRunResultForPrograms();
+        if (origins.size() != testSuitSubsetForPrograms.size()) {
+            throw new IllegalArgumentException("数据必须拥有相同的元素数量");
+        }
 
         final List<RunResultForProgram> list = StreamEx
             .of(testSuitSubsetForPrograms)
-            .map(TestSuitSubsetForProgram::getRunResultForProgram)
+            .sortedBy(TestSuitSubsetForProgram::getProgramTitle)
+            .zipWith(
+                StreamEx.of(origins).sortedBy(RunResultForProgram::getProgramTitle),
+                TestSuitSubsetForProgram::getRunResultForProgram)
             .toImmutableList();
         return new RunResultJam(list);
     }

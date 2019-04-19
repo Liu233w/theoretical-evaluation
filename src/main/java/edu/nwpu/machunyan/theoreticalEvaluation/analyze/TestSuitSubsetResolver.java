@@ -140,11 +140,9 @@ public class TestSuitSubsetResolver {
         final List<RunResultForTestcase> list = Collections.unmodifiableList(Arrays.asList(res));
         return new TestSuitSubsetForProgram(
             runResultForProgram.getProgramTitle(),
-            runResultForProgram.getStatementMap(),
             currentAveragePerformance,
             averagePerformanceBeforeDivide,
-            toOldSetMap,
-            list);
+            toOldSetMap);
     }
 
     public TestSuitSubsetJam resolve(RunResultJam jam) {

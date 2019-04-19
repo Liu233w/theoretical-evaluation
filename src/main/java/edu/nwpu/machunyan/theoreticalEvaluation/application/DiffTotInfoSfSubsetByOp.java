@@ -49,7 +49,8 @@ public class DiffTotInfoSfSubsetByOp {
     private static SuspiciousnessFactorJam resolveSubsetedSf() throws FileNotFoundException {
 
         final TestSuitSubsetJam testSuitSubsetJam = ResolveTestSuitSubsetByOp.getResultFromFile("tot_info");
-        final RunResultJam runResultJam = testSuitSubsetJam.getRunResultJam();
+        final RunResultJam runResults = Run.getResultFromFile("tot_info");
+        final RunResultJam runResultJam = testSuitSubsetJam.getRunResultJam(runResults);
         final VectorTableModelJam vectorTableModelJam = VectorTableModelResolver.resolve(runResultJam);
 
         return SuspiciousnessFactorResolver

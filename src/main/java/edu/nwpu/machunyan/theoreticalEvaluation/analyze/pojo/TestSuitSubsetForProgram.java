@@ -5,6 +5,8 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import lombok.Value;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -20,11 +22,6 @@ public class TestSuitSubsetForProgram {
     String programTitle;
 
     /**
-     * 本次运行中分析器所得出的语句的对应关系，正常情况下同一个程序的 statement map 应该是一样的
-     */
-    StatementMap statementMap;
-
-    /**
      * 当前测试用例的 average performance
      */
     double averagePerformance;
@@ -35,26 +32,44 @@ public class TestSuitSubsetForProgram {
     double averagePerformanceBefore;
 
     /**
-     * 当前的 {@link TestSuitSubsetForProgram#runResults} 的长度会小于等于
+     * 当前的 {@link TestSuitSubsetForProgram#getRunResults(List)} 的长度会小于等于
      * 划分之前的运行结果长度。
      * <p>
-     * 因此这里的索引和 {@link TestSuitSubsetForProgram#runResults} 的索引
+     * 因此这里的索引和 {@link TestSuitSubsetForProgram#getRunResults(List)} 的索引
      * 一一对应，表示这一个运行结果在划分之前的下标。
      */
     int[] toOldSetMap;
 
-    List<RunResultForTestcase> runResults;
+    /**
+     * 从整体的运行结果将当前的子集划分出来
+     *
+     * @param origin
+     * @return
+     */
+    public List<RunResultForTestcase> getRunResults(List<RunResultForTestcase> origin) {
+        final RunResultForTestcase[] result = new RunResultForTestcase[toOldSetMap.length];
+        for (int i = 0; i < toOldSetMap.length; i++) {
+            result[i] = origin.get(toOldSetMap[i]);
+        }
+        return Collections.unmodifiableList(Arrays.asList(result));
+    }
 
     /**
      * 生成 {@link RunResultForProgram}，便于参与其他的计算
      *
+     * @param origin 原始（包含全部测试用例的）的运行结果，必须和当前的 programTitle 相同
      * @return
      */
-    public RunResultForProgram getRunResultForProgram() {
+    public RunResultForProgram getRunResultForProgram(RunResultForProgram origin) {
+
+        if (!origin.getProgramTitle().equals(this.getProgramTitle())) {
+            throw new IllegalArgumentException("ProgramTitle 必须相同，本对象：" + this.getProgramTitle()
+                + "参数：" + origin.getProgramTitle());
+        }
+
         return new RunResultForProgram(
             programTitle,
-            statementMap,
-            runResults
-        );
+            origin.getStatementMap(),
+            this.getRunResults(origin.getRunResults()));
     }
 }
