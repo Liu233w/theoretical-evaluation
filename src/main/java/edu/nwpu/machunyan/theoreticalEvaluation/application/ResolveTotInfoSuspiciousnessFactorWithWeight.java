@@ -45,7 +45,7 @@ public class ResolveTotInfoSuspiciousnessFactorWithWeight {
      */
     public static Map<String, SuspiciousnessFactorJam> resolveAndGetResult() throws FileNotFoundException {
 
-        final RunResultJam jam = RunTotInfo.getRunResultsFromSavedFile();
+        final RunResultJam jam = Run.getResultFromFile("tot_info");
         final TestcaseWeightJam testcaseWeightJam = ResolveTestcaseWeight.getResultFromFile("tot_info");
 
         // 权重加成倍数：测试用例的个数

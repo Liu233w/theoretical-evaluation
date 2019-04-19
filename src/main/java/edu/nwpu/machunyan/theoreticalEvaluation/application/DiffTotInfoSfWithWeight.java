@@ -23,7 +23,7 @@ public class DiffTotInfoSfWithWeight {
 
         final Map<String, SuspiciousnessFactorJam> formulaToResult =
             ResolveTotInfoSuspiciousnessFactorWithWeight.resolveAndGetResult();
-        final SuspiciousnessFactorJam unWeightedResult = ResolveTotInfoSuspiciousnessFactor.getResultFromFile();
+        final SuspiciousnessFactorJam unWeightedResult = ResolveSuspiciousnessFactor.getResultFromFile("tot_info");
 
         for (Map.Entry<String, SuspiciousnessFactorJam> entry : formulaToResult.entrySet()) {
             final String formula = entry.getKey();

@@ -30,7 +30,7 @@ public class DiffTotInfoSfWithWeightSimplified {
     public static void main(String[] args) throws URISyntaxException, IOException {
 
         final FaultLocationJam faultLocations = TotInfoFaultLocationLoader.getFaultLocations();
-        final SuspiciousnessFactorJam sfUnweighted = ResolveTotInfoSuspiciousnessFactor.getResultFromFile();
+        final SuspiciousnessFactorJam sfUnweighted = ResolveSuspiciousnessFactor.getResultFromFile("tot_info");
         final Map<String, SuspiciousnessFactorJam> sfWeighted = ResolveTotInfoSuspiciousnessFactorWithWeight.resolveAndGetResult();
 
         final SuspiciousnessFactorJam simplifyedWeightedSf = getSimplifyedWeightedSf(sfWeighted);
