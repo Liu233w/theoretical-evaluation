@@ -22,6 +22,9 @@ RUN apt-get install \
     build-essential \
     -y
 
+# 添加 maven 镜像源
+RUN mkdir /root/.m2 && sed '$i<mirrors><mirror><id>alimaven</id><name>aliyunmaven</name><url>https://maven.aliyun.com/nexus/content/groups/public/</url><mirrorOf>*</mirrorOf></mirror></mirrors>' /usr/share/maven/ref/settings-docker.xml > /root/.m2/settings.xml
+
 WORKDIR /app
 
 COPY pom.xml .
