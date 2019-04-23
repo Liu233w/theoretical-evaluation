@@ -89,7 +89,7 @@ public class DiffSfWeightedByCertainFormula {
     private static SuspiciousnessFactorJam resolveWeightedSf(String name) throws FileNotFoundException {
 
         final RunResultJam jam = Run.getResultFromFile(name);
-        final TestcaseWeightJam testcaseWeightJam = ResolveTestcaseWeight.getResultFromFile(name);
+        final TestcaseWeightJam testcaseWeightJam = ResolveTestcaseWeight.getResultFromFile(name, formulaTitle);
 
         final double testcaseWeightMultiply = jam
             .getRunResultForPrograms()
@@ -99,8 +99,7 @@ public class DiffSfWeightedByCertainFormula {
             * mm;
 
         final TestcaseWeightJam multipliedWeight = TestcaseWeightMultiplyingResolver.resolve(
-            filterWeights(testcaseWeightJam),
-            testcaseWeightMultiply);
+            testcaseWeightJam, testcaseWeightMultiply);
         final VectorTableModelJam vtm = VectorTableModelResolver.resolveWithWeights(jam, multipliedWeight);
 
         return SuspiciousnessFactorResolver
@@ -109,22 +108,6 @@ public class DiffSfWeightedByCertainFormula {
             .formulaTitle(formulaTitle)
             .build()
             .resolve(vtm);
-    }
-
-    /**
-     * 找出使用 Op 公式加权的结果
-     *
-     * @param jam
-     * @return
-     */
-    private static TestcaseWeightJam filterWeights(TestcaseWeightJam jam) {
-
-        final List<TestcaseWeightForProgram> list = StreamEx
-            .of(jam.getTestcaseWeightForPrograms())
-            .filter(a -> a.getFormulaTitle().equals(formulaTitle))
-            .toImmutableList();
-
-        return new TestcaseWeightJam(list);
     }
 
     /**

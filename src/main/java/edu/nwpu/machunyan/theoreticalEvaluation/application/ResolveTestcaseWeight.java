@@ -10,12 +10,16 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Cleanup;
+import lombok.SneakyThrows;
 import me.tongfei.progressbar.ProgressBar;
+import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -106,10 +110,31 @@ public class ResolveTestcaseWeight {
         return FileUtils.loadObject(path, TestcaseWeightJam.class);
     }
 
+    public static TestcaseWeightJam getResultFromFile(
+        String programName) throws IOException {
+
+        final Path[] fileList = getFileListOf(programName);
+
+        // 合并多个文件
+        final ArrayList<TestcaseWeightForProgram> result = new ArrayList<>();
+        for (Path path : fileList) {
+            final TestcaseWeightJam jam = FileUtils.loadObject(path, TestcaseWeightJam.class);
+            result.addAll(jam.getTestcaseWeightForPrograms());
+        }
+
+        return new TestcaseWeightJam(result);
+    }
+
     private static String resolveResultFilePath(
         String programName,
         String formulaName) {
 
         return resultDir + "/" + programName + "-" + formulaName + ".json";
+    }
+
+    private static Path[] getFileListOf(String programName) throws IOException {
+        return Files.list(Paths.get(resultDir))
+            .filter(a -> a.startsWith(programName))
+            .toArray(Path[]::new);
     }
 }
