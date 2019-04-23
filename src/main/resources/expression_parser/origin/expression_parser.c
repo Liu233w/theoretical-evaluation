@@ -743,30 +743,12 @@ int main(argc, argv)
 int argc;
 char *argv[];
 {
-  if (argc == 11) {
-    char buf[100] = {'\0'};
+  if (argc == 2) {
     char expr[200] = {'\0'};
+    strcat(expr, argv[1]);
 
-    strcat(buf, "(");
-    strcat(buf, argv[1]);
-    strcat(buf, ")");
-    for (int i = 2; i < 10; i += 2) {
-      strcat(buf, argv[i]);
-      printf("args : %s\n", argv[i]);
-      strcat(buf, "(");
-      strcat(buf, argv[i+1]);
-      printf("args : %s\n", argv[i+1]);
-      strcat(buf, ")");
-    }
-    printf("buf : %s\n", buf);
-    strcat(expr, argv[10]);
-    strcat(expr, "(");
-    strcat(expr, buf);
-    strcat(expr, ")");
     printf("expr : %s\n", expr);
-
-    printf("calculate as %s  = parse_expression(expr) : %lf\n", argv[10], parse_expression(expr));
-
+    printf("result : %lf\n", parse_expression(expr));
 
     return 0;
   } else {
