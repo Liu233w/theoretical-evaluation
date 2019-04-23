@@ -54,7 +54,24 @@
 34(+3)
 3()
 (+)
-
+# 单个元素
+(
+)
+()
+2
+12
+450
+-
++
+*
+/
+sin
+log
+# 以运算符号开头
++2
+-2
+*2
+/2
 # 表达式带有空格
  1+2+3
 1 +2+3
@@ -63,10 +80,145 @@
 1+2+ 3
 1+2+3 
 1 + 2 + 3
+# 错误：无意义的空格
+12 450
++5 6
 # 以函数开头的表达式
 # 看起来源代码里就这些函数
-pow(2)
+pow(2,2)
 sqrt(2)
+log(2)
+exp(2)
+sin(2)
+asin(0.2)
+cos(2)
+acos(0.2)
+tan(2)
+atan(2)
+atan2(2,2)
+abs(2)
+fabs(2)
+floor(2)
+ceil(2)
+round(2)
+# 更多输入
+pow(34,2)
+sqrt(34)
+log(34)
+exp(34)
+sin(34)
+asin(0.34)
+cos(34)
+acos(0.34)
+tan(34)
+atan(34)
+atan2(34,2)
+abs(34)
+fabs(34)
+floor(34)
+ceil(34)
+round(34)
+pow(11.5,2)
+sqrt(11.5)
+log(11.5)
+exp(11.5)
+sin(11.5)
+asin(0.5)
+cos(11.5)
+acos(0.5)
+tan(11.5)
+atan(11.5)
+atan2(11.5,2)
+abs(11.5)
+fabs(11.5)
+floor(11.5)
+ceil(11.5)
+round(11.5)
+pow(11.6,2)
+sqrt(11.6)
+log(11.6)
+exp(11.6)
+sin(11.6)
+asin(0.6)
+cos(11.6)
+acos(0.6)
+tan(11.6)
+atan(11.6)
+atan2(11.6,2)
+abs(11.6)
+fabs(11.6)
+floor(11.6)
+ceil(11.6)
+round(11.6)
+pow(11.0,2)
+sqrt(11.0)
+log(11.0)
+exp(11.0)
+sin(11.0)
+asin(0.0)
+cos(11.0)
+acos(0.0)
+tan(11.0)
+atan(11.0)
+atan2(11.0,2)
+abs(11.0)
+fabs(11.0)
+floor(11.0)
+ceil(11.0)
+round(11.0)
+pow(11.1,2)
+sqrt(11.1)
+log(11.1)
+exp(11.1)
+sin(11.1)
+asin(0.1)
+cos(11.1)
+acos(0.1)
+tan(11.1)
+atan(11.1)
+atan2(11.1,2)
+abs(11.1)
+fabs(11.1)
+floor(11.1)
+ceil(11.1)
+round(11.1)
+pow(11.9,2)
+sqrt(11.9)
+log(11.9)
+exp(11.9)
+sin(11.9)
+asin(0.9)
+cos(11.9)
+acos(0.9)
+tan(11.9)
+atan(11.9)
+atan2(11.9,2)
+abs(11.9)
+fabs(11.9)
+floor(11.9)
+ceil(11.9)
+round(11.9)
+# 不存在的函数
+foo(2)
+# 函数名后面直接跟参数
+sin22
+sin 22
+sin 2/3
+sin2/3
+sin2/ 3
+sin2 /3
+# 参数数量不对
+pow(2)
+atan2(2)
+# 参数范围不对
+sqrt(-1)
+log(0)
+log(-1)
+asin(2)
+acos(2)
+asin(1)
+acos(1)
+# 函数的参数是表达式
 
 # 什么也不输入
 
