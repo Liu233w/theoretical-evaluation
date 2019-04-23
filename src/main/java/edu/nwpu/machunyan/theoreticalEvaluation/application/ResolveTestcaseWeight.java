@@ -1,7 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormula;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightHelper;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
@@ -16,8 +16,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 
 public class ResolveTestcaseWeight {
 
@@ -32,72 +33,83 @@ public class ResolveTestcaseWeight {
         "print_tokens",
     };
 
-    private static final boolean USE_PARALLEL = !"1".equals(System.getenv("DISABLE_PARALLEL"));
-
     public static void main(String[] args) throws IOException {
-
-        LogUtils.logInfo("USE_PARALLEL=" + USE_PARALLEL);
 
         for (String name : MAIN_LIST) {
 
-            // 跳过已经计算出的结果
-            if (Files.exists(Paths.get(resolveResultFilePath(name)))) {
-                continue;
-            }
-
             LogUtils.logInfo("Running on " + name);
 
-            final CacheHandler cache = new CacheHandler("testcase-weights-" + name);
-
-            @Cleanup final ProgressBar progressBar = new ProgressBar("", 0);
-
-            final TestcaseWeightResolver.Reporter cacheSaver = item -> {
-                final String key = item.getFormulaTitle() + "-" + item.getTitle();
-                LogUtils.logFine("saving cache: " + key);
-                cache.saveCache(key, item);
-                progressBar.step();
-            };
-            final TestcaseWeightResolver.Provider cacheLoader = (resolver, input) -> {
-                final String key = resolver.getFormulaTitle() + "-" + input.getProgramTitle();
-                final Optional<TestcaseWeightForProgram> result = cache.tryLoadCache(key, TestcaseWeightForProgram.class);
-                if (result.isPresent()) {
-
-                    // 避免缓存影响对剩余时间的计算
-                    progressBar.maxHint(progressBar.getMax() - 1);
-                    progressBar.stepBy(-1);
-
-                    LogUtils.logFine("loaded item from cache: " + key);
-                }
-                return result;
-            };
-
-            final List<TestcaseWeightResolver> resolvers = TestcaseWeightResolver.of(
-                SuspiciousnessFactorFormulas.getAllFormulas(),
-                TestcaseWeightResolver
-                    .builder()
-                    .provider(cacheLoader)
-                    .reporter(cacheSaver)
-                    .useParallel(USE_PARALLEL)
-            );
-
             final RunResultJam imports = Run.getResultFromFile(name);
-            progressBar.maxHint(resolvers.size() * imports.getRunResultForPrograms().size());
+            final Set<Map.Entry<String, SuspiciousnessFactorFormula>> entrySet = SuspiciousnessFactorFormulas.getAllFormulas().entrySet();
 
-            final TestcaseWeightJam result = TestcaseWeightHelper
-                .runOnAllResolvers(imports, resolvers, USE_PARALLEL);
+            @Cleanup final ProgressBar progressBar = new ProgressBar("", imports.getRunResultForPrograms().size() * entrySet.size());
 
-            FileUtils.saveObject(resolveResultFilePath(name), result);
+            for (Map.Entry<String, SuspiciousnessFactorFormula> entry :
+                entrySet) {
 
-            cache.deleteAllCaches();
+                final String formulaTitle = entry.getKey();
+                final SuspiciousnessFactorFormula formula = entry.getValue();
+
+                // 跳过已经计算出的结果
+                if (Files.exists(Paths.get(resolveResultFilePath(name, formulaTitle)))) {
+                    LogUtils.logInfo("skip " + name + "-" + formulaTitle);
+                    progressBar.maxHint(progressBar.getMax() - imports.getRunResultForPrograms().size());
+                    continue;
+                }
+
+                LogUtils.logInfo("working on " + name + "-" + formulaTitle);
+
+                // 缓存中间结果
+                final CacheHandler cache = new CacheHandler("testcase-weights-" + name + "-" + formulaTitle);
+                final TestcaseWeightResolver.Reporter reporter = item -> {
+                    final String key = item.getTitle();
+                    LogUtils.logFine("saving cache: " + key);
+                    cache.saveCache(key, item);
+                    progressBar.step();
+                };
+                final TestcaseWeightResolver.Provider provider = (resolver, input) -> {
+                    final String key = input.getProgramTitle();
+                    final Optional<TestcaseWeightForProgram> result = cache.tryLoadCache(key, TestcaseWeightForProgram.class);
+                    if (result.isPresent()) {
+
+                        // 避免缓存影响对剩余时间的计算
+                        progressBar.maxHint(progressBar.getMax() - 1);
+                        progressBar.stepBy(-1);
+
+                        LogUtils.logFine("loaded item from cache: " + key);
+                    }
+                    return result;
+                };
+
+                final TestcaseWeightResolver resolver = TestcaseWeightResolver
+                    .builder()
+                    .sfFormula(formula)
+                    .formulaTitle(formulaTitle)
+                    .provider(provider)
+                    .reporter(reporter)
+                    .useParallel(true)
+                    .build();
+                final TestcaseWeightJam result = resolver.resolve(imports);
+
+                FileUtils.saveObject(resolveResultFilePath(name, formulaTitle), result);
+
+                cache.deleteAllCaches();
+            }
         }
     }
 
-    public static TestcaseWeightJam getResultFromFile(String programName) throws FileNotFoundException {
-        final String path = resolveResultFilePath(programName);
+    public static TestcaseWeightJam getResultFromFile(
+        String programName,
+        String formulaName) throws FileNotFoundException {
+
+        final String path = resolveResultFilePath(programName, formulaName);
         return FileUtils.loadObject(path, TestcaseWeightJam.class);
     }
 
-    private static String resolveResultFilePath(String programName) {
-        return resultDir + "/" + programName + ".json";
+    private static String resolveResultFilePath(
+        String programName,
+        String formulaName) {
+
+        return resultDir + "/" + programName + "-" + formulaName + ".json";
     }
 }
