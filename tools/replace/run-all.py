@@ -10,6 +10,8 @@
 这样的输入，shlex会把最右边的io重定位符号和参数放到一起，最好使用第三方的库
 
 import bashlex
+
+另外，脚本应该在 linux 下被执行。因为有一些输入程序的参数可能是 *，在 windows 下会被当成路径通配符。而 subprocess 在 linux 下是不经过 sh 的，不会转换这些参数。
 """
 
 import json
@@ -39,7 +41,7 @@ for item in plans:
 
     # '$' ''\''Z y<j$`3-b6{hC,KW4dJZ\tWkm' < input/ruin.1104
     splited = list(bashlex.split(item.strip()))
-    
+
     # ['$', "'Z y<j$`3-b6{hC,KW4dJZ\tWkm", '<', 'input/ruin.1104']
     stdin = readInput(splited[-1])
     params = splited[:-2]

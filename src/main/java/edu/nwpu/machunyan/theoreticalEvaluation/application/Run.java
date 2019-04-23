@@ -23,6 +23,8 @@ import java.util.Optional;
 
 /**
  * 批量执行测试程序，为每个程序单独返回结果
+ * <p>
+ * 应该在 linux 下被执行。因为有一些输入程序的参数可能是 *，在 windows 下会被当成路径通配符
  */
 public class Run {
 
