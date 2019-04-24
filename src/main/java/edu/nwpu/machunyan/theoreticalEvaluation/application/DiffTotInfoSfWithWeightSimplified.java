@@ -3,6 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.AverageRankDiffResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.DiffRankResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.TotInfoFaultLocationLoader;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.ArrayUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvLine;

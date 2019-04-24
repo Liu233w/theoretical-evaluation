@@ -1,4 +1,4 @@
-package edu.nwpu.machunyan.theoreticalEvaluation.application;
+package edu.nwpu.machunyan.theoreticalEvaluation.application.utils;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.FaultLocationForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.FaultLocationJam;

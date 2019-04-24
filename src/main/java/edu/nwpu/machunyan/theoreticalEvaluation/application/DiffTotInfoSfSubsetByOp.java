@@ -2,6 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.FaultLocationLoader;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
