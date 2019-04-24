@@ -17,16 +17,25 @@ import java.util.function.Consumer;
 public class CacheHandler {
 
     private final static String DEFAULT_CACHE_BASE_LOCATION = "./target/outputs/.cache";
-
+    @Getter
+    private final String cacheName;
     @Getter
     @Setter
     private String cacheBaseLocation = DEFAULT_CACHE_BASE_LOCATION;
 
-    @Getter
-    private final String cacheName;
-
     public CacheHandler(String cacheName) {
         this.cacheName = cacheName;
+    }
+
+    // 辅助函数，用来将抛出checked exception的lambda转换成抛出unchecked exception的lambda
+    private static <T> Consumer<T> unchecked(ThrowingConsumer<T> f) {
+        return t -> {
+            try {
+                f.consume(t);
+            } catch (Exception ex) {
+                throw Lombok.sneakyThrow(ex);
+            }
+        };
     }
 
     public Path getCacheDirectory() {
@@ -83,19 +92,7 @@ public class CacheHandler {
         }
     }
 
-    // 辅助函数，用来将抛出checked exception的lambda转换成抛出unchecked exception的lambda
-
     public interface ThrowingConsumer<T> {
         void consume(T t) throws Exception;
-    }
-
-    private static <T> Consumer<T> unchecked(ThrowingConsumer<T> f) {
-        return t -> {
-            try {
-                f.consume(t);
-            } catch (Exception ex) {
-                throw Lombok.sneakyThrow(ex);
-            }
-        };
     }
 }

@@ -24,6 +24,8 @@ After       avgt    5  4.726 ± 0.303  ms/op
 @State(Scope.Benchmark)
 public class VectorTableModelResolverBenchmark {
 
+    private RunResultForProgram runResultForProgram;
+
     public static void main(String[] args) throws RunnerException {
         final Options options = new OptionsBuilder()
             .include(VectorTableModelResolverBenchmark.class.getSimpleName())
@@ -31,8 +33,6 @@ public class VectorTableModelResolverBenchmark {
             .build();
         new Runner(options).run();
     }
-
-    private RunResultForProgram runResultForProgram;
 
     @Setup
     public void setup() throws FileNotFoundException {

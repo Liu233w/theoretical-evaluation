@@ -23,8 +23,8 @@ public class DiffRunningResult {
 
     public static void main(String[] args) throws FileNotFoundException {
 
-        final List<RunResultForProgram> leftList = ((RunResultJam) FileUtils.loadObject(Paths.get(left), RunResultJam.class)).getRunResultForPrograms();
-        final List<RunResultForProgram> rightList = ((RunResultJam) FileUtils.loadObject(Paths.get(right), RunResultJam.class)).getRunResultForPrograms();
+        final List<RunResultForProgram> leftList = FileUtils.loadObject(Paths.get(left), RunResultJam.class).getRunResultForPrograms();
+        final List<RunResultForProgram> rightList = FileUtils.loadObject(Paths.get(right), RunResultJam.class).getRunResultForPrograms();
 
         if (leftList.size() != rightList.size()) {
             throw new RuntimeException("diff size");

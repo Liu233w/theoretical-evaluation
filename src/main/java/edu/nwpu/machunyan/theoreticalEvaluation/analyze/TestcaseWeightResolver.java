@@ -94,6 +94,12 @@ public class TestcaseWeightResolver {
             .toImmutableList();
     }
 
+    private static Stream<RunResultForTestcase> buildStreamSkipAt(List<RunResultForTestcase> runResults, int index) {
+        return IntStream.range(0, runResults.size())
+            .filter(i -> i != index)
+            .mapToObj(runResults::get);
+    }
+
     public SuspiciousnessFactorFormula getFormula() {
         return resolver.getFormula();
     }
@@ -178,12 +184,6 @@ public class TestcaseWeightResolver {
             runResultForProgram.getProgramTitle(),
             getFormulaTitle(),
             testcaseWeights);
-    }
-
-    private static Stream<RunResultForTestcase> buildStreamSkipAt(List<RunResultForTestcase> runResults, int index) {
-        return IntStream.range(0, runResults.size())
-            .filter(i -> i != index)
-            .mapToObj(runResults::get);
     }
 
     public interface Reporter extends Consumer<TestcaseWeightForProgram> {

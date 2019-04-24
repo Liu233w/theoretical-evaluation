@@ -1,6 +1,5 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import lombok.Value;
@@ -8,7 +7,6 @@ import lombok.Value;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 由 {@link edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestSuitSubsetResolver} 处理过的结果。

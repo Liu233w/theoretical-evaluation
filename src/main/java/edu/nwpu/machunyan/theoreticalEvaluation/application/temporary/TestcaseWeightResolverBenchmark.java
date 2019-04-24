@@ -27,6 +27,9 @@ Optimize1   avgt    5  4809.650 ± 138.368  ms/op
 @State(Scope.Benchmark)
 public class TestcaseWeightResolverBenchmark {
 
+    private RunResultForProgram runResultForProgram;
+    private TestcaseWeightResolver resolver;
+
     public static void main(String[] args) throws RunnerException {
         final Options options = new OptionsBuilder()
             .include(TestcaseWeightResolverBenchmark.class.getSimpleName())
@@ -34,9 +37,6 @@ public class TestcaseWeightResolverBenchmark {
             .build();
         new Runner(options).run();
     }
-
-    private RunResultForProgram runResultForProgram;
-    private TestcaseWeightResolver resolver;
 
     @Setup
     public void setup() throws FileNotFoundException {

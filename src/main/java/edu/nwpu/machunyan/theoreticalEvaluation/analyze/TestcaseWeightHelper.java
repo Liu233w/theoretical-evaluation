@@ -3,10 +3,8 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import one.util.streamex.StreamEx;
 
-import java.util.Collection;
 import java.util.List;
 
 public class TestcaseWeightHelper {
