@@ -746,8 +746,6 @@ char *argv[];
   if (argc > 1) {
     char buf[200] = {'\0'};
     char expr[300] = {'\0'};
-
-    printf("first argument is args[0] : %s\n", argv[0]);
 	int i;
     for (i = 1; i < argc-1; i += 1) {
       strcat(buf, argv[i]);
