@@ -1,6 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application.utils;
 
 import lombok.Value;
+import one.util.streamex.StreamEx;
 
 /**
  * 定义了所有的程序，便于其他的类引用
@@ -14,19 +15,16 @@ public class ProgramDefination {
         "tot_info",
         "replace",
         "print_tokens",
+        "expression_parser",
     };
 
     /**
      * 要执行的所有程序
      */
-    public static final ProgramDir[] RUN_LIST = new ProgramDir[]{
-        new ProgramDir("tcas", "tcas.c"),
-        new ProgramDir("schedule2", "schedule2.c"),
-        new ProgramDir("my_sort", "my_sort.c"),
-        new ProgramDir("tot_info", "tot_info.c"),
-        new ProgramDir("replace", "replace.c"),
-        new ProgramDir("print_tokens", "print_tokens.c"),
-    };
+    public static final ProgramDir[] RUN_LIST = StreamEx
+        .of(PROGRAM_LIST)
+        .map(program -> new ProgramDir(program, program + ".c"))
+        .toArray(ProgramDir[]::new);
 
     @Value
     public static class ProgramDir {
