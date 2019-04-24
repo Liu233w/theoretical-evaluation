@@ -5,14 +5,13 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorForm
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Cleanup;
-import lombok.SneakyThrows;
 import me.tongfei.progressbar.ProgressBar;
-import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,18 +27,9 @@ public class ResolveTestcaseWeight {
 
     private static final String resultDir = "./target/outputs/testcase-weights";
 
-    private static final String[] MAIN_LIST = new String[]{
-        "my_sort",
-        "schedule2",
-        "tcas",
-        "tot_info",
-        "replace",
-        "print_tokens",
-    };
-
     public static void main(String[] args) throws IOException {
 
-        for (String name : MAIN_LIST) {
+        for (String name : ProgramDefination.PROGRAM_LIST) {
 
             LogUtils.logInfo("Running on " + name);
 

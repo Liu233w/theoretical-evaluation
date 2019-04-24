@@ -3,6 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.TestcaseResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.TestcaseItem;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.*;
@@ -25,22 +26,13 @@ import java.util.Map;
  */
 public class ResolveSortedTestcaseWeight {
 
-    private static final String[] MAIN_LIST = new String[]{
-        "my_sort",
-        "schedule2",
-        "tcas",
-        "tot_info",
-        "replace",
-        "print_tokens",
-    };
-
     private static final Path OUTPUT_DIR = Paths.get("./target/outputs/sorted-testcase");
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
         final String[] formulas = SuspiciousnessFactorFormulas.getAllFormulas().keySet().toArray(new String[0]);
 
-        for (String name : MAIN_LIST) {
+        for (String name : ProgramDefination.PROGRAM_LIST) {
 
             final Path programDir = OUTPUT_DIR.resolve(name);
 

@@ -3,6 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorFormulas;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestSuitSubsetResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestSuitSubsetJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
@@ -20,18 +21,9 @@ public class ResolveTestSuitSubsetByOp {
     // 结果的输出路径
     private static final String resultOutputDir = "./target/outputs/test-suit-subset-op";
 
-    private static final String[] MAIN_LIST = new String[]{
-        "my_sort",
-        "schedule2",
-        "tcas",
-        "tot_info",
-        "replace",
-        "print_tokens",
-    };
-
     public static void main(String[] args) throws IOException {
 
-        for (String name : MAIN_LIST) {
+        for (String name : ProgramDefination.PROGRAM_LIST) {
 
             // 跳过已经计算出的结果
             if (Files.exists(Paths.get(resolveResultFilePath(name)))) {

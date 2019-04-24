@@ -3,6 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.FaultLocationLoader;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
@@ -22,15 +23,6 @@ import java.util.List;
  */
 public class DiffSfWeightedByCertainFormula {
 
-    private static final String[] MAIN_LIST = new String[]{
-        "my_sort",
-        "schedule2",
-        "tcas",
-        "tot_info",
-        "replace",
-        "print_tokens",
-    };
-
     // 权重加成倍数：测试用例的个数 * mm
     private static final double mm = 1.0;
 
@@ -43,7 +35,7 @@ public class DiffSfWeightedByCertainFormula {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
-        for (String name : MAIN_LIST) {
+        for (String name : ProgramDefination.PROGRAM_LIST) {
 
             if (Files.exists(Paths.get(outputDir + "/" + name + ".csv"))) {
                 continue;

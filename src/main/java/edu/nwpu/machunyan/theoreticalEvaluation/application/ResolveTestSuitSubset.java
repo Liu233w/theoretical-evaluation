@@ -5,6 +5,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.SuspiciousnessFactorForm
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestSuitSubsetResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestSuitSubsetForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestSuitSubsetJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
@@ -28,18 +29,9 @@ public class ResolveTestSuitSubset {
     // 结果的输出路径
     private static final String resultOutputDir = "./target/outputs/test-suit-subset";
 
-    private static final String[] MAIN_LIST = new String[]{
-        "my_sort",
-        "schedule2",
-        "tcas",
-        "tot_info",
-        "replace",
-        "print_tokens",
-    };
-
     public static void main(String[] args) throws IOException {
 
-        for (String name : MAIN_LIST) {
+        for (String name : ProgramDefination.PROGRAM_LIST) {
 
             final RunResultJam imports = Run.getResultFromFile(name);
             final Set<Map.Entry<String, SuspiciousnessFactorFormula>> entrySet = SuspiciousnessFactorFormulas.getAllFormulas().entrySet();

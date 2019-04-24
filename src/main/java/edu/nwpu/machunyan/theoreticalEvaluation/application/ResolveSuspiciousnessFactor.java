@@ -7,6 +7,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.VectorTableModelResolver
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.MultipleFormulaSuspiciousnessFactorJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
@@ -26,18 +27,9 @@ public class ResolveSuspiciousnessFactor {
     private static final String jsonOutputDir = "./target/outputs/suspiciousness-factors-json";
     private static final String csvOutputDir = "./target/outputs/suspiciousness-factors-csv";
 
-    private static final String[] MAIN_LIST = new String[]{
-        "my_sort",
-        "schedule2",
-        "tcas",
-        "tot_info",
-        "replace",
-        "print_tokens",
-    };
-
     public static void main(String[] args) throws IOException {
 
-        for (String name : MAIN_LIST) {
+        for (String name : ProgramDefination.PROGRAM_LIST) {
 
             // 跳过已经计算出的结果
             if (Files.exists(Paths.get(resolveResultFilePath(name)))) {

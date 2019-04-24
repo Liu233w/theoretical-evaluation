@@ -5,6 +5,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightHelper;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.TestcaseWeightResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
@@ -23,22 +24,13 @@ public class ResolveTestcaseWeightByOp {
 
     private static final String resultDir = "./target/outputs/testcase-weights-op";
 
-    private static final String[] MAIN_LIST = new String[]{
-        "my_sort",
-        "schedule2",
-        "tcas",
-        "tot_info",
-        "replace",
-        "print_tokens",
-    };
-
     private static final boolean USE_PARALLEL = !"1".equals(System.getenv("DISABLE_PARALLEL"));
 
     public static void main(String[] args) throws IOException {
 
         LogUtils.logInfo("USE_PARALLEL=" + USE_PARALLEL);
 
-        for (String name : MAIN_LIST) {
+        for (String name : ProgramDefination.PROGRAM_LIST) {
 
             // 跳过已经计算出的结果
             if (Files.exists(Paths.get(resolveResultFilePath(name)))) {

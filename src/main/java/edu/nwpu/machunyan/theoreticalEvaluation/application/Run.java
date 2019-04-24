@@ -1,5 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningResultResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.TestcaseResolver;
@@ -9,7 +10,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoRunn
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
-import lombok.Value;
 import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
@@ -28,28 +28,16 @@ import java.util.Optional;
  */
 public class Run {
 
-    /**
-     * 要执行的所有程序
-     */
-    private static final ProgramDefination[] MAIN_LIST = new ProgramDefination[]{
-        new ProgramDefination("tcas", "tcas.c"),
-        new ProgramDefination("schedule2", "schedule2.c"),
-        new ProgramDefination("my_sort", "my_sort.c"),
-        new ProgramDefination("tot_info", "tot_info.c"),
-        new ProgramDefination("replace", "replace.c"),
-        new ProgramDefination("print_tokens", "print_tokens.c"),
-    };
-
     private static final String resultDir = "./target/outputs/run-results";
 
     public static void main(String[] args) {
 
         StreamEx
-            .of(MAIN_LIST)
+            .of(ProgramDefination.RUN_LIST)
             // 跳过已经计算出的结果
-            .filter(a -> !Files.exists(Paths.get(resolveResultFilePath(a.programDir))))
+            .filter(a -> !Files.exists(Paths.get(resolveResultFilePath(a.getProgramDir()))))
             .peek(a -> LogUtils.logInfo("Running program: " + a))
-            .mapToEntry(ProgramDefination::getProgramDir, Run::runAndGetResult)
+            .mapToEntry(ProgramDefination.ProgramDir::getProgramDir, Run::runAndGetResult)
             .filterValues(Optional::isPresent)
             .mapValues(Optional::get)
             .forKeyValue((name, result) -> {
@@ -72,7 +60,7 @@ public class Run {
         return resultDir + "/" + programName + ".json";
     }
 
-    public static Optional<RunResultJam> runAndGetResult(ProgramDefination defination) {
+    public static Optional<RunResultJam> runAndGetResult(ProgramDefination.ProgramDir defination) {
 
         // 存版本的文件夹
         try {
@@ -121,18 +109,6 @@ public class Run {
             .filter(item -> item.toFile().isDirectory())
             .map(item -> item.getFileName().toString())
             .toImmutableList();
-    }
-
-    @Value
-    private static class ProgramDefination {
-        /**
-         * resources 文件夹中存放程序文件的文件夹名
-         */
-        String programDir;
-        /**
-         * 程序的源代码名称
-         */
-        String programName;
     }
 
 }
