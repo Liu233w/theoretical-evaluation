@@ -27,7 +27,7 @@ public class DiffSfWeightedByCertainFormula {
     private static final double mm = 1.0;
 
     private static final SuspiciousnessFactorFormula formula =
-        SuspiciousnessFactorFormulas::wong2;
+        SuspiciousnessFactorFormulas::op;
     private static final String formulaTitle = "op";
 
     private static final String outputDir = "./target/outputs/sf-weight-diff-by-" + formulaTitle;

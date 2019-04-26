@@ -24,9 +24,6 @@ import java.util.Set;
  */
 public class DiffSfSubsetByCertainFormula {
 
-    // 权重加成倍数：测试用例的个数 * mm
-    private static final double mm = 1.0;
-
     private static final SuspiciousnessFactorFormula formula =
         SuspiciousnessFactorFormulas::op;
     private static final String formulaTitle = "op";
