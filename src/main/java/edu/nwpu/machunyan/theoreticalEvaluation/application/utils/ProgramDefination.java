@@ -15,7 +15,7 @@ public class ProgramDefination {
         "tot_info",
         "replace",
         "print_tokens",
-        "expression_parser",
+//        "expression_parser",
     };
 
     /**
