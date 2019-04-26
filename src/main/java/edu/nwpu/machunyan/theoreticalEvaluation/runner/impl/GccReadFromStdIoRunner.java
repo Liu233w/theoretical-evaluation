@@ -7,6 +7,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Coverage;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.StreamUtils;
 import lombok.NonNull;
 
@@ -32,6 +33,8 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
     private Path executable;
     private Path gcovFile;
     private Path gcdaFile;
+
+    private boolean debug = false;
 
     /**
      * 工厂方法
@@ -126,6 +129,14 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
 
             final Coverage coverage = GcovParser.generateCoverageFromFile(gcovFile);
 
+            if (debug) {
+                LogUtils.logFine(
+                    "Output from program: " + LogUtils.getReadableSpacerString(output) +
+                        System.lineSeparator() +
+                        "Should output: " + LogUtils.getReadableSpacerString(typedInput.getShouldOutputFromStdOut())
+                );
+            }
+
             return new RunResultFromRunner(
                 program,
                 programInput,
@@ -193,5 +204,13 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
     @Override
     public void cleanUp() {
         // 不需要清理
+    }
+
+    public boolean isDebug() {
+        return debug;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
     }
 }

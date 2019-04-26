@@ -20,9 +20,16 @@ public class RunningScheduler {
     private final Program program;
     @Getter
     private final ProgressBar progressBar;
+    @Getter
+    private final boolean debug;
+
     private ArrayList<RunResultFromRunner> runResults;
 
-    public RunningScheduler(Program program, Supplier<ICoverageRunner> runnerFactory, List<IProgramInput> inputs) {
+    public RunningScheduler(
+        Program program,
+        Supplier<ICoverageRunner> runnerFactory,
+        List<IProgramInput> inputs) {
+
         this(program, runnerFactory, inputs, null);
     }
 
@@ -34,11 +41,40 @@ public class RunningScheduler {
      * @param inputs
      * @param progressBar   进度条信息。如果为 null （省略），将不会汇报进度条信息。
      */
-    public RunningScheduler(Program program, Supplier<ICoverageRunner> runnerFactory, List<IProgramInput> inputs, ProgressBar progressBar) {
+    public RunningScheduler(
+        Program program,
+        Supplier<ICoverageRunner> runnerFactory,
+        List<IProgramInput> inputs,
+        ProgressBar progressBar) {
+
+        this(program, runnerFactory, inputs, progressBar, false);
+    }
+
+    /**
+     * 构造函数。
+     *
+     * @param program
+     * @param runnerFactory runner 的工厂函数
+     * @param inputs
+     * @param progressBar   进度条信息。如果为 null （省略），将不会汇报进度条信息。
+     * @param debug
+     */
+    public RunningScheduler(
+        Program program,
+        Supplier<ICoverageRunner> runnerFactory,
+        List<IProgramInput> inputs,
+        ProgressBar progressBar,
+        boolean debug) {
+
         this.runner = runnerFactory.get();
         this.inputs = inputs;
         this.program = program;
         this.progressBar = progressBar;
+        this.debug = debug;
+
+        if (debug) {
+            this.runner.setDebug(true);
+        }
     }
 
     /**
