@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -23,15 +24,20 @@ import java.util.Set;
  */
 public class FaultLocationLoader {
 
-    public static FaultLocationJam getFaultLocations(String name) throws URISyntaxException, IOException {
+    public static Optional<FaultLocationJam> getFaultLocations(String name) throws URISyntaxException, IOException {
 
         final String faultLocationFile = FileUtils
             .getFilePathFromResources(name + "/fault_locations.csv")
             .toString();
-        final CSVParser csvRecords = CSVFormat
-            .EXCEL
-            .withFirstRecordAsHeader()
-            .parse(new InputStreamReader(new FileInputStream(faultLocationFile), Charset.forName("utf-8")));
+        final CSVParser csvRecords;
+        try {
+            csvRecords = CSVFormat
+                .EXCEL
+                .withFirstRecordAsHeader()
+                .parse(new InputStreamReader(new FileInputStream(faultLocationFile), Charset.forName("utf-8")));
+        } catch (IOException e) {
+            return Optional.empty();
+        }
 
         final List<FaultLocationForProgram> collect = StreamEx
             .of(csvRecords.getRecords())
@@ -42,7 +48,7 @@ public class FaultLocationLoader {
                 a.get("comments")
             ))
             .toImmutableList();
-        return new FaultLocationJam(collect);
+        return Optional.of(new FaultLocationJam(collect));
     }
 
     /**

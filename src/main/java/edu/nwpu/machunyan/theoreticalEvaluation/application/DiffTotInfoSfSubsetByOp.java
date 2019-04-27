@@ -27,7 +27,8 @@ public class DiffTotInfoSfSubsetByOp {
 
     public static void main(String[] args) throws IOException, URISyntaxException {
 
-        final FaultLocationJam faultLocations = FaultLocationLoader.getFaultLocations("tot_info");
+        //noinspection OptionalGetWithoutIsPresent
+        final FaultLocationJam faultLocations = FaultLocationLoader.getFaultLocations("tot_info").get();
         final SuspiciousnessFactorJam sfUnSubseted = ResolveSuspiciousnessFactor.getResultFromFile("tot_info");
         final SuspiciousnessFactorJam sfSubseted = resolveSubsetedSf();
 

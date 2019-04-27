@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 最简化版本的比较代码，只比较使用 特定公式 加权、并且使用 该公式 计算结果的代码。
@@ -46,9 +47,15 @@ public class DiffSfWeightedByCertainFormula {
         }
     }
 
-    public static void resolveAndSave(String name) throws IOException, URISyntaxException {
+    private static void resolveAndSave(String name) throws IOException, URISyntaxException {
 
-        final FaultLocationJam faultLocations = FaultLocationLoader.getFaultLocations(name);
+        final Optional<FaultLocationJam> faultLocationOptional = FaultLocationLoader.getFaultLocations(name);
+        if (!faultLocationOptional.isPresent()) {
+            LogUtils.logError("Fault location not exist for " + name);
+            return;
+        }
+
+        final FaultLocationJam faultLocations = faultLocationOptional.get();
         final SuspiciousnessFactorJam sfUnweighted = ResolveSuspiciousnessFactor.getResultFromFile(name);
 
         final SuspiciousnessFactorJam sfWeighted = resolveWeightedSf(name);

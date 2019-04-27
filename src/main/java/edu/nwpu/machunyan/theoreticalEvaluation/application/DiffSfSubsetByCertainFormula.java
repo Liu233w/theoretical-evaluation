@@ -16,6 +16,7 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -44,9 +45,15 @@ public class DiffSfSubsetByCertainFormula {
         }
     }
 
-    public static void resolveAndSave(String name) throws IOException, URISyntaxException {
+    private static void resolveAndSave(String name) throws IOException, URISyntaxException {
 
-        final FaultLocationJam faultLocations = FaultLocationLoader.getFaultLocations(name);
+        final Optional<FaultLocationJam> faultLocationOptional = FaultLocationLoader.getFaultLocations(name);
+        if (!faultLocationOptional.isPresent()) {
+            LogUtils.logError("Fault location not exist for " + name);
+            return;
+        }
+
+        final FaultLocationJam faultLocations = faultLocationOptional.get();
         final SuspiciousnessFactorJam sfOrigin = ResolveSuspiciousnessFactor.getResultFromFile(name);
 
         final SuspiciousnessFactorJam sfSubset = resolveSubsetSf(name);
