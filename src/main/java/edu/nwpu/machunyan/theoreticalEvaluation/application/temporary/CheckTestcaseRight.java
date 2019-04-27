@@ -1,5 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application.temporary;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.IProgramInput;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningScheduler;
@@ -10,6 +11,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoInpu
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.TestcaseItem;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Cleanup;
 import me.tongfei.progressbar.ProgressBar;
 import one.util.streamex.StreamEx;
@@ -25,41 +27,49 @@ import java.util.List;
  */
 public class CheckTestcaseRight {
 
-    private static final String sourceFile = "print_tokens/origin/orig/print_tokens.c";
-
-    private static final String programName = "print_tokens";
-
     public static void main(String[] args) throws URISyntaxException, IOException, CoverageRunnerException {
 
-        final Path file = FileUtils.getFilePathFromResources(sourceFile);
-        final List<TestcaseItem> list = TestcaseResolver.resolve(programName);
+        for (ProgramDefination.ProgramDir program :
+            ProgramDefination.RUN_LIST) {
 
-        final List<IProgramInput> inputs = StreamEx
-            .of(list)
-            .map(a -> new GccReadFromStdIoInput(
-                a.getParams(),
-                a.getInput(),
-                a.getOutput()
-            ))
-            .map(a -> (IProgramInput) a)
-            .toImmutableList();
+            LogUtils.logInfo("Working on " + program.getProgramDir());
 
-        @Cleanup final ProgressBar progressBar = new ProgressBar("", inputs.size());
+            String sourceFile = program.getProgramDir() + "/origin/" + program.getProgramName();
+            if (program.getProgramDir().equals("print_tokens")) {
+                sourceFile = program.getProgramDir() + "/origin/orig/" + program.getProgramName();
+            }
+            final String programName = program.getProgramDir();
 
-        final RunningScheduler scheduler = new RunningScheduler(
-            new Program(programName, file.toString()),
-            GccReadFromStdIoRunner::new,
-            inputs,
-            progressBar
-        );
-        final ArrayList<RunResultFromRunner> result = scheduler.runAndGetResults();
+            final Path file = FileUtils.getFilePathFromResources(sourceFile);
+            final List<TestcaseItem> list = TestcaseResolver.resolve(programName);
 
-        StreamEx
-            .of(result)
-            .filter(a -> !a.isCorrect())
-            .forEach(a -> {
-                final GccReadFromStdIoInput input = (GccReadFromStdIoInput) a.getInput();
-                System.out.println(input);
-            });
+            final List<IProgramInput> inputs = StreamEx
+                .of(list)
+                .map(a -> new GccReadFromStdIoInput(
+                    a.getParams(),
+                    a.getInput(),
+                    a.getOutput()
+                ))
+                .map(a -> (IProgramInput) a)
+                .toImmutableList();
+
+            @Cleanup final ProgressBar progressBar = new ProgressBar("", inputs.size());
+
+            final RunningScheduler scheduler = new RunningScheduler(
+                new Program(programName, file.toString()),
+                GccReadFromStdIoRunner::new,
+                inputs,
+                progressBar
+            );
+            final ArrayList<RunResultFromRunner> result = scheduler.runAndGetResults();
+
+            StreamEx
+                .of(result)
+                .filter(a -> !a.isCorrect())
+                .forEach(a -> {
+                    final GccReadFromStdIoInput input = (GccReadFromStdIoInput) a.getInput();
+                    System.out.println(input);
+                });
+        }
     }
 }
