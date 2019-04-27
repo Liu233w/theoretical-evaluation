@@ -17,5 +17,7 @@ public class Main {
         ResolveTestcaseWeight.main(args);
         ResolveTestSuitSubset.main(args);
         DiffSfWeightedByCertainFormula.main(args);
+        DiffSfSubsetByCertainFormula.main(args);
+        ResolveSortedTestcaseWeight.main(args);
     }
 }
