@@ -13,4 +13,4 @@ DOCKER_ENV_PARAM=""
 # un-comment the line below to disable parallel
 #DOCKER_ENV_PARAM="${DOCKER_ENV_PARAM} -e DISABLE_PARALLEL=1"
 
-docker run -m 5.5GB -it --rm -v ${DIR}:/app/target/outputs -v /var/run/docker.sock:/var/run/docker.sock ${DOCKER_ENV_PARAM} ${IMAGE} $1
+docker run -m 5.5GB -it --rm -v ${DIR}/target/outputs:/app/target/outputs -v /var/run/docker.sock:/var/run/docker.sock ${DOCKER_ENV_PARAM} ${IMAGE} $1
