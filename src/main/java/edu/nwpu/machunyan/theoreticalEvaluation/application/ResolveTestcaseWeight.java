@@ -125,7 +125,7 @@ public class ResolveTestcaseWeight {
 
     private static Path[] getFileListOf(String programName) throws IOException {
         return Files.list(Paths.get(resultDir))
-            .filter(a -> a.startsWith(programName))
+            .filter(a -> a.getFileName().startsWith(programName))
             .toArray(Path[]::new);
     }
 }
