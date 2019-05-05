@@ -108,6 +108,7 @@ public class ResolveTestcaseWeight {
         // 合并多个文件
         final ArrayList<TestcaseWeightForProgram> result = new ArrayList<>();
         for (Path path : fileList) {
+            LogUtils.logFine("merge results from " + path);
             final TestcaseWeightJam jam = FileUtils.loadObject(path, TestcaseWeightJam.class);
             result.addAll(jam.getTestcaseWeightForPrograms());
         }
