@@ -6,5 +6,4 @@
 
 /.*
 
-/build-image.sh
-/run-image.sh
+/build-and-run-image.sh
