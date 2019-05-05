@@ -79,7 +79,6 @@ public class Defects4jContainerExecutor implements Closeable {
     public void close() {
         try {
             client.killContainer(containerId);
-//            client.removeContainer(containerId);
         } catch (DockerException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -157,7 +156,7 @@ public class Defects4jContainerExecutor implements Closeable {
     private String exec(String cmd)
         throws CoverageRunnerException {
 
-        LogUtils.logFine("docker cmd " + cmd);
+        LogUtils.logFine("command send to docker: " + cmd);
 
         try {
             final String id = client
