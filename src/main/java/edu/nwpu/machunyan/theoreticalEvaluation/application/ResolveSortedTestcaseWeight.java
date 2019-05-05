@@ -53,6 +53,8 @@ public class ResolveSortedTestcaseWeight {
                 String programTitle = entry.getKey();
                 TestcaseWeightForProgram[] weights = entry.getValue();
 
+                LogUtils.logFine("for " + programTitle);
+
                 final List<RunResultForTestcase> runResultForTestcases = StreamEx.of(runResultForProgram)
                     .filter(a -> a.getProgramTitle().equals(programTitle))
                     .findAny()
