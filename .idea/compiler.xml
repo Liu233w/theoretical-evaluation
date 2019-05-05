@@ -6,8 +6,8 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="theoretical-evaluation-framework" />
         <module name="theoretical-evaluation" />
+        <module name="theoretical-evaluation-framework" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>

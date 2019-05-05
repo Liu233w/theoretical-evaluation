@@ -5,6 +5,9 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForPr
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.TestcaseResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.TestcaseItem;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.*;
 import lombok.Value;
@@ -44,12 +47,19 @@ public class ResolveSortedTestcaseWeight {
 
             final TestcaseWeightJam jam = ResolveTestcaseWeight.getResultFromFile(name);
             final List<TestcaseItem> testcases = TestcaseResolver.resolve(name);
+            final List<RunResultForProgram> runResultForProgram = Run.getResultFromFile(name).getRunResultForPrograms();
 
             for (Map.Entry<String, TestcaseWeightForProgram[]> entry : getProgramToFormulas(jam.getTestcaseWeightForPrograms()).entrySet()) {
                 String programTitle = entry.getKey();
                 TestcaseWeightForProgram[] weights = entry.getValue();
 
-                final OutputItem[] outputItems = resolveForProgram(weights, testcases);
+                final List<RunResultForTestcase> runResultForTestcases = StreamEx.of(runResultForProgram)
+                    .filter(a -> a.getProgramTitle().equals(programTitle))
+                    .findAny()
+                    .get()
+                    .getRunResults();
+
+                final OutputItem[] outputItems = resolveForProgram(weights, testcases, runResultForTestcases);
 
                 final Path resFile = programDir.resolve(programTitle + ".csv");
                 FileUtils.saveString(resFile, toCsvString(outputItems, formulas));
@@ -81,7 +91,7 @@ public class ResolveSortedTestcaseWeight {
         final ArrayList<CsvLine> csvLines = new ArrayList<>();
 
         csvLines.add(new CsvLine(ArrayUtils.concat(formulas,
-            new Object[]{"name", "params", "input", "should output"}
+            new Object[]{"name", "params", "input", "should output", "correct"}
         )));
 
         for (OutputItem item : list) {
@@ -97,6 +107,7 @@ public class ResolveSortedTestcaseWeight {
                 testcaseItem.getName(),
                 testcaseItem.getInput(), toString(testcaseItem.getParams()),
                 testcaseItem.getOutput(),
+                item.isCorrect(),
             })));
         }
 
@@ -118,7 +129,8 @@ public class ResolveSortedTestcaseWeight {
      */
     private static OutputItem[] resolveForProgram(
         TestcaseWeightForProgram[] weights,
-        List<TestcaseItem> testcases) {
+        List<TestcaseItem> testcases,
+        List<RunResultForTestcase> runResults) {
 
         if (weights[0].getTestcaseWeights().size() != testcases.size()) {
             throw new IllegalArgumentException("数量不一致");
@@ -131,12 +143,13 @@ public class ResolveSortedTestcaseWeight {
             .range(0, testcases.size())
             .mapToObj(i -> {
                 final TestcaseItem testcaseItem = testcases.get(i);
+                final boolean correct = runResults.get(i).isCorrect();
                 final Map<String, Double> formulaToWeight = EntryStream
                     .of(formulaToResult)
                     .mapValues(a ->
                         a.getTestcaseWeights().get(i).getTestcaseWeight())
                     .toMap();
-                return new OutputItem(testcaseItem, formulaToWeight);
+                return new OutputItem(testcaseItem, formulaToWeight, correct);
             })
             .toArray(OutputItem[]::new);
     }
@@ -145,5 +158,6 @@ public class ResolveSortedTestcaseWeight {
     private static class OutputItem {
         TestcaseItem testcaseItem;
         Map<String, Double> formulaToWeight;
+        boolean correct;
     }
 }
