@@ -134,8 +134,20 @@ fun diffTcasVtm() {
 
     val res = IntStreamEx.range(0, runResultForProgram.runResults.size)
         .mapToObj { i -> VectorTableModelResolver.resolve(buildStreamSkipAt(runResultForProgram.runResults, i), statementCount) }
-        .filter { !it.equals(vtm) }
+        .filter {
+            assert(it.size == vtm.records.size)
+            for (i in 0..it.size) {
+                if (it[i] != vtm.records[i]) {
+                    return@filter true
+                }
+            }
+            return@filter false
+        }
         .toImmutableList()
+
+    val ap = res.map {
+        AveragePerformanceResolver.resolve(it, formula)
+    }
 
     println(res)
 }
