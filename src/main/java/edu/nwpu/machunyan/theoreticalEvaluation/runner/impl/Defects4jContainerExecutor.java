@@ -104,6 +104,9 @@ public class Defects4jContainerExecutor implements Closeable {
             .trim();
         final int bugNum = Integer.parseInt(bugNumStr);
 
+        // 创建父文件夹
+        exec("mkdir -p " + BASE_DIR);
+
         final HashMap<Program, List<Defects4jTestcase>> result = new HashMap<>();
         for (int i = 0; i < bugNum; i++) {
             final String version = (i + 1) + "b";
