@@ -33,7 +33,7 @@ public class Run {
     public static void main(String[] args) {
 
         StreamEx
-            .of(ProgramDefination.RUN_LIST)
+            .of(ProgramDefination.GCC_RUN_LIST)
             // 跳过已经计算出的结果
             .filter(a -> !Files.exists(Paths.get(resolveResultFilePath(a.getProgramDir()))))
             .peek(a -> LogUtils.logInfo("Running program: " + a))

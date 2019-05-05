@@ -30,7 +30,7 @@ public class CheckTestcaseRight {
     public static void main(String[] args) throws URISyntaxException, IOException, CoverageRunnerException {
 
         for (ProgramDefination.ProgramDir program :
-            ProgramDefination.RUN_LIST) {
+            ProgramDefination.GCC_RUN_LIST) {
 
             LogUtils.logInfo("Working on " + program.getProgramDir());
 
