@@ -25,13 +25,6 @@ RUN apt-get install \
 # 添加 maven 镜像源
 RUN mkdir /root/.m2 && sed '$i<mirrors><mirror><id>alimaven</id><name>aliyunmaven</name><url>https://maven.aliyun.com/nexus/content/groups/public/</url><mirrorOf>*</mirrorOf></mirror></mirrors>' /usr/share/maven/ref/settings-docker.xml > /root/.m2/settings.xml
 
-# install docker cli
-ENV DOCKERVERSION=18.03.1-ce
-RUN curl -fsSLO https://download.docker.com/linux/static/stable/x86_64/docker-${DOCKERVERSION}.tgz && \
-  tar xzvf docker-${DOCKERVERSION}.tgz --strip 1 \
-                 -C /usr/local/bin docker/docker && \
-  rm docker-${DOCKERVERSION}.tgz
-
 WORKDIR /app
 
 COPY pom.xml .
