@@ -9,7 +9,7 @@ import com.spotify.docker.client.messages.ExecState;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import one.util.streamex.StreamEx;
-import sun.jvm.hotspot.utilities.Assert;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 
 import java.io.Closeable;
 import java.util.Collections;
@@ -152,7 +152,9 @@ public class Defects4jContainerExecutor implements Closeable {
             final String res = client.execStart(id).readFully();
 
             final ExecState execState = client.execInspect(id);
-            Assert.that(!execState.running(), "not running");
+            if (execState.running()) {
+                throw new CoverageRunnerException("still running");
+            }
             if (execState.exitCode() != 0) {
                 throw new CoverageRunnerException("return code not zero from docker. \nMessage:\n" + res);
             }
