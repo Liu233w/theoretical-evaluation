@@ -86,7 +86,7 @@ public class Defects4jContainerExecutor implements Closeable {
         client.close();
     }
 
-    public static String resolveDir(String programName, String version) {
+    private static String resolveSrcDir(String programName, String version) {
         return BASE_DIR + programName + "_" + version + "/";
     }
 
@@ -110,9 +110,8 @@ public class Defects4jContainerExecutor implements Closeable {
         final HashMap<Program, List<Defects4jTestcase>> result = new HashMap<>();
         for (int i = 0; i < bugNum; i++) {
             final String version = (i + 1) + "b";
-            final String dir = resolveDir(programName, version);
-            exec("defects4j checkout -p " + programName + " -v " + version
-                + " -w " + dir);
+            final String dir = resolveSrcDir(programName, version);
+            checkout(programName, version);
             exec("defects4j test -w " + dir);
             final String allTests = exec("cat " + dir + "all_tests");
 
@@ -132,6 +131,19 @@ public class Defects4jContainerExecutor implements Closeable {
         }
 
         return result;
+    }
+
+    /**
+     * 生成相应的源代码，如果已经存在，则不会生成
+     *
+     * @param programName
+     * @param version     defects4j 要求的版本号格式 (1b, 2f 等等)
+     * @throws CoverageRunnerException
+     */
+    private void checkout(String programName, String version) throws CoverageRunnerException {
+
+        final String dir = resolveSrcDir(programName, version);
+        exec(String.format("[ ! -d '%s' ] && defects4j checkout -p %s -v %s -w %s", dir, programName, version, dir));
     }
 
     /**
