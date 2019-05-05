@@ -8,8 +8,8 @@ import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ExecState;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
-import one.util.streamex.StreamEx;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
+import one.util.streamex.StreamEx;
 
 import java.io.Closeable;
 import java.util.Collections;
@@ -141,6 +141,8 @@ public class Defects4jContainerExecutor implements Closeable {
      */
     private String exec(String cmd)
         throws CoverageRunnerException {
+
+        LogUtils.logFine("docker cmd " + cmd);
 
         try {
             final String id = client
