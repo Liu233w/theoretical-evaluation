@@ -9,6 +9,8 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Cleanup;
 import lombok.Value;
+import one.util.streamex.EntryStream;
+import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -37,7 +39,12 @@ public class ResolveDefects4jTestcase {
             LogUtils.logInfo("working on " + programName);
 
             final Map<Program, List<Defects4jTestcase>> result = executor.resolveTestcases(programName);
-            final TestcaseJam jam = new TestcaseJam(result);
+
+            final List<TestcaseForProgram> list = EntryStream
+                .of(result)
+                .map(a -> new TestcaseForProgram(a.getKey(), a.getValue()))
+                .toImmutableList();
+            final TestcaseJam jam = new TestcaseJam(list);
             FileUtils.saveObject(resolveResultFilePath(programName), jam);
         }
     }
@@ -50,7 +57,11 @@ public class ResolveDefects4jTestcase {
     public static Map<Program, List<Defects4jTestcase>> getResultFromFile(
         String name) throws FileNotFoundException {
 
-        return FileUtils.loadObject(resolveResultFilePath(name), TestcaseJam.class).getInner();
+        final TestcaseJam testcaseJam = FileUtils.loadObject(resolveResultFilePath(name), TestcaseJam.class);
+        return StreamEx
+            .of(testcaseJam.getInner())
+            .mapToEntry(TestcaseForProgram::getProgram, TestcaseForProgram::getTestcases)
+            .toImmutableMap();
     }
 
     private static Path resolveResultFilePath(String programName) {
@@ -59,6 +70,12 @@ public class ResolveDefects4jTestcase {
 
     @Value
     private static class TestcaseJam {
-        Map<Program, List<Defects4jTestcase>> inner;
+        List<TestcaseForProgram> inner;
+    }
+
+    @Value
+    private static class TestcaseForProgram {
+        Program program;
+        List<Defects4jTestcase> testcases;
     }
 }
