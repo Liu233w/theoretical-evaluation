@@ -19,7 +19,7 @@ public class FileUtils {
      * @throws URISyntaxException
      */
     public static Path getFilePathFromResources(String filePathRelativeToResources) throws URISyntaxException {
-        return Paths.get(FileUtils.class.getClassLoader().getResource(filePathRelativeToResources).toURI());
+        return Paths.get(FileUtils.class.getClassLoader().getResource(".").toURI()).resolve(filePathRelativeToResources);
     }
 
     /**
