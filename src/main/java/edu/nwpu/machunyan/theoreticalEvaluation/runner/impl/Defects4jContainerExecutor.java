@@ -12,10 +12,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import one.util.streamex.StreamEx;
 
 import java.io.Closeable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 持有一个 docker container 实例，用来运行 defects4j 有关的命令。
@@ -89,6 +86,12 @@ public class Defects4jContainerExecutor implements Closeable {
         return BASE_DIR + programName + "_" + version + "/";
     }
 
+    public Map<Program, List<Defects4jTestcase>> resolveTestcases(
+        String programName)
+        throws CoverageRunnerException {
+        return resolveTestcases(programName, null);
+    }
+
     /**
      * 获取所有的版本及其测试用例
      *
@@ -96,12 +99,18 @@ public class Defects4jContainerExecutor implements Closeable {
      * @return
      * @throws CoverageRunnerException
      */
-    public Map<Program, List<Defects4jTestcase>> resolveTestcases(String programName)
+    public Map<Program, List<Defects4jTestcase>> resolveTestcases(
+        String programName,
+        TestcaseResolvingProgressHandler progressHandler)
         throws CoverageRunnerException {
 
         final String bugNumStr = exec("defects4j info -p " + programName + " | grep 'Number of bugs:' | awk '{print $NF}'")
             .trim();
         final int bugNum = Integer.parseInt(bugNumStr);
+
+        if (progressHandler != null) {
+            progressHandler.reportVersionCount(bugNum);
+        }
 
         // 创建父文件夹
         exec("mkdir -p " + BASE_DIR);
@@ -110,6 +119,15 @@ public class Defects4jContainerExecutor implements Closeable {
         for (int i = 0; i < bugNum; i++) {
             final String version = (i + 1) + "b";
             final String dir = resolveSrcDir(programName, version);
+
+            if (progressHandler != null) {
+                final Optional<List<Defects4jTestcase>> optional = progressHandler.tryGet(version);
+                if (optional.isPresent()) {
+                    result.put(new Program(version, dir), optional.get());
+                    continue;
+                }
+            }
+
             checkout(programName, version);
             exec("defects4j test -w " + dir);
             final String allTests = exec("cat " + dir + "all_tests");
@@ -125,6 +143,10 @@ public class Defects4jContainerExecutor implements Closeable {
                     return new Defects4jTestcase(clazz, method);
                 })
                 .toImmutableList();
+
+            if (progressHandler != null) {
+                progressHandler.report(version, testcases, i);
+            }
 
             result.put(new Program(version, dir), testcases);
         }
@@ -180,5 +202,35 @@ public class Defects4jContainerExecutor implements Closeable {
         } catch (DockerException | InterruptedException e) {
             throw new CoverageRunnerException("exception from docker.", e);
         }
+    }
+
+    /**
+     * 处理 {@link Defects4jContainerExecutor#resolveTestcases(String, TestcaseResolvingProgressHandler)} 的进度
+     */
+    public interface TestcaseResolvingProgressHandler {
+
+        /**
+         * 尝试直接获取结果
+         *
+         * @param version 版本号
+         * @return
+         */
+        Optional<List<Defects4jTestcase>> tryGet(String version);
+
+        /**
+         * 汇报当前的运行结果
+         *
+         * @param version
+         * @param testcases
+         * @param index
+         */
+        void report(String version, List<Defects4jTestcase> testcases, int index);
+
+        /**
+         * 汇报总的版本数量
+         *
+         * @param number
+         */
+        void reportVersionCount(int number);
     }
 }

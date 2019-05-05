@@ -5,10 +5,12 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.Defects4jContainerExecutor;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.Defects4jTestcase;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Cleanup;
 import lombok.Value;
+import me.tongfei.progressbar.ProgressBar;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 
@@ -19,6 +21,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * 获取 defects4j 中的所有测试用例
@@ -38,7 +41,34 @@ public class ResolveDefects4jTestcase {
             }
             LogUtils.logInfo("working on " + programName);
 
-            final Map<Program, List<Defects4jTestcase>> result = executor.resolveTestcases(programName);
+            @Cleanup ProgressBar progressBar = new ProgressBar("", 0);
+            final CacheHandler cache = new CacheHandler("resolve-defects4j-testcases-" + programName);
+
+            final Defects4jContainerExecutor.TestcaseResolvingProgressHandler progressHandler = new Defects4jContainerExecutor.TestcaseResolvingProgressHandler() {
+
+                @Override
+                public Optional<List<Defects4jTestcase>> tryGet(String version) {
+                    final Optional<List<Defects4jTestcase>> res = cache.tryLoadCache(version, CacheItem.class)
+                        .map(CacheItem::getTestcases);
+                    if (res.isPresent()) {
+                        progressBar.maxHint(progressBar.getMax() - 1);
+                    }
+                    return res;
+                }
+
+                @Override
+                public void report(String version, List<Defects4jTestcase> testcases, int index) {
+                    progressBar.step();
+                    cache.saveCache(version, new CacheItem(testcases));
+                }
+
+                @Override
+                public void reportVersionCount(int number) {
+                    progressBar.maxHint(number);
+                }
+            };
+
+            final Map<Program, List<Defects4jTestcase>> result = executor.resolveTestcases(programName, progressHandler);
 
             final List<TestcaseForProgram> list = EntryStream
                 .of(result)
@@ -46,6 +76,8 @@ public class ResolveDefects4jTestcase {
                 .toImmutableList();
             final TestcaseJam jam = new TestcaseJam(list);
             FileUtils.saveObject(resolveResultFilePath(programName), jam);
+
+            cache.deleteAllCaches();
         }
     }
 
@@ -76,6 +108,11 @@ public class ResolveDefects4jTestcase {
     @Value
     private static class TestcaseForProgram {
         Program program;
+        List<Defects4jTestcase> testcases;
+    }
+
+    @Value
+    private static class CacheItem {
         List<Defects4jTestcase> testcases;
     }
 }
