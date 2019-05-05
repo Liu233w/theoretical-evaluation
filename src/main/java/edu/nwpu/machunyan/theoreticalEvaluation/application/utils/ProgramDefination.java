@@ -30,6 +30,15 @@ public class ProgramDefination {
         new ProgramDir("expression_parser", "expression_parser.c"),
     };
 
+    public static final String[] DEFECTS4J_RUN_LIST = new String[]{
+        "Chart",
+        "Closure",
+        "Lang",
+        "Math",
+        "Mockito",
+        "Time",
+    };
+
     @Value
     public static class ProgramDir {
         /**
