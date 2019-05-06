@@ -37,40 +37,35 @@ public class Defects4jContainerExecutor implements Closeable {
     public static synchronized Defects4jContainerExecutor getInstance()
         throws CoverageRunnerException {
 
-        if (instance == null) {
+        try {
+            final DefaultDockerClient client = new DefaultDockerClient("unix:///var/run/docker.sock");
 
-            try {
-                final DefaultDockerClient client = new DefaultDockerClient("unix:///var/run/docker.sock");
+            final List<Container> containers = client.listContainers(
+                DockerClient.ListContainersParam.withLabel("DEFECTS4J_EXECUTOR"),
+                DockerClient.ListContainersParam.withStatusExited()
+            );
+            if (containers.size() > 0) {
+                final Container container = containers.get(0);
+                client.startContainer(container.id());
+                return new Defects4jContainerExecutor(client, container.id());
 
-                final List<Container> containers = client.listContainers(
-                    DockerClient.ListContainersParam.withLabel("DEFECTS4J_EXECUTOR"),
-                    DockerClient.ListContainersParam.withStatusExited()
-                );
-                if (containers.size() > 0) {
-                    final Container container = containers.get(0);
-                    client.startContainer(container.id());
-                    instance = new Defects4jContainerExecutor(client, container.id());
+            } else {
 
-                } else {
+                client.pull(IMAGE_NAME);
 
-                    client.pull(IMAGE_NAME);
-
-                    final ContainerConfig containerConfig = ContainerConfig.builder()
-                        .image(IMAGE_NAME)
-                        .cmd("sh", "-c", "while :; do sleep 1; done")
-                        .labels(Collections.singletonMap("DEFECTS4J_EXECUTOR", "1"))
-                        .build();
-                    final String containerId = client.createContainer(containerConfig).id();
-                    client.startContainer(containerId);
-                    instance = new Defects4jContainerExecutor(client, containerId);
-                }
-
-            } catch (DockerException | InterruptedException e) {
-                throw new CoverageRunnerException("exception from docker.", e);
+                final ContainerConfig containerConfig = ContainerConfig.builder()
+                    .image(IMAGE_NAME)
+                    .cmd("sh", "-c", "while :; do sleep 1; done")
+                    .labels(Collections.singletonMap("DEFECTS4J_EXECUTOR", "1"))
+                    .build();
+                final String containerId = client.createContainer(containerConfig).id();
+                client.startContainer(containerId);
+                return new Defects4jContainerExecutor(client, containerId);
             }
-        }
 
-        return instance;
+        } catch (DockerException | InterruptedException e) {
+            throw new CoverageRunnerException("exception from docker.", e);
+        }
     }
 
     public void close() {
