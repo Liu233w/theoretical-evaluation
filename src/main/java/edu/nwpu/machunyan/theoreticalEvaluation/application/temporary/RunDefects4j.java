@@ -8,7 +8,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.Defects4jTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import one.util.streamex.EntryStream;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -21,6 +20,8 @@ public class RunDefects4j {
         String version = "1b";
 
         final Defects4jContainerExecutor executor = Defects4jContainerExecutor.getInstance();
+        Runtime.getRuntime().addShutdownHook(new Thread(executor::close));
+
         final Map<Program, List<Defects4jTestcase>> lang = ResolveDefects4jTestcase.getResultFromFile(programName);
         final List<Defects4jTestcase> testcases = EntryStream.of(lang)
             .filterKeys(a -> a.getTitle().equals(version))
@@ -29,6 +30,7 @@ public class RunDefects4j {
             .getValue();
 
         executor.compile(programName, version);
+
 
         for (Defects4jTestcase testcase : testcases) {
             final Defects4jContainerExecutor.CoverageRunResult res = executor.runTestcaseAndGetResult(programName, version, testcase);

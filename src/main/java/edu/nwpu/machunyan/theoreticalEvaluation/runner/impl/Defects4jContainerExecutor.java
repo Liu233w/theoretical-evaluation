@@ -74,12 +74,19 @@ public class Defects4jContainerExecutor implements Closeable {
     }
 
     public void close() {
+
+        if (client == null) {
+            return;
+        }
+
         try {
             client.killContainer(containerId);
         } catch (DockerException | InterruptedException e) {
             e.printStackTrace();
         }
         client.close();
+
+        client = null;
     }
 
     private static String resolveSrcDir(String programName, String version) {
