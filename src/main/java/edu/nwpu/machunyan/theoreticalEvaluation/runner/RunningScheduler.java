@@ -2,12 +2,14 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Getter;
 import me.tongfei.progressbar.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class RunningScheduler {
@@ -22,6 +24,8 @@ public class RunningScheduler {
     private final ProgressBar progressBar;
     @Getter
     private final boolean debug;
+    @Getter
+    private final CacheHandler cache;
 
     private ArrayList<RunResultFromRunner> runResults;
 
@@ -65,11 +69,32 @@ public class RunningScheduler {
         List<IProgramInput> inputs,
         ProgressBar progressBar,
         boolean debug) {
+        this(program, runnerFactory, inputs, progressBar, null, debug);
+    }
+
+    /**
+     * 构造函数。
+     *
+     * @param program
+     * @param runnerFactory runner 的工厂函数
+     * @param inputs
+     * @param progressBar   进度条信息。如果为 null （省略），将不会汇报进度条信息。
+     * @param cache
+     * @param debug
+     */
+    public RunningScheduler(
+        Program program,
+        Supplier<ICoverageRunner> runnerFactory,
+        List<IProgramInput> inputs,
+        ProgressBar progressBar,
+        CacheHandler cache,
+        boolean debug) {
 
         this.runner = runnerFactory.get();
         this.inputs = inputs;
         this.program = program;
         this.progressBar = progressBar;
+        this.cache = cache;
         this.debug = debug;
 
         if (debug) {
@@ -91,8 +116,20 @@ public class RunningScheduler {
             progressReport("start preparing");
             runner.prepare(program);
 
-            for (IProgramInput input :
-                inputs) {
+            for (IProgramInput input : inputs) {
+
+                if (cache != null) {
+
+                    final Optional<RunResultFromRunner> resultOptional = cache.tryLoadCache(input.getInputKey(), RunResultFromRunner.class);
+                    if (resultOptional.isPresent()) {
+                        runResults.add(resultOptional.get());
+                        if (progressBar != null) {
+                            progressBar.maxHint(progressBar.getMax() - 1);
+                        }
+                        continue;
+                    }
+                }
+
                 final RunResultFromRunner result = runner.runWithInput(input);
                 runResults.add(result);
                 stepProgressBar();
@@ -102,6 +139,9 @@ public class RunningScheduler {
             runner.cleanUp();
         }
 
+        if (cache != null) {
+            cache.deleteAllCaches();
+        }
         progressReport("all testcase finished running");
 
         return runResults;

@@ -11,4 +11,11 @@ public interface IProgramInput {
      * @return
      */
     String getInputDescription();
+
+    /**
+     * 生成一个可以表示成文件名的字符串，便于作为 cache 的 key
+     *
+     * @return
+     */
+    String getInputKey();
 }

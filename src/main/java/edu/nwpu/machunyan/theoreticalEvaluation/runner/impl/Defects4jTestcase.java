@@ -21,4 +21,9 @@ public class Defects4jTestcase implements IProgramInput {
         // 跟使用 defects4j test 时生成的 all_tests 文件格式一致
         return testcaseMethod + "(" + testcaseClass + ")";
     }
+
+    @Override
+    public String getInputKey() {
+        return testcaseClass + "_" + testcaseMethod;
+    }
 }

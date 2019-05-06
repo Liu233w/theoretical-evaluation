@@ -1,5 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
+
 import java.io.IOException;
 import java.net.URISyntaxException;
 
@@ -8,8 +10,9 @@ import java.net.URISyntaxException;
  */
 public class Main {
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws IOException, URISyntaxException, CoverageRunnerException {
 
+        ResolveDefects4jTestcase.main(args);
         Run.main(args);
         ResolveSuspiciousnessFactor.main(args);
         ResolveTestcaseWeightByOp.main(args);

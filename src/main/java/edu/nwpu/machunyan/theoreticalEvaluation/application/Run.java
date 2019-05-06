@@ -3,12 +3,15 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Cleanup;
+import lombok.Lombok;
 import me.tongfei.progressbar.ProgressBar;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
@@ -19,9 +22,9 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -49,9 +52,26 @@ public class Run {
                 try {
                     FileUtils.saveObject(filePath, result);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LogUtils.logError(e);
                 }
             });
+
+        for (String programName : ProgramDefination.DEFECTS4J_RUN_LIST) {
+            if (Files.exists(Paths.get(resolveResultFilePath(programName)))) {
+                continue;
+            }
+
+            LogUtils.logInfo("Working on " + programName);
+
+            final Optional<RunResultJam> optional = runDefects4jAndGetResult(programName);
+            optional.ifPresent(res -> {
+                try {
+                    FileUtils.saveObject(resolveResultFilePath(programName), res);
+                } catch (IOException e) {
+                    LogUtils.logError(e);
+                }
+            });
+        }
     }
 
     public static RunResultJam getResultFromFile(String programName) throws FileNotFoundException {
@@ -95,49 +115,73 @@ public class Run {
             return Optional.of(runResultJam);
 
         } catch (URISyntaxException | IOException e) {
-            e.printStackTrace();
+            LogUtils.logError(e);
             return Optional.empty();
         }
     }
 
-    public static RunResultJam runDefects4jAndGetResult(String programName)
-        throws FileNotFoundException, CoverageRunnerException {
+    public static Optional<RunResultJam> runDefects4jAndGetResult(String programName) {
 
-        final Defects4jContainerExecutor executor = Defects4jContainerExecutor.getInstance();
+        try {
 
-        final Map<Program, List<Defects4jTestcase>> versionToTestcase = ResolveDefects4jTestcase.getResultFromFile(programName);
+            final Defects4jContainerExecutor executor = Defects4jContainerExecutor.getInstance();
 
-        final int totalCount = StreamEx
-            .of(versionToTestcase.values())
-            .mapToInt(List::size)
-            .sum();
-        @Cleanup final ProgressBar progressBar = new ProgressBar("", totalCount);
+            final Map<Program, List<Defects4jTestcase>> versionToTestcase = ResolveDefects4jTestcase.getResultFromFile(programName);
 
-        final List<RunResultForProgram> result = EntryStream
-            .of(versionToTestcase)
-            .parallel()
-            .mapValues(StreamEx::of)
-            .mapValues(s -> s.map(a -> (IProgramInput) a))
-            .mapValues(StreamEx::toList)
-            .map(entry -> new RunningScheduler(
-                entry.getKey(),
-                () -> new Defects4jRunner(executor, programName),
-                entry.getValue(),
-                progressBar))
-            .map(scheduler -> {
-                try {
-                    return scheduler.runAndGetResults();
-                } catch (CoverageRunnerException e) {
-                    LogUtils.logError("CoverageRunnerException for " + scheduler.getProgram().getPath());
-                    LogUtils.logError(e);
-                    return null;
-                }
-            })
-            .filter(Objects::nonNull)
-            .map(RunningResultResolver::mapFromRunResult)
-            .toImmutableList();
+            final int totalCount = StreamEx
+                .of(versionToTestcase.values())
+                .mapToInt(List::size)
+                .sum();
+            @Cleanup final ProgressBar progressBar = new ProgressBar("", totalCount);
 
-        return new RunResultJam(result);
+            final CacheHandler cache = new CacheHandler("run-defects4j-" + programName);
+
+            final List<RunResultForProgram> result = EntryStream
+                .of(versionToTestcase)
+                .parallel()
+                .map(entry -> {
+                    final Program program = entry.getKey();
+
+                    final Optional<RunResultForProgram> resOptional = cache.tryLoadCache(program.getTitle(), RunResultForProgram.class);
+                    if (resOptional.isPresent()) {
+                        progressBar.maxHint(progressBar.getMax() - entry.getValue().size());
+                        return resOptional.get();
+                    }
+
+                    final List<IProgramInput> inputs = StreamEx.of(entry.getValue())
+                        .map(a -> (IProgramInput) a)
+                        .toList();
+
+                    final RunningScheduler scheduler = new RunningScheduler(
+                        program,
+                        () -> new Defects4jRunner(executor, programName),
+                        inputs,
+                        progressBar,
+                        new CacheHandler("run-defects4j-" + programName + "-" + program.getTitle()),
+                        false);
+
+                    try {
+                        final ArrayList<RunResultFromRunner> results = scheduler.runAndGetResults();
+                        final RunResultForProgram runResultForProgram = RunningResultResolver.mapFromRunResult(results);
+
+                        cache.saveCache(program.getTitle(), runResultForProgram);
+
+                        return runResultForProgram;
+
+                    } catch (CoverageRunnerException e) {
+                        throw Lombok.sneakyThrow(e);
+                    }
+                })
+                .toImmutableList();
+
+            cache.deleteAllCaches();
+
+            return Optional.of(new RunResultJam(result));
+
+        } catch (Throwable e) {
+            LogUtils.logError(e);
+            return Optional.empty();
+        }
     }
 
     /**

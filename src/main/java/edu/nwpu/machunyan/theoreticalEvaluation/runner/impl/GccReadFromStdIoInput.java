@@ -2,6 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner.impl;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.IProgramInput;
 import lombok.Value;
+import org.apache.commons.lang.NotImplementedException;
 
 /**
  * 从命令行读入，检测输出是否正确
@@ -38,5 +39,10 @@ public class GccReadFromStdIoInput implements IProgramInput {
         stringBuilder.append("input: ");
         stringBuilder.append(inputFromStdIn, 0, 10);
         return stringBuilder.toString();
+    }
+
+    @Override
+    public String getInputKey() {
+        throw new NotImplementedException("can not get the key from GCC input");
     }
 }
