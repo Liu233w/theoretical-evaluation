@@ -9,6 +9,9 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import one.util.streamex.EntryStream;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.Map;
 
@@ -33,12 +36,21 @@ public class RunDefects4j {
 
 
         for (Defects4jTestcase testcase : testcases) {
-            final Defects4jContainerExecutor.CoverageRunResult res = executor.runTestcaseAndGetResult(programName, version, testcase);
 
-            FileUtils.saveString("./target/outputs/defects4j-temp-coverage-result/"
-                    + testcase.getTestcaseClass() + "_" + testcase.getTestcaseMethod() + "_" + res.isCorrect()
-                    + ".xml",
-                res.getCoverageXml());
+            final String path = "./target/outputs/defects4j-temp-coverage-result/"
+                + testcase.getTestcaseClass() + "_" + testcase.getTestcaseMethod()
+                + ".xml";
+
+            if (Files.exists(Paths.get(path))) {
+                continue;
+            }
+
+            final Defects4jContainerExecutor.CoverageRunResult res = executor.runTestcaseAndGetResult(programName, version, testcase);
+            FileUtils.saveString(path, res.getCoverageXml());
+            Files.write(
+                Paths.get("./target/outputs/defects4j-temp-coverage-result/result.txt"),
+                (testcase.getTestcaseClass() + "::" + testcase.getTestcaseMethod() + " " + res.isCorrect() + "\n").getBytes(),
+                StandardOpenOption.APPEND, StandardOpenOption.CREATE);
         }
     }
 }
