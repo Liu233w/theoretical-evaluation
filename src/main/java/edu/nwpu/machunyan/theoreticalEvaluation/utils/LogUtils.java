@@ -2,7 +2,15 @@ package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import com.google.gson.Gson;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+
 public class LogUtils {
+
+    private static final Path ERROR_LOGFILE = Paths.get("./target/outputs/error.log");
 
     public static void logInfo(String input) {
         System.out.println(input);
@@ -14,6 +22,14 @@ public class LogUtils {
 
     public static void logError(String input) {
         System.err.println(input);
+
+        FileUtils.ensurePathDir(ERROR_LOGFILE);
+        try {
+            Files.write(ERROR_LOGFILE, (input + "\n-------------\n").getBytes(),
+                StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void logError(Throwable e) {
