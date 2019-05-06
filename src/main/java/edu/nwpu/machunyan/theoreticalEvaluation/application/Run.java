@@ -1,15 +1,16 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.IProgramInput;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningResultResolver;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.TestcaseResolver;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoInput;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoRunner;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.*;
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
+import lombok.Cleanup;
+import me.tongfei.progressbar.ProgressBar;
+import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
 
 import java.io.FileNotFoundException;
@@ -19,6 +20,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 /**
@@ -95,6 +98,46 @@ public class Run {
             e.printStackTrace();
             return Optional.empty();
         }
+    }
+
+    public static RunResultJam runDefects4jAndGetResult(String programName)
+        throws FileNotFoundException, CoverageRunnerException {
+
+        final Defects4jContainerExecutor executor = Defects4jContainerExecutor.getInstance();
+
+        final Map<Program, List<Defects4jTestcase>> versionToTestcase = ResolveDefects4jTestcase.getResultFromFile(programName);
+
+        final int totalCount = StreamEx
+            .of(versionToTestcase.values())
+            .mapToInt(List::size)
+            .sum();
+        @Cleanup final ProgressBar progressBar = new ProgressBar("", totalCount);
+
+        final List<RunResultForProgram> result = EntryStream
+            .of(versionToTestcase)
+            .parallel()
+            .mapValues(StreamEx::of)
+            .mapValues(s -> s.map(a -> (IProgramInput) a))
+            .mapValues(StreamEx::toList)
+            .map(entry -> new RunningScheduler(
+                entry.getKey(),
+                () -> new Defects4jRunner(executor, programName),
+                entry.getValue(),
+                progressBar))
+            .map(scheduler -> {
+                try {
+                    return scheduler.runAndGetResults();
+                } catch (CoverageRunnerException e) {
+                    LogUtils.logError("CoverageRunnerException for " + scheduler.getProgram().getPath());
+                    LogUtils.logError(e);
+                    return null;
+                }
+            })
+            .filter(Objects::nonNull)
+            .map(RunningResultResolver::mapFromRunResult)
+            .toImmutableList();
+
+        return new RunResultJam(result);
     }
 
     /**
