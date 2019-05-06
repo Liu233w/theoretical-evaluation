@@ -206,7 +206,7 @@ public class Defects4jContainerExecutor implements Closeable {
      * @throws CoverageRunnerException
      */
     private int getFileLength(String path) throws CoverageRunnerException {
-        return Integer.parseInt(exec("du -k " + path + " | cut -f1"));
+        return Integer.parseInt(exec("du -k " + path + " | cut -f1").trim());
     }
 
     /**
@@ -219,7 +219,7 @@ public class Defects4jContainerExecutor implements Closeable {
     private void checkout(String programName, String version) throws CoverageRunnerException {
 
         final String dir = resolveSrcDir(programName, version);
-        exec(String.format("[ ! -d '%s' ] && mkdir -p %s && defects4j checkout -p %s -v %s -w %s",
+        exec(String.format("if [ ! -d '%s' ] ; then mkdir -p %s && defects4j checkout -p %s -v %s -w %s ; fi",
             dir, dir, programName, version, dir));
     }
 
