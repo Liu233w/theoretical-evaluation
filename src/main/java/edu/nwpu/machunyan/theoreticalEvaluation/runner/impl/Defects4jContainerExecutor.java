@@ -9,6 +9,7 @@ import com.spotify.docker.client.messages.ExecState;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
+import lombok.Value;
 import one.util.streamex.StreamEx;
 
 import java.io.Closeable;
@@ -19,10 +20,14 @@ import java.util.*;
  */
 public class Defects4jContainerExecutor implements Closeable {
 
+    /*
+    笔记：
+    在执行新的测试之后，之前放在 failing_tests 里的内容会被清空
+
+     */
+
     private static final String IMAGE_NAME = "liu233w/defects4j";
     private static final String BASE_DIR = "/app/";
-
-    private static Defects4jContainerExecutor instance = null;
 
     private DockerClient client;
     private String containerId;
@@ -150,6 +155,54 @@ public class Defects4jContainerExecutor implements Closeable {
     }
 
     /**
+     * 运行一个测试用例并获取其结果（包括覆盖率文件和结果是否正确）
+     *
+     * @param programName
+     * @param version
+     * @param testcase
+     * @return
+     * @throws CoverageRunnerException
+     */
+    public CoverageRunResult runTestcaseAndGetResult(
+        String programName,
+        String version,
+        Defects4jTestcase testcase)
+        throws CoverageRunnerException {
+
+        final String dir = resolveSrcDir(programName, version);
+        exec("defects4j coverage -w " + dir + " -t "
+            + testcase.getTestcaseClass() + "::" + testcase.getTestcaseMethod());
+
+        final boolean isCorrect = getFileLength(dir + "failing_tests") == 0;
+        final String coverageXml = exec("cat " + dir + "coverage.xml");
+
+        return new CoverageRunResult(isCorrect, coverageXml);
+    }
+
+    /**
+     * 编译一个程序
+     *
+     * @param programName
+     * @param version
+     * @throws CoverageRunnerException
+     */
+    public void compile(String programName, String version) throws CoverageRunnerException {
+        checkout(programName, version);
+        exec("defects4j compile -w " + resolveSrcDir(programName, version));
+    }
+
+    /**
+     * 获取文件的长度，必须确保文件存在
+     *
+     * @param path
+     * @return
+     * @throws CoverageRunnerException
+     */
+    private int getFileLength(String path) throws CoverageRunnerException {
+        return Integer.parseInt(exec("du -k " + path + " | cut -f1"));
+    }
+
+    /**
      * 生成相应的源代码，如果已经存在，则不会生成
      *
      * @param programName
@@ -227,5 +280,20 @@ public class Defects4jContainerExecutor implements Closeable {
          * @param number
          */
         void reportVersionCount(int number);
+    }
+
+    /**
+     * 一个测试用例的运行结果
+     */
+    @Value
+    public static class CoverageRunResult {
+        /**
+         * 是否执行正确
+         */
+        boolean isCorrect;
+        /**
+         * 生成出来的 coverage xml
+         */
+        String coverageXml;
     }
 }
