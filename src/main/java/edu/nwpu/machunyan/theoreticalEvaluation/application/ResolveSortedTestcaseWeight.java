@@ -7,7 +7,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefinat
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.TestcaseResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.TestcaseItem;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.*;
 import lombok.Value;
