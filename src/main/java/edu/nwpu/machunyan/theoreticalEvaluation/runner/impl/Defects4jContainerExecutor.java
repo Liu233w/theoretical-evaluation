@@ -135,7 +135,7 @@ public class Defects4jContainerExecutor implements Closeable {
                 }
             }
 
-            checkout(programName, version);
+            compile(programName, version);
             exec("defects4j test -w " + dir);
             final String allTests = exec("cat " + dir + "all_tests");
 
