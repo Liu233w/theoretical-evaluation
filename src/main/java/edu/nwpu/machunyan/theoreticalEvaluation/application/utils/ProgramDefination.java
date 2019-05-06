@@ -31,12 +31,12 @@ public class ProgramDefination {
     };
 
     public static final String[] DEFECTS4J_RUN_LIST = new String[]{
-        "Chart",
-        "Closure",
-        "Lang",
         "Math",
         "Mockito",
         "Time",
+        "Lang",
+        "Chart",
+        "Closure",
     };
 
     @Value
