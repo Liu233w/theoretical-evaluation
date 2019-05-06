@@ -212,7 +212,8 @@ public class Defects4jContainerExecutor implements Closeable {
     private void checkout(String programName, String version) throws CoverageRunnerException {
 
         final String dir = resolveSrcDir(programName, version);
-        exec(String.format("[ ! -d '%s' ] && defects4j checkout -p %s -v %s -w %s", dir, programName, version, dir));
+        exec(String.format("[ ! -d '%s' ] && mkdir -p %s && defects4j checkout -p %s -v %s -w %s",
+            dir, dir, programName, version, dir));
     }
 
     /**
