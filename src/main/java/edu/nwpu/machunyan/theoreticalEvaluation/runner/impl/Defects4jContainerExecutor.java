@@ -188,15 +188,22 @@ public class Defects4jContainerExecutor implements Closeable {
     }
 
     /**
-     * 编译一个程序
+     * 生成相应的源代码并编译程序，如果已经存在，则不会生成
      *
      * @param programName
      * @param version
      * @throws CoverageRunnerException
      */
     public void compile(String programName, String version) throws CoverageRunnerException {
-        checkout(programName, version);
-        exec("defects4j compile -w " + resolveSrcDir(programName, version));
+        final String dir = resolveSrcDir(programName, version);
+        exec("if [ ! -d '" + dir + "' ] ; then "
+            + "mkdir -p " + dir
+            + " && "
+            + "defects4j checkout -p " + programName + " -v " + version + " -w " + dir
+            + " && "
+            + "defects4j compile -w " + dir
+            + " ; fi"
+        );
     }
 
     /**
@@ -208,20 +215,6 @@ public class Defects4jContainerExecutor implements Closeable {
      */
     private int getFileLength(String path) throws CoverageRunnerException {
         return Integer.parseInt(exec("du -k " + path + " | cut -f1").trim());
-    }
-
-    /**
-     * 生成相应的源代码，如果已经存在，则不会生成
-     *
-     * @param programName
-     * @param version     defects4j 要求的版本号格式 (1b, 2f 等等)
-     * @throws CoverageRunnerException
-     */
-    private void checkout(String programName, String version) throws CoverageRunnerException {
-
-        final String dir = resolveSrcDir(programName, version);
-        exec(String.format("if [ ! -d '%s' ] ; then mkdir -p %s && defects4j checkout -p %s -v %s -w %s ; fi",
-            dir, dir, programName, version, dir));
     }
 
     /**
