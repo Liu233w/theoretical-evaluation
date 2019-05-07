@@ -8,11 +8,15 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.TestcaseResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.TestcaseItem;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.*;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvLine;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Value;
 import one.util.streamex.EntryStream;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
+import org.apache.commons.lang.ArrayUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -91,7 +95,7 @@ public class ResolveSortedTestcaseWeight {
 
         final ArrayList<CsvLine> csvLines = new ArrayList<>();
 
-        csvLines.add(new CsvLine(ArrayUtils.concat(formulas,
+        csvLines.add(new CsvLine(ArrayUtils.addAll(formulas,
             new Object[]{"name", "params", "input", "should output", "correct"}
         )));
 
@@ -104,7 +108,7 @@ public class ResolveSortedTestcaseWeight {
                 weights[i] = formulaToWeight.get(formulas[i]);
             }
 
-            csvLines.add(new CsvLine(ArrayUtils.concat(weights, new Object[]{
+            csvLines.add(new CsvLine(ArrayUtils.addAll(weights, new Object[]{
                 testcaseItem.getName(),
                 testcaseItem.getInput(), toString(testcaseItem.getParams()),
                 testcaseItem.getOutput(),

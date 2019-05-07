@@ -4,12 +4,12 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.AverageRankDiffResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.DiffRankResolver;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.TotInfoFaultLocationLoader;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.ArrayUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvLine;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
+import org.apache.commons.lang.ArrayUtils;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -76,7 +76,7 @@ public class DiffTotInfoSfWithWeightSimplified {
             .toArray();
 
         final ArrayList<CsvLine> csvLines = new ArrayList<>();
-        csvLines.add(new CsvLine(ArrayUtils.concat(new Object[]{"program title"}, formulaTitles)));
+        csvLines.add(new CsvLine(ArrayUtils.addAll(new Object[]{"program title"}, formulaTitles)));
 
         // program title -> formula -> average diff
         final HashMap<String, HashMap<String, Double>> tmp = new HashMap<>();
@@ -100,7 +100,7 @@ public class DiffTotInfoSfWithWeightSimplified {
                 diffs[i] = formulaToDiff.get(formulaTitles[i]);
             }
 
-            csvLines.add(new CsvLine(ArrayUtils.concat(new Object[]{programTitle}, diffs)));
+            csvLines.add(new CsvLine(ArrayUtils.addAll(new Object[]{programTitle}, diffs)));
         }
 
         return CsvExporter.toCsvString(csvLines);
@@ -114,7 +114,7 @@ public class DiffTotInfoSfWithWeightSimplified {
             .toArray();
 
         final ArrayList<CsvLine> csvLines = new ArrayList<>();
-        csvLines.add(new CsvLine(ArrayUtils.concat(new Object[]{"program title", "statement index"}, formulaTitles)));
+        csvLines.add(new CsvLine(ArrayUtils.addAll(new Object[]{"program title", "statement index"}, formulaTitles)));
 
         // program title -> statement index -> formula -> rank
         final HashMap<String, HashMap<Integer, HashMap<String, String>>> tmp = new HashMap<>();
@@ -145,7 +145,7 @@ public class DiffTotInfoSfWithWeightSimplified {
                     ranks[i] = formulaToRank.get(formulaTitles[i]);
                 }
 
-                csvLines.add(new CsvLine(ArrayUtils.concat(new Object[]{programTitle, statementIdx}, ranks)));
+                csvLines.add(new CsvLine(ArrayUtils.addAll(new Object[]{programTitle, statementIdx}, ranks)));
             });
         }
 

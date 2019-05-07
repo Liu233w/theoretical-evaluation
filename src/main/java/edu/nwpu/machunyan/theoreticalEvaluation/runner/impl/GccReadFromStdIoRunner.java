@@ -8,13 +8,15 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.StreamUtils;
 import lombok.NonNull;
+import org.apache.commons.io.IOUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -23,6 +25,8 @@ import java.nio.file.Paths;
  * 使用 gcov 执行 c++ 源代码的覆盖率检测。程序从程序参数读取输入，从标准输出输出结果。
  */
 public class GccReadFromStdIoRunner implements ICoverageRunner {
+
+    private static final Charset IO_CHARSET = StandardCharsets.UTF_8;
 
     private Program program = null;
 
@@ -122,7 +126,7 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
             // 返回非 0 值也是测试的一部分，这里不应该抛出异常
             final Process process = waitToRunCommandAndGetProcess(command, typedInput.getInputFromStdIn(), false);
             final InputStream inputStream = process.getInputStream();
-            final String output = StreamUtils.convertStreamToString(inputStream);
+            final String output = IOUtils.toString(inputStream, IO_CHARSET);
 
             // run gcov
             waitToRunCommandAndGetProcess(new String[]{"gcov", filePath.toString()});
@@ -180,8 +184,8 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
         if (returnCode != 0 && throwWhenNotExitWithZero) {
             throw new CoverageRunnerException("execution failed with return code : " + returnCode + "\n" +
                 "Outputs: \n" +
-                "std out: \n" + StreamUtils.convertStreamToString(process.getInputStream()) + "\n" +
-                "std err: \n" + StreamUtils.convertStreamToString(process.getErrorStream()));
+                "std out: \n" + IOUtils.toString(process.getInputStream(), IO_CHARSET) + "\n" +
+                "std err: \n" + IOUtils.toString(process.getErrorStream(), IO_CHARSET));
         }
 
         return process;

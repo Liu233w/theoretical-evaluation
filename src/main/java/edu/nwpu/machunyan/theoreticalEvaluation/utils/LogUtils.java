@@ -1,6 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import com.google.gson.Gson;
+import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,7 +34,8 @@ public class LogUtils {
     }
 
     public static void logError(Throwable e) {
-        e.printStackTrace();
+        final String stackTrace = ExceptionUtils.getStackTrace(e);
+        logError(stackTrace);
     }
 
     /**

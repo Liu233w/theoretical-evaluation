@@ -5,6 +5,7 @@ import lombok.SneakyThrows;
 import one.util.streamex.StreamEx;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.lang.ArrayUtils;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -75,7 +76,7 @@ public class CsvExporter {
 
         final ArrayList<CsvLine> csvLines = new ArrayList<>();
 
-        csvLines.add(new CsvLine(ArrayUtils.concat(new Object[]{
+        csvLines.add(new CsvLine(ArrayUtils.addAll(new Object[]{
             "program title", "statement index"
         }, formulaTitles)));
 

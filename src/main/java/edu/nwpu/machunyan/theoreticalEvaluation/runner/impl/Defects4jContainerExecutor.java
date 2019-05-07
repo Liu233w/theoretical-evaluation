@@ -82,7 +82,7 @@ public class Defects4jContainerExecutor implements Closeable {
         try {
             client.killContainer(containerId);
         } catch (DockerException | InterruptedException e) {
-            e.printStackTrace();
+            LogUtils.logError(e);
         }
         client.close();
 
