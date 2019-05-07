@@ -47,7 +47,11 @@ public class FileUtils {
      * @throws FileNotFoundException
      */
     public static <T> T loadObject(Path path, Class<T> type) throws FileNotFoundException {
-        return new Gson().fromJson(new FileReader(path.toFile()), type);
+        return loadObject(path, type, new Gson());
+    }
+
+    public static <T> T loadObject(Path path, Class<T> type, Gson gson) throws FileNotFoundException {
+        return gson.fromJson(new FileReader(path.toFile()), type);
     }
 
     /**

@@ -1,5 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
+import com.google.gson.Gson;
 import lombok.*;
 
 import java.io.FileNotFoundException;
@@ -50,14 +51,23 @@ public class CacheHandler {
         return resolveCacheLocation(key).toFile().exists();
     }
 
-    public <T> Optional<T> tryLoadCache(String key, Class<T> type) {
+    public <T> Optional<T> tryLoadCache(String key, Class<T> type, Gson gson) {
         final Path path = resolveCacheLocation(key);
         try {
-            final T res = FileUtils.loadObject(path, type);
-            return Optional.of(res);
+            if (gson == null) {
+                final T res = FileUtils.loadObject(path, type);
+                return Optional.of(res);
+            } else {
+                final T res = FileUtils.loadObject(path, type, gson);
+                return Optional.of(res);
+            }
         } catch (FileNotFoundException e) {
             return Optional.empty();
         }
+    }
+
+    public <T> Optional<T> tryLoadCache(String key, Class<T> type) {
+        return tryLoadCache(key, type, null);
     }
 
     /**

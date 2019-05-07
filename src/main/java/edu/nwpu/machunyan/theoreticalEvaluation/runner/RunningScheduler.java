@@ -1,5 +1,8 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.runner;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.InstanceCreator;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
@@ -7,6 +10,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Getter;
 import me.tongfei.progressbar.ProgressBar;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -120,7 +124,14 @@ public class RunningScheduler {
 
                 if (cache != null) {
 
-                    final Optional<RunResultFromRunner> resultOptional = cache.tryLoadCache(input.getInputKey(), RunResultFromRunner.class);
+                    // 确保 IProgramInput 是正确的结果
+                    final Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(IProgramInput.class, new CachingInputAdapter(input))
+                        .create();
+
+                    final Optional<RunResultFromRunner> resultOptional
+                        = cache.tryLoadCache(input.getInputKey(), RunResultFromRunner.class, gson);
+
                     if (resultOptional.isPresent()) {
                         runResults.add(resultOptional.get());
                         if (progressBar != null) {
@@ -161,6 +172,20 @@ public class RunningScheduler {
     private void stepProgressBar() {
         if (progressBar != null) {
             progressBar.step();
+        }
+    }
+
+    private static class CachingInputAdapter implements InstanceCreator<IProgramInput> {
+
+        private final IProgramInput instance;
+
+        private CachingInputAdapter(IProgramInput instance) {
+            this.instance = instance;
+        }
+
+        @Override
+        public IProgramInput createInstance(Type type) {
+            return instance;
         }
     }
 }
