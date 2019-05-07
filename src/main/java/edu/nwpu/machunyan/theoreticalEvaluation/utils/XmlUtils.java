@@ -2,14 +2,14 @@ package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import lombok.SneakyThrows;
 import org.w3c.dom.Document;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
+import java.io.StringReader;
 
 public class XmlUtils {
 
@@ -25,10 +25,15 @@ public class XmlUtils {
         throws SAXException {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-        factory.setValidating(true);
         factory.setIgnoringElementContentWhitespace(true);
+        // 移除 dtd validation
+        factory.setValidating(false);
+        factory.setFeature("http://xml.org/sax/features/namespaces", false);
+        factory.setFeature("http://xml.org/sax/features/validation", false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+        factory.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
         DocumentBuilder builder = factory.newDocumentBuilder();
 
-        return builder.parse(new ByteArrayInputStream(document.getBytes(StandardCharsets.UTF_8)));
+        return builder.parse(new InputSource(new StringReader(document)));
     }
 }

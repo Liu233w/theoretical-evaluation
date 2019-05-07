@@ -8,6 +8,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.application.Run
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningScheduler
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.TestcaseResolver
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program
+import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.Defects4jCoverageParser
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoInput
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoRunner
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram
@@ -15,12 +16,14 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.TestcaseItem
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils
 import one.util.streamex.IntStreamEx
+import java.nio.file.Files
+import java.nio.file.Paths
 import java.util.stream.IntStream
 import java.util.stream.Stream
 
 fun main() {
 
-    diffTcasVtm()
+    testDefects4jCoverageParser()
 }
 
 fun tcasSf() {
@@ -56,6 +59,13 @@ fun filterTcasTestcase(): List<TestcaseItem> {
 
     testcase2.forEach(::println)
     return testcase2
+}
+
+fun testDefects4jCoverageParser() {
+    val res = Files.readString(Paths.get("./target/outputs/defects4j-temp-coverage-result/org.apache.commons.lang3.AnnotationUtilsTest_testAnnotationsOfDifferingTypes.xml"))
+    val defects4jStatementMap = Defects4jCoverageParser.Defects4jStatementMap()
+    val coverage = Defects4jCoverageParser.generateCoverageFromString(res, defects4jStatementMap)
+    println(coverage)
 }
 
 fun reRunTcas() {
