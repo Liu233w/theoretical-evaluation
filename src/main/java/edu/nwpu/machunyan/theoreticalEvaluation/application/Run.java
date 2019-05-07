@@ -122,9 +122,15 @@ public class Run {
 
     public static Optional<RunResultJam> runDefects4jAndGetResult(String programName) {
 
+        /*
+        控制流：一经异常立刻退出，不返回任何结果。
+        使用 cache 来缓存计算出的结果，所以立刻退出的代价不会很大。
+         */
+
         try {
 
-            final Defects4jContainerExecutor executor = Defects4jContainerExecutor.getInstance();
+            @Cleanup final Defects4jContainerExecutor executor
+                = Defects4jContainerExecutor.getInstance();
 
             final Map<Program, List<Defects4jTestcase>> versionToTestcase = ResolveDefects4jTestcase.getResultFromFile(programName);
 
