@@ -175,6 +175,7 @@ public class Run {
                         return runResultForProgram;
 
                     } catch (CoverageRunnerException e) {
+                        // 被外层捕获的异常
                         throw Lombok.sneakyThrow(e);
                     }
                 })

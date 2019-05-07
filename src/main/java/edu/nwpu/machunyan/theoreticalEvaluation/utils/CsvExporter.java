@@ -18,7 +18,7 @@ import java.util.Map;
  */
 public class CsvExporter {
 
-    @SneakyThrows(IOException.class)
+    @SneakyThrows(IOException.class) // 不太可能会发生的异常
     public static String toCsvString(List<CsvLine> lines) {
         StringWriter out = new StringWriter();
         CSVPrinter printer = CSVFormat.DEFAULT.print(out);

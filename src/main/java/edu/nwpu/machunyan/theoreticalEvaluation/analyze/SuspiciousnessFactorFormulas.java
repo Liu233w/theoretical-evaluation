@@ -423,14 +423,14 @@ public class SuspiciousnessFactorFormulas {
      * @return
      */
     private static SuspiciousnessFactorFormula toFunctionInterface(Method formula) {
-        final SuspiciousnessFactorFormula function = (VectorTableModelForStatement input) -> {
+        return (VectorTableModelForStatement input) -> {
             try {
                 return (double) formula.invoke(null, input);
             } catch (IllegalAccessException | InvocationTargetException e) {
+                // 不太可能会发生的异常
                 throw Lombok.sneakyThrow(e);
             }
         };
-        return function;
     }
 
     @Retention(RetentionPolicy.RUNTIME)

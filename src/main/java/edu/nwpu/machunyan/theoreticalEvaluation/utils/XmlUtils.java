@@ -9,6 +9,7 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 public class XmlUtils {
 
@@ -19,7 +20,7 @@ public class XmlUtils {
      * @return
      * @throws SAXException
      */
-    @SneakyThrows({ParserConfigurationException.class, IOException.class})
+    @SneakyThrows({ParserConfigurationException.class, IOException.class}) // 不太可能会发生的异常
     public static Document resolveDocumentFromString(String document)
         throws SAXException {
 
@@ -28,6 +29,6 @@ public class XmlUtils {
         factory.setIgnoringElementContentWhitespace(true);
         DocumentBuilder builder = factory.newDocumentBuilder();
 
-        return builder.parse(new ByteArrayInputStream(document.getBytes()));
+        return builder.parse(new ByteArrayInputStream(document.getBytes(StandardCharsets.UTF_8)));
     }
 }
