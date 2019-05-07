@@ -131,6 +131,11 @@ public class RunningScheduler {
                 }
 
                 final RunResultFromRunner result = runner.runWithInput(input);
+
+                if (cache != null) {
+                    cache.saveCache(input.getInputKey(), result);
+                }
+
                 runResults.add(result);
                 stepProgressBar();
             }
