@@ -3,7 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.*
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.SuspiciousnessFactorForProgram
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightForProgram
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.VectorTableModelForProgram
+import edu.nwpu.machunyan.theoreticalEvaluation.application.ResolveDefects4jTestcase
 import edu.nwpu.machunyan.theoreticalEvaluation.application.Run
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.RunningScheduler
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.TestcaseResolver
@@ -11,7 +11,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.Defects4jCoverageParser
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoInput
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.GccReadFromStdIoRunner
-import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.TestcaseItem
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils
@@ -23,7 +22,17 @@ import java.util.stream.Stream
 
 fun main() {
 
-    testDefects4jCoverageParser()
+    extractTestcases()
+}
+
+fun extractTestcases() {
+    val resultFromFile = ResolveDefects4jTestcase.getResultFromFile("Chart")
+    resultFromFile.filterKeys { it.title == "19b" }
+        .entries.first().value
+        .filter { it.testcaseClass == "org.jfree.chart.axis.junit.CategoryAxisTests" && it.testcaseMethod == "testCloning" }
+        .let {
+            println(it)
+        }
 }
 
 fun tcasSf() {
