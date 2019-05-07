@@ -32,7 +32,7 @@ public class ResolveDefects4jTestcase {
 
     public static void main(String[] args) throws CoverageRunnerException, IOException {
 
-        @Cleanup final Defects4jContainerExecutor executor = Defects4jContainerExecutor.getInstance();
+        @Cleanup final Defects4jContainerExecutor executor = Defects4jContainerExecutor.newInstance();
         Runtime.getRuntime().addShutdownHook(new Thread(executor::close));
 
         for (String programName : ProgramDefination.DEFECTS4J_RUN_LIST) {

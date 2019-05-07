@@ -130,7 +130,8 @@ public class Run {
         try {
 
             @Cleanup final Defects4jContainerExecutor executor
-                = Defects4jContainerExecutor.getInstance();
+                = Defects4jContainerExecutor.newInstance();
+            Runtime.getRuntime().addShutdownHook(new Thread(executor::close));
 
             final Map<Program, List<Defects4jTestcase>> versionToTestcase = ResolveDefects4jTestcase.getResultFromFile(programName);
 

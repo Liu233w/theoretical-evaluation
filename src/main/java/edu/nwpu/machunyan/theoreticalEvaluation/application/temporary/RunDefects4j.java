@@ -22,7 +22,7 @@ public class RunDefects4j {
         String programName = "Lang";
         String version = "1b";
 
-        final Defects4jContainerExecutor executor = Defects4jContainerExecutor.getInstance();
+        final Defects4jContainerExecutor executor = Defects4jContainerExecutor.newInstance();
         Runtime.getRuntime().addShutdownHook(new Thread(executor::close));
 
         final Map<Program, List<Defects4jTestcase>> lang = ResolveDefects4jTestcase.getResultFromFile(programName);

@@ -39,7 +39,7 @@ public class Defects4jContainerExecutor implements Closeable {
         this.containerId = containerId;
     }
 
-    public static Defects4jContainerExecutor getInstance()
+    public static Defects4jContainerExecutor newInstance()
         throws CoverageRunnerException {
 
         try {
