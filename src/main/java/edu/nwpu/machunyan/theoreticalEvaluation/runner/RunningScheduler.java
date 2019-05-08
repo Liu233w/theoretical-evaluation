@@ -15,6 +15,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 @Builder
 public class RunningScheduler {
@@ -45,7 +46,7 @@ public class RunningScheduler {
      * @throws CoverageRunnerException 运行中出现的所有错误
      */
     public ArrayList<RunResultFromRunner> runAndGetResults(
-        ICoverageRunner runner,
+        Supplier<ICoverageRunner> runnerSupplier,
         Program program,
         List<IProgramInput> inputs)
         throws CoverageRunnerException {
@@ -53,7 +54,7 @@ public class RunningScheduler {
         int i = 0;
         while (true) {
             try {
-                return run(runner, program, inputs);
+                return run(runnerSupplier, program, inputs);
             } catch (CoverageRunnerException e) {
                 if (i < retry) {
                     LogUtils.logError(e);
@@ -66,11 +67,12 @@ public class RunningScheduler {
     }
 
     private ArrayList<RunResultFromRunner> run(
-        ICoverageRunner runner,
+        Supplier<ICoverageRunner> runnerSupplier,
         Program program,
         List<IProgramInput> inputs)
         throws CoverageRunnerException {
 
+        final ICoverageRunner runner = runnerSupplier.get();
         ArrayList<RunResultFromRunner> runResults = new ArrayList<>(inputs.size());
 
         try {

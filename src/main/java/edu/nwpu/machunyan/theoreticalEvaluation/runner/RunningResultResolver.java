@@ -37,7 +37,7 @@ public class RunningResultResolver {
             .parallel()
             .map(program -> {
                 try {
-                    return scheduler.runAndGetResults(runnerFactory.get(), program, inputs);
+                    return scheduler.runAndGetResults(runnerFactory, program, inputs);
                 } catch (CoverageRunnerException e) {
                     LogUtils.logError("CoverageRunnerException for " + program.getPath());
                     LogUtils.logError(e);

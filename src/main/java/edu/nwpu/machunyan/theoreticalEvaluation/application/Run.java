@@ -166,7 +166,7 @@ public class Run {
                             .cache(new CacheHandler("run-defects4j-" + programName + "-" + program.getTitle()))
                             .build()
                             .runAndGetResults(
-                                new Defects4jRunner(executor, programName),
+                                () -> new Defects4jRunner(executor, programName),
                                 program,
                                 inputs);
 

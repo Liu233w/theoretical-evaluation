@@ -14,7 +14,7 @@ class RunningSchedulerTest : FreeSpec({
         val results = RunningScheduler
             .builder().build()
             .runAndGetResults(
-                GccReadFromStdIoRunner(),
+                ::GccReadFromStdIoRunner,
                 Program("1.cpp", getTestFilePath("1.cpp").toString()),
                 listOf(
                     GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),

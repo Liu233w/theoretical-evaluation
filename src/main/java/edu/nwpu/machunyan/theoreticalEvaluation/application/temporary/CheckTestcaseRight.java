@@ -60,7 +60,7 @@ public class CheckTestcaseRight {
                 .progressBar(progressBar)
                 .build()
                 .runAndGetResults(
-                    new GccReadFromStdIoRunner(),
+                    GccReadFromStdIoRunner::new,
                     new Program(programName, file.toString()),
                     inputs);
 
