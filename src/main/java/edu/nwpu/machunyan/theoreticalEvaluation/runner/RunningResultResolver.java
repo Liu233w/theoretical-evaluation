@@ -30,16 +30,16 @@ public class RunningResultResolver {
     public static RunResultJam runProgramForAllVersions(List<Program> programs, List<IProgramInput> inputs, Supplier<ICoverageRunner> runnerFactory) {
 
         final ProgressBar progressBar = new ProgressBar("", inputs.size() * programs.size());
+        final RunningScheduler scheduler = RunningScheduler.builder().progressBar(progressBar).build();
 
         final List<RunResultForProgram> result = StreamEx
             .of(programs)
             .parallel()
-            .map(program -> new RunningScheduler(program, runnerFactory, inputs, progressBar))
-            .map(scheduler -> {
+            .map(program -> {
                 try {
-                    return scheduler.runAndGetResults();
+                    return scheduler.runAndGetResults(runnerFactory.get(), program, inputs);
                 } catch (CoverageRunnerException e) {
-                    LogUtils.logError("CoverageRunnerException for " + scheduler.getProgram().getPath());
+                    LogUtils.logError("CoverageRunnerException for " + program.getPath());
                     LogUtils.logError(e);
                     return null;
                 }

@@ -22,7 +22,7 @@ class RunningResultResolverTest : FreeSpec({
                 GccReadFromStdIoInput(arrayOf("2"), "wrong\n")
             )
 
-            val result = RunningResultResolver.runProgramForAllVersions(programs, inputs, GccReadFromStdIoRunner::newInstance)
+            val result = RunningResultResolver.runProgramForAllVersions(programs, inputs, ::GccReadFromStdIoRunner)
 
             result.runResultForPrograms.size shouldBe 1
 

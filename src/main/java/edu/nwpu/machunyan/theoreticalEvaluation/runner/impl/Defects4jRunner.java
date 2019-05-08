@@ -59,14 +59,4 @@ public class Defects4jRunner implements ICoverageRunner {
     public void cleanUp() throws CoverageRunnerException {
         // do nothing
     }
-
-    @Override
-    public boolean isDebug() {
-        return false;
-    }
-
-    @Override
-    public void setDebug(boolean debug) {
-        // do nothing
-    }
 }

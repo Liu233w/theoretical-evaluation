@@ -11,15 +11,17 @@ class RunningSchedulerTest : FreeSpec({
 
     "runAndGetResults - 能够得到正确结果" {
 
-        val results = RunningScheduler(
-            Program("1.cpp", getTestFilePath("1.cpp").toString()),
-            GccReadFromStdIoRunner::newInstance,
-            listOf(
-                GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),
-                GccReadFromStdIoInput(arrayOf("2"), "else\n"),
-                GccReadFromStdIoInput(arrayOf("2"), "wrong\n")
-            ))
-            .runAndGetResults()
+        val results = RunningScheduler
+            .builder().build()
+            .runAndGetResults(
+                GccReadFromStdIoRunner(),
+                Program("1.cpp", getTestFilePath("1.cpp").toString()),
+                listOf(
+                    GccReadFromStdIoInput(arrayOf("1"), "input 1\n"),
+                    GccReadFromStdIoInput(arrayOf("2"), "else\n"),
+                    GccReadFromStdIoInput(arrayOf("2"), "wrong\n")
+                )
+            )
 
         results[0].isCorrect shouldBe true
         results[1].isCorrect shouldBe true

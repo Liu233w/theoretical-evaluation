@@ -8,7 +8,9 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
+import lombok.Getter;
 import lombok.NonNull;
+import lombok.Setter;
 import org.apache.commons.io.IOUtils;
 
 import java.io.File;
@@ -38,16 +40,9 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
     private Path gcovFile;
     private Path gcdaFile;
 
+    @Getter
+    @Setter
     private boolean debug = false;
-
-    /**
-     * 工厂方法
-     *
-     * @return
-     */
-    public static GccReadFromStdIoRunner newInstance() {
-        return new GccReadFromStdIoRunner();
-    }
 
     /**
      * 根据文件的后缀名来确定要使用的编译器。（cpp和cc使用 g++，c使用 gcc）
@@ -208,13 +203,5 @@ public class GccReadFromStdIoRunner implements ICoverageRunner {
     @Override
     public void cleanUp() {
         // 不需要清理
-    }
-
-    public boolean isDebug() {
-        return debug;
-    }
-
-    public void setDebug(boolean debug) {
-        this.debug = debug;
     }
 }

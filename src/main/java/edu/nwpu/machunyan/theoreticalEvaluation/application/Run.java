@@ -110,7 +110,7 @@ public class Run {
                 .toImmutableList();
 
             final RunResultJam runResultJam = RunningResultResolver.runProgramForAllVersions(
-                programs, inputs, GccReadFromStdIoRunner::newInstance);
+                programs, inputs, GccReadFromStdIoRunner::new);
 
             return Optional.of(runResultJam);
 
@@ -159,16 +159,17 @@ public class Run {
                         .map(a -> (IProgramInput) a)
                         .toList();
 
-                    final RunningScheduler scheduler = new RunningScheduler(
-                        program,
-                        () -> new Defects4jRunner(executor, programName),
-                        inputs,
-                        progressBar,
-                        new CacheHandler("run-defects4j-" + programName + "-" + program.getTitle()),
-                        false);
-
                     try {
-                        final ArrayList<RunResultFromRunner> results = scheduler.runAndGetResults();
+                        final ArrayList<RunResultFromRunner> results = RunningScheduler
+                            .builder()
+                            .progressBar(progressBar)
+                            .cache(new CacheHandler("run-defects4j-" + programName + "-" + program.getTitle()))
+                            .build()
+                            .runAndGetResults(
+                                new Defects4jRunner(executor, programName),
+                                program,
+                                inputs);
+
                         final RunResultForProgram runResultForProgram = RunningResultResolver.mapFromRunResult(results);
 
                         cache.saveCache(program.getTitle(), runResultForProgram);

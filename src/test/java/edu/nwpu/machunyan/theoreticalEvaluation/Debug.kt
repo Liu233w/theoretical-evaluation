@@ -79,13 +79,16 @@ fun testDefects4jCoverageParser() {
 
 fun reRunTcas() {
     val testcase = filterTcasTestcase()
-    val scheduler = RunningScheduler(
-        Program("tcas-v1", FileUtils.getFilePathFromResources("tcas/versions/v1/tcas.c").toString()),
-        GccReadFromStdIoRunner::newInstance,
-        testcase.map { GccReadFromStdIoInput(it.params, it.output) },
-        null,
-        true)
-    val results = scheduler.runAndGetResults()
+
+    val runner = GccReadFromStdIoRunner()
+    runner.isDebug = true
+
+    val results = RunningScheduler
+        .builder().build()
+        .runAndGetResults(
+            runner,
+            Program("tcas-v1", FileUtils.getFilePathFromResources("tcas/versions/v1/tcas.c").toString()),
+            testcase.map { GccReadFromStdIoInput(it.params, it.output) })
     results.forEach(::println)
 }
 

@@ -28,8 +28,4 @@ public interface ICoverageRunner {
      * 清理程序。与 prepare 对应，在最后运行。使用 prepare 中的输入。
      */
     void cleanUp() throws CoverageRunnerException;
-
-    boolean isDebug();
-
-    void setDebug(boolean debug);
 }

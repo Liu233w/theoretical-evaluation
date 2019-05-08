@@ -55,13 +55,14 @@ public class CheckTestcaseRight {
 
             @Cleanup final ProgressBar progressBar = new ProgressBar("", inputs.size());
 
-            final RunningScheduler scheduler = new RunningScheduler(
-                new Program(programName, file.toString()),
-                GccReadFromStdIoRunner::new,
-                inputs,
-                progressBar
-            );
-            final ArrayList<RunResultFromRunner> result = scheduler.runAndGetResults();
+            final ArrayList<RunResultFromRunner> result = RunningScheduler
+                .builder()
+                .progressBar(progressBar)
+                .build()
+                .runAndGetResults(
+                    new GccReadFromStdIoRunner(),
+                    new Program(programName, file.toString()),
+                    inputs);
 
             StreamEx
                 .of(result)
