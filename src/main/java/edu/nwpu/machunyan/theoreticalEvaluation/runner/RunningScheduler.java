@@ -32,12 +32,40 @@ public class RunningScheduler {
     private final CacheHandler cache;
 
     /**
+     * 重试次数。如果 runAndGetResults 抛出异常，将尝试重试指定的次数。
+     */
+    @Getter
+    @Builder.Default
+    private final int retry = 0;
+
+    /**
      * 运行所有的测试用例。输出结果。
      *
      * @return
      * @throws CoverageRunnerException 运行中出现的所有错误
      */
     public ArrayList<RunResultFromRunner> runAndGetResults(
+        ICoverageRunner runner,
+        Program program,
+        List<IProgramInput> inputs)
+        throws CoverageRunnerException {
+
+        int i = 0;
+        while (true) {
+            try {
+                return run(runner, program, inputs);
+            } catch (CoverageRunnerException e) {
+                if (i < retry) {
+                    LogUtils.logError(e);
+                    LogUtils.logInfo("Working on " + (++i) + "th retry of " + program.getTitle());
+                } else {
+                    throw e;
+                }
+            }
+        }
+    }
+
+    private ArrayList<RunResultFromRunner> run(
         ICoverageRunner runner,
         Program program,
         List<IProgramInput> inputs)
