@@ -15,12 +15,12 @@ public class Main {
         ResolveDefects4jTestcase.main(args);
         Run.main(args);
         ResolveSuspiciousnessFactor.main(args);
-        ResolveTestcaseWeightByOp.main(args);
+//        ResolveTestcaseWeightByOp.main(args);
         ResolveTestSuitSubsetByOp.main(args);
-        ResolveTestcaseWeight.main(args);
+//        ResolveTestcaseWeight.main(args);
         ResolveTestSuitSubset.main(args);
-        DiffSfWeightedByCertainFormula.main(args);
+//        DiffSfWeightedByCertainFormula.main(args);
         DiffSfSubsetByCertainFormula.main(args);
-        ResolveSortedTestcaseWeight.main(args);
+//        ResolveSortedTestcaseWeight.main(args);
     }
 }
