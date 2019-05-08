@@ -15,6 +15,12 @@ public class ProgramDefination {
         "replace",
         "print_tokens",
         "expression_parser",
+        "Chart",
+        "Math",
+        "Mockito",
+        "Time",
+        "Lang",
+        "Closure",
     };
 
     /**
