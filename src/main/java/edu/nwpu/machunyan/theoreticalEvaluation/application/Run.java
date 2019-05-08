@@ -127,6 +127,8 @@ public class Run {
         使用 cache 来缓存计算出的结果，所以立刻退出的代价不会很大。
          */
 
+        final int retry = 3;
+
         try {
 
             @Cleanup final Defects4jContainerExecutor executor
@@ -164,6 +166,7 @@ public class Run {
                             .builder()
                             .progressBar(progressBar)
                             .cache(new CacheHandler("run-defects4j-" + programName + "-" + program.getTitle()))
+                            .retry(retry)
                             .build()
                             .runAndGetResults(
                                 () -> new Defects4jRunner(executor, programName),
