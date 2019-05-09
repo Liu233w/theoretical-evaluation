@@ -11,6 +11,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.util.Date;
 
 public class LogUtils {
 
@@ -37,7 +38,7 @@ public class LogUtils {
 
         FileUtils.ensurePathDir(ERROR_LOGFILE);
         try {
-            Files.write(ERROR_LOGFILE, (input + "\n-------------\n").getBytes(),
+            Files.write(ERROR_LOGFILE, (new Date() + ":\n" + input + "\n-------------\n").getBytes(),
                 StandardOpenOption.APPEND, StandardOpenOption.CREATE);
         } catch (IOException e) {
             e.printStackTrace();
