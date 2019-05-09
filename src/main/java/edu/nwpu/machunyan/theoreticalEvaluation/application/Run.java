@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * 批量执行测试程序，为每个程序单独返回结果
@@ -130,6 +131,8 @@ public class Run {
         }
     }
 
+    private static ConcurrentLinkedQueue<Defects4jContainerExecutor> executors = new ConcurrentLinkedQueue<>();
+
     public static Optional<RunResultJam> runDefects4jAndGetResult(String programName) {
 
         /*
@@ -143,7 +146,13 @@ public class Run {
 
             @Cleanup final Defects4jContainerExecutor executor
                 = Defects4jContainerExecutor.newInstance();
-            Runtime.getRuntime().addShutdownHook(new Thread(executor::close));
+            // 防止在重试时生成了太多的 thread
+            if (executors.isEmpty()) {
+                Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+                    executors.forEach(Defects4jContainerExecutor::close);
+                }));
+            }
+            executors.add(executor);
 
             /*
             当大部分的结果都在 cache 中时， parallelStream 可能会以为所有的操作都是短期的操作，导致只使用单个的线程来运行
