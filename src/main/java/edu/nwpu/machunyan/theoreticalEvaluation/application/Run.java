@@ -56,21 +56,31 @@ public class Run {
                 }
             });
 
+        /*
+        defects4j 在运行时有时会出现随机的错误，必须重启容器才能解决，所以在外面多加一个重试代码。
+        对 runDefects4jAndGetResult 的调用会启动容器，并在调用结束时关闭容器。
+         */
+        final int defects4jRetry = 3;
+
         for (String programName : ProgramDefination.DEFECTS4J_RUN_LIST) {
             if (Files.exists(Paths.get(resolveResultFilePath(programName)))) {
                 continue;
             }
 
-            LogUtils.logInfo("Working on " + programName);
-
-            final Optional<RunResultJam> optional = runDefects4jAndGetResult(programName);
-            optional.ifPresent(res -> {
-                try {
-                    FileUtils.saveObject(resolveResultFilePath(programName), res);
-                } catch (IOException e) {
-                    LogUtils.logError(e);
+            RunResultJam result = null;
+            for (int i = 0; i <= defects4jRetry; i++) {
+                if (result == null) {
+                    LogUtils.logInfo("Working on " + programName);
+                    result = runDefects4jAndGetResult(programName).orElse(null);
+                } else {
+                    try {
+                        FileUtils.saveObject(resolveResultFilePath(programName), result);
+                        break;
+                    } catch (IOException e) {
+                        LogUtils.logError(e);
+                    }
                 }
-            });
+            }
         }
     }
 
