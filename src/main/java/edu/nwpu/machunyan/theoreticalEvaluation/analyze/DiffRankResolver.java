@@ -7,6 +7,7 @@ import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -29,13 +30,13 @@ public class DiffRankResolver {
     }
 
     /**
-     * 比较两个 suspiciousness factor 的区别。两个必须有同样的语句数量和编号。
+     * 比较两个 suspiciousness factor 的区别。
      * 使用 {@link FaultLocationForProgram} 来筛选。
      * 如果语句不存在，返回的 {@link DiffRankForSide} 为 (-1, NaN)
      *
      * @param left
      * @param right
-     * @param faultLocationForProgram 用来筛选语句。为 null 时回退到 {@link SuspiciousnessFactorUtils#diff(List, List)}
+     * @param faultLocationForProgram 用来筛选语句。为 null 时回退到比较所有的语句。
      * @return
      */
     public static List<DiffRankForStatement> resolve(
@@ -43,27 +44,26 @@ public class DiffRankResolver {
         List<SuspiciousnessFactorForStatement> right,
         @Nullable FaultLocationForProgram faultLocationForProgram) {
 
-        if (left.size() != right.size()) {
-            throw new IllegalArgumentException("用于比较的两侧的语句数必须相同");
-        }
-
         final Map<Integer, DiffRankForSide> leftMap = resolveIndexToRank(left);
         final Map<Integer, DiffRankForSide> rightMap = resolveIndexToRank(right);
-
-        if (!leftMap.keySet().equals(rightMap.keySet())) {
-            throw new IllegalArgumentException("左右两侧的语句编号不同");
-        }
 
         // 为 null 时回退到普通情况
         if (faultLocationForProgram == null) {
 
+            final HashSet<Integer> allIndex = new HashSet<>();
+            allIndex.addAll(leftMap.keySet());
+            allIndex.addAll(rightMap.keySet());
+
+            final DiffRankForSide absentRank = new DiffRankForSide(-1, Double.NaN);
+
             return StreamEx
-                .of(leftMap.entrySet())
-                .filter(a -> a.getValue().getRank() != rightMap.get(a.getKey()).getRank())
+                .of(allIndex)
+                .filter(a -> leftMap.getOrDefault(a, absentRank).getRank()
+                    != rightMap.getOrDefault(a, absentRank).getRank())
                 .map(a -> new DiffRankForStatement(
-                    a.getKey(),
-                    a.getValue(),
-                    rightMap.get(a.getKey())
+                    a,
+                    leftMap.getOrDefault(a, absentRank),
+                    rightMap.getOrDefault(a, absentRank)
                 ))
                 .toImmutableList();
         } else {
@@ -80,7 +80,7 @@ public class DiffRankResolver {
     }
 
     /**
-     * 比较两侧的可疑因子排名，必须有同样的编号
+     * 比较两侧的可疑因子排名
      *
      * @param left
      * @param right
@@ -103,7 +103,7 @@ public class DiffRankResolver {
     }
 
     /**
-     * 比较两侧的可疑因子排名，必须有同样的编号
+     * 比较两侧的可疑因子排名
      *
      * @param left
      * @param right
@@ -132,7 +132,7 @@ public class DiffRankResolver {
     }
 
     /**
-     * 比较两侧的可疑因子排名，必须一一对应
+     * 比较两侧的可疑因子排名
      *
      * @param left
      * @param right
