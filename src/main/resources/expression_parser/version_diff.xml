@@ -1,0 +1,70 @@
+<root>
+  <version name="v1">514c514
+&lt; 			v0 -= parser_read_term( pd );
+---
+&gt; 			v0 += parser_read_term( pd );//error 111111111111111111111111111111111111111111111111
+</version>
+  <version name="v2">448c448
+&lt; 			s = -1.0;
+---
+&gt; 			s = 1.0;//error   222222222222222222222222222222222222222222222222222222222
+</version>
+  <version name="v3">106c106
+&lt; 	while( isspace( parser_peek( pd ) ) )
+---
+&gt; 	while( !isspace( parser_peek( pd ) ) ) //error, original: while( isspace( parser_peek( pd ) ) )
+</version>
+  <version name="v4">117c117
+&lt; 	if( c == '+' || c == '-' )
+---
+&gt; 	if( c == '-' ) //origin: if( c == '+' || c == '-' )
+</version>
+  <version name="v5">171c171
+&lt; 	val = parser_read_expr( pd );
+---
+&gt; 	parser_read_expr( pd ); //origin: val = parser_read_expr( pd );
+</version>
+  <version name="v6">199c199
+&lt; 		if( *num_args &gt;= PARSER_MAX_ARGUMENT_COUNT )
+---
+&gt; 		if( *num_args &gt; PARSER_MAX_ARGUMENT_COUNT ) //origin: if( *num_args &gt;= PARSER_MAX_ARGUMENT_COUNT )
+</version>
+  <version name="v7">272,273c272,273
+&lt; 				if( v0 &lt; 0.0 ) 
+&lt; 					parser_error( pd, "sqrt(x) undefined for x &lt; 0!" );
+---
+&gt; 				/*if( v0 &lt; 0.0 ) 
+&gt; 					parser_error( pd, "sqrt(x) undefined for x &lt; 0!" );*/ // error: ignoring argument check
+</version>
+  <version name="v8">277c277
+&lt; 				if( v0 &lt;= 0 )
+---
+&gt; 				if( v0 &lt; 0 ) //origin: if( v0 &lt;= 0 )
+</version>
+  <version name="v9">309c309
+&lt; 			} else if( strcmp( token, "abs" ) == 0 ){
+---
+&gt; 			} else if( strcmp( token, "ab" ) == 0 ){ //origin: } else if( strcmp( token, "abs" ) == 0 ){
+</version>
+  <version name="v10">414c414
+&lt; 		v0 = -parser_read_paren(pd);
+---
+&gt; 		v0 = parser_read_paren(pd); //origin: v0 = -parser_read_paren(pd);
+</version>
+  <version name="v11">490c490
+&lt; 			v0 /= parser_read_power( pd );
+---
+&gt; 			v0 *= parser_read_power( pd ); //origin: v0 /= parser_read_power( pd );
+</version>
+  <version name="v12">585c585
+&lt; 			v0 = (v0 &gt; v1) ? 1.0 : 0.0;
+---
+&gt; 			v0 = (v0 &lt; v1) ? 1.0 : 0.0; //origin: v0 = (v0 &gt; v1) ? 1.0 : 0.0;
+</version>
+  <version name="v13">639c639
+&lt; 		if( strcmp( oper, "==" ) == 0 ){
+---
+&gt; 		if( strcmp( oper, "=" ) == 0 ){ //origin: if( strcmp( oper, "==" ) == 0 ){
+</version>
+</root>
+
