@@ -145,29 +145,31 @@ public class Run {
                 = Defects4jContainerExecutor.newInstance();
             Runtime.getRuntime().addShutdownHook(new Thread(executor::close));
 
-            final Map<Program, List<Defects4jTestcase>> versionToTestcase = ResolveDefects4jTestcase.getResultFromFile(programName);
+            /*
+            当大部分的结果都在 cache 中时， parallelStream 可能会以为所有的操作都是短期的操作，导致只使用单个的线程来运行
+            剩下的结果，没法有效利用并发。
+             */
 
-            final int totalCount = StreamEx
-                .of(versionToTestcase.values())
-                .mapToInt(List::size)
-                .sum();
-            @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", totalCount);
+            final Map<Program, List<Defects4jTestcase>> versionToTestcase = ResolveDefects4jTestcase.getResultFromFile(programName);
 
             final CacheHandler cache = new CacheHandler("run-defects4j-" + programName);
 
-            final List<RunResultForProgram> result = EntryStream
-                .of(versionToTestcase)
+            final Map<Program, List<Defects4jTestcase>> unResolved = EntryStream.of(versionToTestcase)
                 .parallel()
-                .map(entry -> {
-                    final Program program = entry.getKey();
+                .filterKeys(program -> !cache.isKeyCached(program.getTitle()))
+                .toMap();
 
-                    final Optional<RunResultForProgram> resOptional = cache.tryLoadCache(program.getTitle(), RunResultForProgram.class);
-                    if (resOptional.isPresent()) {
-                        progressBar.maxHint(progressBar.getMax() - entry.getValue().size());
-                        return resOptional.get();
-                    }
+            LogUtils.logFine("Remain version count: " + unResolved.size());
 
-                    final List<IProgramInput> inputs = StreamEx.of(entry.getValue())
+            final int totalCount = StreamEx.of(unResolved.values()).mapToInt(List::size).sum();
+            @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", totalCount);
+
+            EntryStream
+                .of(unResolved)
+                .parallel()
+                .forKeyValue((program, testcases) -> {
+
+                    final List<IProgramInput> inputs = StreamEx.of(testcases)
                         .map(a -> (IProgramInput) a)
                         .toList();
 
@@ -187,13 +189,14 @@ public class Run {
 
                         cache.saveCache(program.getTitle(), runResultForProgram);
 
-                        return runResultForProgram;
-
                     } catch (CoverageRunnerException e) {
                         // 被外层捕获的异常
                         throw Lombok.sneakyThrow(e);
                     }
-                })
+                });
+
+            final List<RunResultForProgram> result = StreamEx.of(versionToTestcase.keySet())
+                .map(program -> cache.tryLoadCache(program.getTitle(), RunResultForProgram.class).get())
                 .toImmutableList();
 
             cache.deleteAllCaches();
