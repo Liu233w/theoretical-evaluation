@@ -53,7 +53,7 @@ public class RunningScheduler {
 
         CoverageRunnerException exception = null;
         for (int i = 0; i <= retry; i++) {
-            LogUtils.logFine("Working on " + i + "th try of " + program.getTitle());
+            LogUtils.logFine("Working on " + (i + 1) + "th try of " + program.getTitle());
             try {
                 return run(runnerSupplier, program, inputs);
             } catch (CoverageRunnerException e) {
