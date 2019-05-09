@@ -51,19 +51,17 @@ public class RunningScheduler {
         List<IProgramInput> inputs)
         throws CoverageRunnerException {
 
-        int i = 0;
-        while (true) {
+        CoverageRunnerException exception = null;
+        for (int i = 0; i <= retry; i++) {
+            LogUtils.logFine("Working on " + i + "th try of " + program.getTitle());
             try {
                 return run(runnerSupplier, program, inputs);
             } catch (CoverageRunnerException e) {
-                if (i < retry) {
-                    LogUtils.logError(e);
-                    LogUtils.logInfo("Working on " + (++i) + "th retry of " + program.getTitle());
-                } else {
-                    throw e;
-                }
+                LogUtils.logError(e);
+                exception = e;
             }
         }
+        throw exception;
     }
 
     private ArrayList<RunResultFromRunner> run(
