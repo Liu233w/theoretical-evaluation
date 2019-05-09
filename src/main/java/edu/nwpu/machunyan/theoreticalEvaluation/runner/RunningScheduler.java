@@ -71,13 +71,16 @@ public class RunningScheduler {
         throws CoverageRunnerException {
 
         final ICoverageRunner runner = runnerSupplier.get();
-        ArrayList<RunResultFromRunner> runResults = new ArrayList<>(inputs.size());
+        final int size = inputs.size();
+        ArrayList<RunResultFromRunner> runResults = new ArrayList<>(size);
 
+        int idx = 0;
         try {
             progressReport(program, "start preparing");
             runner.prepare(program);
 
-            for (IProgramInput input : inputs) {
+            for (; idx < size; idx++) {
+                IProgramInput input = inputs.get(idx);
 
                 if (cache != null) {
 
@@ -109,6 +112,12 @@ public class RunningScheduler {
                     progressBar.step();
                 }
             }
+        } catch (Exception e) {
+            // 回滚进度条的进度，防止重试时进度错误
+            if (progressBar != null) {
+                progressBar.stepBy(-idx);
+            }
+            throw e;
         } finally {
             progressReport(program, "start cleaning up");
             runner.cleanUp();
