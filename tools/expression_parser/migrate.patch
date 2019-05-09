@@ -1,0 +1,30 @@
+--- expression_parser/origin/expression_parser.c	2019-04-24 09:18:43.371814600 +0800
++++ expression_parser_backups/origin/expression_parser.c	2019-04-23 17:54:25.480017300 +0800
+@@ -743,21 +743,13 @@
+ int argc;
+ char *argv[];
+ {
+-  if (argc > 1) {
+-    char buf[200] = {'\0'};
+-    char expr[300] = {'\0'};
+-	int i;
+-    for (i = 1; i < argc-1; i += 1) {
+-      strcat(buf, argv[i]);
+-      printf("args : %s\n", argv[i]);
+-    }
+-    printf("buf : %s\n", buf);
+-    strcat(expr, argv[argc-1]);
+-    strcat(expr, "(");
+-    strcat(expr, buf);
+-    strcat(expr, ")");
++  if (argc == 2) {
++    char expr[200] = {'\0'};
++    strcat(expr, argv[1]);
++
+     printf("expr : %s\n", expr);
+-	printf("result : %lf\n", parse_expression(expr));
++    printf("result : %lf\n", parse_expression(expr));
++
+     return 0;
+   } else {
+     printf("No Parameters.\n");
