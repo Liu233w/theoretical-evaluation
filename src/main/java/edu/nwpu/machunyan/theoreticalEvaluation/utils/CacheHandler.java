@@ -1,7 +1,10 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import com.google.gson.Gson;
-import lombok.*;
+import lombok.Getter;
+import lombok.Lombok;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -80,25 +83,34 @@ public class CacheHandler {
      * @param key
      * @param object
      */
-    @SneakyThrows(IOException.class)
     public void saveCache(String key, Object object) {
         final Path path = resolveCacheLocation(key);
-        FileUtils.saveObject(path, object);
+        try {
+            FileUtils.saveObject(path, object);
+        } catch (IOException e) {
+            LogUtils.logError(e);
+        }
     }
 
-    @SneakyThrows(IOException.class)
     public void deleteCache(String key) {
         final Path path = resolveCacheLocation(key);
-        Files.deleteIfExists(path);
+        try {
+            Files.deleteIfExists(path);
+        } catch (IOException e) {
+            LogUtils.logError(e);
+        }
     }
 
-    @SneakyThrows(IOException.class)
     public void deleteAllCaches() {
         final Path directory = getCacheDirectory();
         if (directory.toFile().exists()) {
-            Files.list(directory)
-                .forEach(unchecked(Files::delete));
-            Files.delete(directory);
+            try {
+                Files.list(directory)
+                    .forEach(unchecked(Files::delete));
+                Files.delete(directory);
+            } catch (IOException e) {
+                LogUtils.logError(e);
+            }
         }
     }
 
