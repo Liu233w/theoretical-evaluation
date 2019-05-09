@@ -29,7 +29,7 @@ public class RunningResultResolver {
      */
     public static RunResultJam runProgramForAllVersions(List<Program> programs, List<IProgramInput> inputs, Supplier<ICoverageRunner> runnerFactory) {
 
-        final ProgressBar progressBar = new ProgressBar("", inputs.size() * programs.size());
+        final ProgressBar progressBar = LogUtils.newProgressBarInstance("", inputs.size() * programs.size());
         final RunningScheduler scheduler = RunningScheduler.builder().progressBar(progressBar).build();
 
         final List<RunResultForProgram> result = StreamEx

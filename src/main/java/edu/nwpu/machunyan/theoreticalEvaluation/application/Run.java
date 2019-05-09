@@ -151,7 +151,7 @@ public class Run {
                 .of(versionToTestcase.values())
                 .mapToInt(List::size)
                 .sum();
-            @Cleanup final ProgressBar progressBar = new ProgressBar("", totalCount);
+            @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", totalCount);
 
             final CacheHandler cache = new CacheHandler("run-defects4j-" + programName);
 

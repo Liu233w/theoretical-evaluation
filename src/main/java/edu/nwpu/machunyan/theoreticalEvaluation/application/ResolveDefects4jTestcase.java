@@ -42,7 +42,7 @@ public class ResolveDefects4jTestcase {
             }
             LogUtils.logInfo("working on " + programName);
 
-            @Cleanup ProgressBar progressBar = new ProgressBar("", 0);
+            @Cleanup ProgressBar progressBar = LogUtils.newProgressBarInstance("", 0);
             final CacheHandler cache = new CacheHandler("resolve-defects4j-testcases-" + programName);
 
             final Defects4jContainerExecutor.TestcaseResolvingProgressHandler progressHandler = new Defects4jContainerExecutor.TestcaseResolvingProgressHandler() {

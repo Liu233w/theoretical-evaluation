@@ -36,7 +36,7 @@ public class ResolveTestcaseWeight {
             final RunResultJam imports = Run.getResultFromFile(name);
             final Set<Map.Entry<String, SuspiciousnessFactorFormula>> entrySet = SuspiciousnessFactorFormulas.getAllFormulas().entrySet();
 
-            @Cleanup final ProgressBar progressBar = new ProgressBar("", imports.getRunResultForPrograms().size() * entrySet.size());
+            @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", imports.getRunResultForPrograms().size() * entrySet.size());
 
             for (Map.Entry<String, SuspiciousnessFactorFormula> entry :
                 entrySet) {

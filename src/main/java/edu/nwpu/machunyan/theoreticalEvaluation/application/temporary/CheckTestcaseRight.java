@@ -53,7 +53,7 @@ public class CheckTestcaseRight {
                 .map(a -> (IProgramInput) a)
                 .toImmutableList();
 
-            @Cleanup final ProgressBar progressBar = new ProgressBar("", inputs.size());
+            @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", inputs.size());
 
             final ArrayList<RunResultFromRunner> result = RunningScheduler
                 .builder()

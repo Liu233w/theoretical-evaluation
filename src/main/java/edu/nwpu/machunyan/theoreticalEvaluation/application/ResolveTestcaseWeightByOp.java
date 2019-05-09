@@ -39,7 +39,7 @@ public class ResolveTestcaseWeightByOp {
 
             final CacheHandler cache = new CacheHandler("testcase-weights-op-" + name);
 
-            @Cleanup final ProgressBar progressBar = new ProgressBar("", 0);
+            @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", 0);
 
             final TestcaseWeightResolver.Reporter cacheSaver = item -> {
                 final String key = item.getFormulaTitle() + "-" + item.getTitle();

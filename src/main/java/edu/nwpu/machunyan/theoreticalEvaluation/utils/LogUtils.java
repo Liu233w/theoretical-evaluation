@@ -1,6 +1,9 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import com.google.gson.Gson;
+import me.tongfei.progressbar.ProgressBar;
+import me.tongfei.progressbar.ProgressBarBuilder;
+import me.tongfei.progressbar.ProgressBarStyle;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 import java.io.IOException;
@@ -51,5 +54,13 @@ public class LogUtils {
      */
     public static String getReadableSpacerString(String input) {
         return new Gson().toJson(input);
+    }
+
+    public static ProgressBar newProgressBarInstance(String task, int initialMax) {
+        return new ProgressBarBuilder()
+            .setTaskName(task)
+            .setInitialMax(initialMax)
+            .setStyle(ProgressBarStyle.ASCII)
+            .build();
     }
 }
