@@ -27,6 +27,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * 批量执行测试程序，为每个程序单独返回结果
@@ -164,7 +166,6 @@ public class Run {
             final CacheHandler cache = new CacheHandler("run-defects4j-" + programName);
 
             final Map<Program, List<Defects4jTestcase>> unResolved = EntryStream.of(versionToTestcase)
-                .parallel()
                 .filterKeys(program -> !cache.isKeyCached(program.getTitle()))
                 .toMap();
 
@@ -173,10 +174,15 @@ public class Run {
             final int totalCount = StreamEx.of(unResolved.values()).mapToInt(List::size).sum();
             @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", totalCount);
 
-            EntryStream
-                .of(unResolved)
-                .parallel()
-                .forKeyValue((program, testcases) -> {
+            // 直接使用 pool 以保证稳定的并发
+            final ForkJoinPool pool = new ForkJoinPool();
+            final CountDownLatch latch = new CountDownLatch(unResolved.size());
+            for (Map.Entry<Program, List<Defects4jTestcase>> entry: unResolved.entrySet()) {
+
+                final Program program = entry.getKey();
+                final List<Defects4jTestcase> testcases = entry.getValue();
+
+                pool.submit(()->{
 
                     final List<IProgramInput> inputs = StreamEx.of(testcases)
                         .map(a -> (IProgramInput) a)
@@ -197,12 +203,16 @@ public class Run {
                         final RunResultForProgram runResultForProgram = RunningResultResolver.mapFromRunResult(results);
 
                         cache.saveCache(program.getTitle(), runResultForProgram);
+                        latch.countDown();
 
                     } catch (CoverageRunnerException e) {
                         // 被外层捕获的异常
                         throw Lombok.sneakyThrow(e);
                     }
                 });
+            }
+            pool.shutdown();
+            latch.await();
 
             final List<RunResultForProgram> result = StreamEx.of(versionToTestcase.keySet())
                 .map(program -> cache.tryLoadCache(program.getTitle(), RunResultForProgram.class).get())
