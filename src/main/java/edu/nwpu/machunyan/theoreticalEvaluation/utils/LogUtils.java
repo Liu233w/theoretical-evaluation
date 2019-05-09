@@ -20,16 +20,19 @@ public class LogUtils {
 
     public static void logInfo(String input) {
         System.out.print("\033[2K"); // Erase line content
+        System.out.print("\r"); // Move to the line begin
         System.out.println(input);
     }
 
     public static void logFine(String input) {
         System.out.print("\033[2K"); // Erase line content
+        System.out.print("\r"); // Move to the line begin
         System.out.println(input);
     }
 
     public static void logError(String input) {
         System.out.print("\033[2K"); // Erase line content
+        System.out.print("\r"); // Move to the line begin
         System.err.println(input);
 
         FileUtils.ensurePathDir(ERROR_LOGFILE);
