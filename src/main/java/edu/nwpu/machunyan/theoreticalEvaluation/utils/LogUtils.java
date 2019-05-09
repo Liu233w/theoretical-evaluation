@@ -13,15 +13,20 @@ public class LogUtils {
 
     private static final Path ERROR_LOGFILE = Paths.get("./target/outputs/error.log");
 
+    // 在每次打印日志之前都清除当前行，防止进度条显示在每一行日志里
+
     public static void logInfo(String input) {
+        System.out.print("\033[2K"); // Erase line content
         System.out.println(input);
     }
 
     public static void logFine(String input) {
+        System.out.print("\033[2K"); // Erase line content
         System.out.println(input);
     }
 
     public static void logError(String input) {
+        System.out.print("\033[2K"); // Erase line content
         System.err.println(input);
 
         FileUtils.ensurePathDir(ERROR_LOGFILE);
