@@ -3,7 +3,6 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner.impl;
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
 import com.spotify.docker.client.exceptions.DockerException;
-import com.spotify.docker.client.messages.Container;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ExecState;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.CoverageRunnerException;
@@ -13,7 +12,10 @@ import lombok.Value;
 import one.util.streamex.StreamEx;
 
 import java.io.Closeable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * 持有一个 docker container 实例，用来运行 defects4j 有关的命令。
@@ -44,29 +46,13 @@ public class Defects4jContainerExecutor implements Closeable {
 
         try {
             final DefaultDockerClient client = new DefaultDockerClient("unix:///var/run/docker.sock");
-
-            final List<Container> containers = client.listContainers(
-                DockerClient.ListContainersParam.withLabel("DEFECTS4J_EXECUTOR"),
-                DockerClient.ListContainersParam.withStatusExited()
-            );
-            if (containers.size() > 0) {
-                final Container container = containers.get(0);
-                client.startContainer(container.id());
-                return new Defects4jContainerExecutor(client, container.id());
-
-            } else {
-
-                client.pull(IMAGE_NAME);
-
-                final ContainerConfig containerConfig = ContainerConfig.builder()
-                    .image(IMAGE_NAME)
-                    .cmd("sh", "-c", "while :; do sleep 1; done")
-                    .labels(Collections.singletonMap("DEFECTS4J_EXECUTOR", "1"))
-                    .build();
-                final String containerId = client.createContainer(containerConfig).id();
-                client.startContainer(containerId);
-                return new Defects4jContainerExecutor(client, containerId);
-            }
+            final ContainerConfig containerConfig = ContainerConfig.builder()
+                .image(IMAGE_NAME)
+                .cmd("sh", "-c", "while :; do sleep 1; done")
+                .build();
+            final String containerId = client.createContainer(containerConfig).id();
+            client.startContainer(containerId);
+            return new Defects4jContainerExecutor(client, containerId);
 
         } catch (DockerException | InterruptedException e) {
             throw new CoverageRunnerException("exception from docker.", e);
@@ -81,6 +67,7 @@ public class Defects4jContainerExecutor implements Closeable {
 
         try {
             client.killContainer(containerId);
+            client.removeContainer(containerId);
         } catch (DockerException | InterruptedException e) {
             LogUtils.logError(e);
         }
