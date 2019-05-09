@@ -70,18 +70,10 @@ public class Run {
                 continue;
             }
 
-            RunResultJam result = null;
             for (int i = 0; i <= defects4jRetry; i++) {
-                if (result == null) {
-                    LogUtils.logInfo("Working on " + programName);
-                    result = runDefects4jAndGetResult(programName).orElse(null);
-                } else {
-                    try {
-                        FileUtils.saveObject(resolveResultFilePath(programName), result);
-                        break;
-                    } catch (IOException e) {
-                        LogUtils.logError(e);
-                    }
+                LogUtils.logInfo("Working on " + programName);
+                if (runDefects4jAndSave(programName)) {
+                    break;
                 }
             }
         }
@@ -135,14 +127,15 @@ public class Run {
 
     private static ConcurrentLinkedQueue<Defects4jContainerExecutor> executors = new ConcurrentLinkedQueue<>();
 
-    public static Optional<RunResultJam> runDefects4jAndGetResult(String programName) {
+    private static boolean runDefects4jAndSave(String programName) {
 
         /*
         控制流：一经异常立刻退出，不返回任何结果。
         使用 cache 来缓存计算出的结果，所以立刻退出的代价不会很大。
          */
 
-        final int retry = 3;
+        // 每个 running scheduler 允许失败的次数
+        final int innerRetry = 3;
 
         try {
 
@@ -177,12 +170,12 @@ public class Run {
             // 直接使用 pool 以保证稳定的并发
             final ForkJoinPool pool = new ForkJoinPool();
             final CountDownLatch latch = new CountDownLatch(unResolved.size());
-            for (Map.Entry<Program, List<Defects4jTestcase>> entry: unResolved.entrySet()) {
+            for (Map.Entry<Program, List<Defects4jTestcase>> entry : unResolved.entrySet()) {
 
                 final Program program = entry.getKey();
                 final List<Defects4jTestcase> testcases = entry.getValue();
 
-                pool.submit(()->{
+                pool.submit(() -> {
 
                     final List<IProgramInput> inputs = StreamEx.of(testcases)
                         .map(a -> (IProgramInput) a)
@@ -193,7 +186,7 @@ public class Run {
                             .builder()
                             .progressBar(progressBar)
                             .cache(new CacheHandler("run-defects4j-" + programName + "-" + program.getTitle()))
-                            .retry(retry)
+                            .retry(innerRetry)
                             .build()
                             .runAndGetResults(
                                 () -> new Defects4jRunner(executor, programName),
@@ -218,13 +211,15 @@ public class Run {
                 .map(program -> cache.tryLoadCache(program.getTitle(), RunResultForProgram.class).get())
                 .toImmutableList();
 
+            FileUtils.saveObject(resolveResultFilePath(programName), result);
+
             cache.deleteAllCaches();
 
-            return Optional.of(new RunResultJam(result));
+            return true;
 
         } catch (Throwable e) {
             LogUtils.logError(e);
-            return Optional.empty();
+            return false;
         }
     }
 
