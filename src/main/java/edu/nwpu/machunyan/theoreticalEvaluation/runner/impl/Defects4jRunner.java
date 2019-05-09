@@ -26,7 +26,7 @@ public class Defects4jRunner implements ICoverageRunner {
     }
 
     @Override
-    public void prepare(Program program) throws CoverageRunnerException {
+    public synchronized void prepare(Program program) throws CoverageRunnerException {
 
         this.program = program;
         version = program.getTitle();
@@ -36,7 +36,7 @@ public class Defects4jRunner implements ICoverageRunner {
     }
 
     @Override
-    public RunResultFromRunner runWithInput(IProgramInput programInput) throws CoverageRunnerException {
+    public synchronized RunResultFromRunner runWithInput(IProgramInput programInput) throws CoverageRunnerException {
 
         if (!(programInput instanceof Defects4jTestcase)) {
             throw new CoverageRunnerException("input should be an instance of Defects4jTestcase");
