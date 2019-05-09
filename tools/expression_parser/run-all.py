@@ -16,20 +16,23 @@ def execf(params):
     p=run(['./a.out']+params, stdout=PIPE)
     return(p.stdout)
 
-with open('./data.txt') as fr:
+with open('./test_suits.txt') as fr:
     plans = fr.readlines()
 
 res=[]
 
 for item in plans:
-    print('running {}'.format(item))
 
-    params = item.strip().split()
+    param = item.strip()
+    if param.startswith('#'):
+        continue
+
+    print('running {}'.format(param))
 
     res.append(OrderedDict([
         ('name', item),
-        ('params', params),
-        ('output', execf(params).decode('ascii')),
+        ('params', [param]),
+        ('output', execf([param]).decode('ascii')),
     ]))
 
 with open('cases.json','w') as fr:
