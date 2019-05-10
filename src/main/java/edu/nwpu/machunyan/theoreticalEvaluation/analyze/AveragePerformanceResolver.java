@@ -56,6 +56,7 @@ public class AveragePerformanceResolver {
             .filter(AveragePerformanceResolver::isStatementNeeded)
             .map(VectorTableModelForStatement::getStatementIndex)
             .map(examScore::get)
+            .filter(Objects::nonNull)
             .mapToDouble(Double::doubleValue)
             .average()
             .orElse(0);

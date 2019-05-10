@@ -68,6 +68,8 @@ public class TestcaseWeightResolver {
             .formula(sfFormula)
             .formulaTitle(formulaTitle)
             .sort(true)
+            // 取前 20% 的可疑因子
+            .preLimitSfRate(0.2)
             .build();
     }
 

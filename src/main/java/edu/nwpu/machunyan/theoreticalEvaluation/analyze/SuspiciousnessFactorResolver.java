@@ -32,15 +32,37 @@ public class SuspiciousnessFactorResolver {
     @NonNull
     private final SuspiciousnessFactorFormula formula;
 
+    /**
+     * 范围： (0,1.0]
+     * 生成的可疑因子列表中，取前百分之多少
+     * <p>
+     * 如果不是默认的 1.0，则 sort 必须是 true
+     */
+    private final double preLimitSfRate;
+
     public SuspiciousnessFactorResolver(@NonNull SuspiciousnessFactorFormula formula) {
-        this(false, null, formula);
+        this(false, null, formula, 1.0);
     }
 
     @Builder
-    public SuspiciousnessFactorResolver(boolean sort, String formulaTitle, @NonNull SuspiciousnessFactorFormula formula) {
+    public SuspiciousnessFactorResolver(boolean sort, String formulaTitle, @NonNull SuspiciousnessFactorFormula formula, double preLimitSfRate) {
 
         // default is false
         this.sort = sort;
+
+        if (preLimitSfRate == 0 || preLimitSfRate == 1.0) {
+            this.preLimitSfRate = 1.0;
+        } else if (preLimitSfRate < 0 || preLimitSfRate > 1.0) {
+            throw new IllegalArgumentException("preLimitSfRate must be in (0,1.0]");
+        } else {
+            if (!sort) {
+                throw new IllegalArgumentException("sort must be true when preLimitSfRate in (0,1.0). " +
+                    "If you want to have a subset of the result, set `sort` option to true.");
+            } else {
+                this.preLimitSfRate = preLimitSfRate;
+            }
+        }
+
         if (formulaTitle == null) {
             this.formulaTitle = "";
         } else {
@@ -100,6 +122,15 @@ public class SuspiciousnessFactorResolver {
 
         if (sort) {
             stream = SuspiciousnessFactorUtils.rankedStream(stream);
+        }
+        if (preLimitSfRate != 1.0) {
+
+            final long count = records.stream()
+                .filter(Objects::nonNull)
+                .filter(SuspiciousnessFactorResolver::isStatementEvaluated)
+                .count();
+
+            stream = stream.limit((long) (count * preLimitSfRate));
         }
         return stream.toImmutableList();
     }
