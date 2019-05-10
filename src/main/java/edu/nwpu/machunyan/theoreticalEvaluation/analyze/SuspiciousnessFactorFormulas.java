@@ -73,7 +73,20 @@ public class SuspiciousnessFactorFormulas {
         return record.getAef() - record.getAep() / (resolveP(record) + 1);
     }
 
-    // === o ?
+    public static double dStar(VectorTableModelForStatement record, double star) {
+        return Math.pow(record.getAef(), star)
+            /
+            (record.getAnf() + record.getAep());
+    }
+
+    // DStar method, use star = 2
+    @Formula
+    public static double dStar2(VectorTableModelForStatement record) {
+        return record.getAef() * record.getAef()
+            /
+            (record.getAnf() + record.getAep());
+    }
+
     @Formula
     public static double naish1(VectorTableModelForStatement record) {
         final double f = resolveF(record);
