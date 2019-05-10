@@ -11,7 +11,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Cleanup;
-import lombok.Lombok;
 import me.tongfei.progressbar.ProgressBar;
 import one.util.streamex.EntryStream;
 import one.util.streamex.StreamEx;
@@ -22,13 +21,10 @@ import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
 
 /**
  * 批量执行测试程序，为每个程序单独返回结果
@@ -39,7 +35,7 @@ public class Run {
 
     private static final String resultDir = "./target/outputs/run-results";
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
 
         StreamEx
             .of(ProgramDefination.GCC_RUN_LIST)
@@ -127,7 +123,7 @@ public class Run {
 
     private static ConcurrentLinkedQueue<Defects4jContainerExecutor> executors = new ConcurrentLinkedQueue<>();
 
-    private static boolean runDefects4jAndSave(String programName) {
+    private static boolean runDefects4jAndSave(String programName) throws IOException {
 
         /*
         控制流：一经异常立刻退出，不返回任何结果。
@@ -137,90 +133,102 @@ public class Run {
         // 每个 running scheduler 允许失败的次数
         final int innerRetry = 3;
 
+        @Cleanup final Defects4jContainerExecutor executor;
         try {
-
-            @Cleanup final Defects4jContainerExecutor executor
-                = Defects4jContainerExecutor.newInstance();
-            // 防止在重试时生成了太多的 thread
+            executor = Defects4jContainerExecutor.newInstance();
             if (executors.isEmpty()) {
+                // 防止在重试时生成了太多的 thread
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     executors.forEach(Defects4jContainerExecutor::close);
                 }));
             }
             executors.add(executor);
-
-            /*
-            当大部分的结果都在 cache 中时， parallelStream 可能会以为所有的操作都是短期的操作，导致只使用单个的线程来运行
-            剩下的结果，没法有效利用并发。
-             */
-
-            final Map<Program, List<Defects4jTestcase>> versionToTestcase = ResolveDefects4jTestcase.getResultFromFile(programName);
-
-            final CacheHandler cache = new CacheHandler("run-defects4j-" + programName);
-
-            final Map<Program, List<Defects4jTestcase>> unResolved = EntryStream.of(versionToTestcase)
-                .filterKeys(program -> !cache.isKeyCached(program.getTitle()))
-                .toMap();
-
-            LogUtils.logFine("Remain version count: " + unResolved.size());
-
-            final int totalCount = StreamEx.of(unResolved.values()).mapToInt(List::size).sum();
-            @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", totalCount);
-
-            // 直接使用 pool 以保证稳定的并发
-            final ForkJoinPool pool = new ForkJoinPool();
-            final CountDownLatch latch = new CountDownLatch(unResolved.size());
-            for (Map.Entry<Program, List<Defects4jTestcase>> entry : unResolved.entrySet()) {
-
-                final Program program = entry.getKey();
-                final List<Defects4jTestcase> testcases = entry.getValue();
-
-                pool.submit(() -> {
-
-                    final List<IProgramInput> inputs = StreamEx.of(testcases)
-                        .map(a -> (IProgramInput) a)
-                        .toList();
-
-                    try {
-                        final ArrayList<RunResultFromRunner> results = RunningScheduler
-                            .builder()
-                            .progressBar(progressBar)
-                            .cache(new CacheHandler("run-defects4j-" + programName + "-" + program.getTitle()))
-                            .retry(innerRetry)
-                            .build()
-                            .runAndGetResults(
-                                () -> new Defects4jRunner(executor, programName),
-                                program,
-                                inputs);
-
-                        final RunResultForProgram runResultForProgram = RunningResultResolver.mapFromRunResult(results);
-
-                        cache.saveCache(program.getTitle(), runResultForProgram);
-                        latch.countDown();
-
-                    } catch (CoverageRunnerException e) {
-                        // 被外层捕获的异常
-                        throw Lombok.sneakyThrow(e);
-                    }
-                });
-            }
-            pool.shutdown();
-            latch.await();
-
-            final List<RunResultForProgram> result = StreamEx.of(versionToTestcase.keySet())
-                .map(program -> cache.tryLoadCache(program.getTitle(), RunResultForProgram.class).get())
-                .toImmutableList();
-
-            FileUtils.saveObject(resolveResultFilePath(programName), result);
-
-            cache.deleteAllCaches();
-
-            return true;
-
-        } catch (Throwable e) {
+        } catch (CoverageRunnerException e) {
             LogUtils.logError(e);
             return false;
         }
+
+        /*
+        当大部分的结果都在 cache 中时， parallelStream 可能会以为所有的操作都是短期的操作，导致只使用单个的线程来运行
+        剩下的结果，没法有效利用并发。
+         */
+
+        final Map<Program, List<Defects4jTestcase>> versionToTestcase = ResolveDefects4jTestcase.getResultFromFile(programName);
+
+        final CacheHandler cache = new CacheHandler("run-defects4j-" + programName);
+
+        final Map<Program, List<Defects4jTestcase>> unResolved = EntryStream.of(versionToTestcase)
+            .filterKeys(program -> !cache.isKeyCached(program.getTitle()))
+            .toMap();
+
+        LogUtils.logFine("Remain version count: " + unResolved.size());
+
+        final int totalCount = StreamEx.of(unResolved.values()).mapToInt(List::size).sum();
+        @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", totalCount);
+
+        // 直接使用 pool 以保证稳定的并发
+        final ForkJoinPool pool = new ForkJoinPool();
+        final HashMap<Program, ForkJoinTask<Boolean>> tasks = new HashMap<>();
+        for (Map.Entry<Program, List<Defects4jTestcase>> entry : unResolved.entrySet()) {
+
+            final Program program = entry.getKey();
+            final List<Defects4jTestcase> testcases = entry.getValue();
+
+            final ForkJoinTask<Boolean> task = pool.submit(() -> {
+
+                final List<IProgramInput> inputs = StreamEx.of(testcases)
+                    .map(a -> (IProgramInput) a)
+                    .toList();
+
+                try {
+                    final ArrayList<RunResultFromRunner> results = RunningScheduler
+                        .builder()
+                        .progressBar(progressBar)
+                        .cache(new CacheHandler("run-defects4j-" + programName + "-" + program.getTitle()))
+                        .retry(innerRetry)
+                        .build()
+                        .runAndGetResults(
+                            () -> new Defects4jRunner(executor, programName),
+                            program,
+                            inputs);
+
+                    final RunResultForProgram runResultForProgram = RunningResultResolver.mapFromRunResult(results);
+
+                    cache.saveCache(program.getTitle(), runResultForProgram);
+
+                    return true;
+
+                } catch (CoverageRunnerException e) {
+                    LogUtils.logError(e);
+                    return false;
+                }
+            });
+
+            tasks.put(program, task);
+        }
+
+        pool.shutdown();
+
+        final List<Program> unfinishedPrograms = EntryStream
+            .of(tasks)
+            .mapValues(ForkJoinTask::join)
+            .filterValues(succeed -> !succeed)
+            .keys()
+            .toList();
+        if (unfinishedPrograms.size() > 0) {
+            LogUtils.logError("Version list unfinished: " + unfinishedPrograms);
+            return false;
+        }
+
+        final List<RunResultForProgram> result = StreamEx.of(versionToTestcase.keySet())
+            .map(program -> cache.tryLoadCache(program.getTitle(), RunResultForProgram.class).get())
+            .toImmutableList();
+
+        FileUtils.saveObject(resolveResultFilePath(programName), result);
+
+        cache.deleteAllCaches();
+
+        return true;
     }
 
     /**
