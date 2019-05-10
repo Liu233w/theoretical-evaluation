@@ -113,9 +113,11 @@ public class RunningScheduler {
                 }
             }
         } catch (Exception e) {
-            // 回滚进度条的进度，防止重试时进度错误
+            // 修改进度条的进度，防止重试时进度错误
             if (progressBar != null) {
-                progressBar.stepBy(-idx);
+                // 如果有一部分的结果是从缓存中获取的，减少进度反而会导致错误
+                // 增加进度条的总体长度更好一些
+                progressBar.maxHint(progressBar.getMax() + idx);
             }
             throw e;
         } finally {
