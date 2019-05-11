@@ -32,6 +32,6 @@ RUN mvn verify --fail-never
 RUN mvn dependency:copy-dependencies
 
 COPY . .
-RUN mvn compile && rm ./target/theoretical-evaluation-framework-1.0-SNAPSHOT.jar
+RUN mvn compile && rm -f ./target/theoretical-evaluation-framework-1.0-SNAPSHOT.jar
 
 ENTRYPOINT ["sh", "entry-point.sh"]
