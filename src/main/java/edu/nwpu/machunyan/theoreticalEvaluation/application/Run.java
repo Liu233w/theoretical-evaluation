@@ -133,20 +133,22 @@ public class Run {
         // 每个 running scheduler 允许失败的次数
         final int innerRetry = 3;
 
-        @Cleanup final Defects4jContainerExecutor executor;
+        final Defects4jContainerExecutor _executor;
         try {
-            executor = Defects4jContainerExecutor.newInstance();
+            _executor = Defects4jContainerExecutor.newInstance();
             if (executors.isEmpty()) {
                 // 防止在重试时生成了太多的 thread
                 Runtime.getRuntime().addShutdownHook(new Thread(() -> {
                     executors.forEach(Defects4jContainerExecutor::close);
                 }));
             }
-            executors.add(executor);
+            executors.add(_executor);
         } catch (CoverageRunnerException e) {
             LogUtils.logError(e);
             return false;
         }
+        // @Cleanup variable declarations need to be initialized
+        @Cleanup final Defects4jContainerExecutor executor = _executor;
 
         /*
         当大部分的结果都在 cache 中时， parallelStream 可能会以为所有的操作都是短期的操作，导致只使用单个的线程来运行
