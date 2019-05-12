@@ -19,7 +19,7 @@ function_list = [
     'round',
 ]
 
-operator_list = ['+','-','*','/']
+operator_list = ['+','-','*','/','^']
 
 res = []
 
