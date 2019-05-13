@@ -91,11 +91,7 @@ public class VectorTableModelResolver {
      * @return
      */
     public static VectorTableModelJam resolve(RunResultJam runResultJam) {
-        final List<VectorTableModelForProgram> vectorTableModelForPrograms = StreamEx
-            .of(runResultJam.getRunResultForPrograms())
-            .map(VectorTableModelResolver::resolve)
-            .toImmutableList();
-        return new VectorTableModelJam(vectorTableModelForPrograms);
+        return new VectorTableModelJam(resolve(runResultJam.getRunResultForPrograms()));
     }
 
     public static VectorTableModelJam resolveWithWeights(
@@ -115,6 +111,15 @@ public class VectorTableModelResolver {
             .toImmutableList();
 
         return new VectorTableModelJam(collect);
+    }
+
+    public static List<VectorTableModelForProgram> resolve(
+        Iterable<RunResultForProgram> runResultForPrograms) {
+
+        return StreamEx
+            .of(runResultForPrograms.iterator())
+            .map(VectorTableModelResolver::resolve)
+            .toImmutableList();
     }
 
     private static List<VectorTableModelForStatement> buildVtm(List<VectorTableModelForStatement.Builder> builders) {

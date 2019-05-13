@@ -110,10 +110,10 @@ public class TestcaseWeightResolver {
         return resolver.getFormulaTitle();
     }
 
-    public TestcaseWeightJam resolve(RunResultJam jam) {
+    public List<TestcaseWeightForProgram> resolve(Iterable<RunResultForProgram> runResults) {
 
         StreamEx<RunResultForProgram> stream = StreamEx
-            .of(jam.getRunResultForPrograms());
+            .of(runResults.iterator());
 
         if (useParallel) {
             stream = stream.parallel();
@@ -133,9 +133,12 @@ public class TestcaseWeightResolver {
             resStream = resStream.peek(reporter);
         }
 
-        final List<TestcaseWeightForProgram> collect = resStream
-            .toImmutableList();
-        return new TestcaseWeightJam(collect);
+        return resStream.toImmutableList();
+    }
+
+    public TestcaseWeightJam resolve(RunResultJam jam) {
+
+        return new TestcaseWeightJam(resolve(jam.getRunResultForPrograms()));
     }
 
     public TestcaseWeightForProgram resolve(RunResultForProgram runResultForProgram) {
