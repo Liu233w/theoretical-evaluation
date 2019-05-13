@@ -226,7 +226,7 @@ public class Run {
             .map(program -> cache.tryLoadCache(program.getTitle(), RunResultForProgram.class).get())
             .toImmutableList();
 
-        FileUtils.saveObject(resolveResultFilePath(programName), result);
+        FileUtils.saveObject(resolveResultFilePath(programName), new RunResultJam(result));
 
         cache.deleteAllCaches();
 
