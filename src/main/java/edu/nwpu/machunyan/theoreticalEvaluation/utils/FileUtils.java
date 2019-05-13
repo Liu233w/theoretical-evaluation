@@ -1,7 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -76,10 +75,7 @@ public class FileUtils {
      */
     public static void saveObject(Path path, Object obj) throws IOException {
 
-        final Gson gson = new GsonBuilder()
-            .setPrettyPrinting()
-            .serializeSpecialFloatingPointValues()
-            .create();
+        final Gson gson = JsonUtils.newSavingGsonInstance();
 
         final File outputFile = path.toFile();
         outputFile.getParentFile().mkdirs();

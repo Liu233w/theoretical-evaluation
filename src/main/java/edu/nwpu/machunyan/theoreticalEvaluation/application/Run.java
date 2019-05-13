@@ -7,6 +7,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.impl.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.BigDataSaver;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CacheHandler;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
@@ -222,11 +223,17 @@ public class Run {
             return false;
         }
 
-        final List<RunResultForProgram> result = StreamEx.of(versionToTestcase.keySet())
-            .map(program -> cache.tryLoadCache(program.getTitle(), RunResultForProgram.class).get())
-            .toImmutableList();
+        @Cleanup final BigDataSaver<RunResultForProgram> saver = new BigDataSaver<>(
+            resolveResultFilePath(programName),
+            RunResultJam.class,
+            RunResultForProgram.class);
 
-        FileUtils.saveObject(resolveResultFilePath(programName), new RunResultJam(result));
+        for (final Program program : versionToTestcase.keySet()) {
+            final Optional<RunResultForProgram> optional = cache.tryLoadCache(program.getTitle(), RunResultForProgram.class);
+            //noinspection OptionalGetWithoutIsPresent
+            saver.saveObject(optional.get());
+        }
+        saver.close();
 
         cache.deleteAllCaches();
 
