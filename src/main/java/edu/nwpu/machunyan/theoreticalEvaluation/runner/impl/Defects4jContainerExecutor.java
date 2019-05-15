@@ -11,6 +11,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.Value;
 import one.util.streamex.StreamEx;
+import org.apache.commons.lang.SystemUtils;
 
 import java.io.Closeable;
 import java.util.HashMap;
@@ -46,7 +47,11 @@ public class Defects4jContainerExecutor implements Closeable {
         throws CoverageRunnerException {
 
         try {
-            final DefaultDockerClient client = DefaultDockerClient.fromEnv().build();
+            final DefaultDockerClient client = new DefaultDockerClient(
+                SystemUtils.IS_OS_LINUX
+                    ? "unix:///var/run/docker.sock"
+                    : "http://localhost:2375"
+            );
             final ContainerConfig containerConfig = ContainerConfig.builder()
                 .image(IMAGE_NAME)
                 .cmd("sh", "-c", "while :; do sleep 1; done")
@@ -55,7 +60,7 @@ public class Defects4jContainerExecutor implements Closeable {
             client.startContainer(containerId);
             return new Defects4jContainerExecutor(client, containerId);
 
-        } catch (DockerException | InterruptedException | DockerCertificateException e) {
+        } catch (DockerException | InterruptedException e) {
             throw new CoverageRunnerException("exception from docker.", e);
         }
     }
