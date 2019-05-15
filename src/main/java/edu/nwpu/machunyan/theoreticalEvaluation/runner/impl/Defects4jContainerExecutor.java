@@ -2,6 +2,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner.impl;
 
 import com.spotify.docker.client.DefaultDockerClient;
 import com.spotify.docker.client.DockerClient;
+import com.spotify.docker.client.exceptions.DockerCertificateException;
 import com.spotify.docker.client.exceptions.DockerException;
 import com.spotify.docker.client.messages.ContainerConfig;
 import com.spotify.docker.client.messages.ExecState;
@@ -45,7 +46,7 @@ public class Defects4jContainerExecutor implements Closeable {
         throws CoverageRunnerException {
 
         try {
-            final DefaultDockerClient client = new DefaultDockerClient("unix:///var/run/docker.sock");
+            final DefaultDockerClient client = DefaultDockerClient.fromEnv().build();
             final ContainerConfig containerConfig = ContainerConfig.builder()
                 .image(IMAGE_NAME)
                 .cmd("sh", "-c", "while :; do sleep 1; done")
@@ -54,7 +55,7 @@ public class Defects4jContainerExecutor implements Closeable {
             client.startContainer(containerId);
             return new Defects4jContainerExecutor(client, containerId);
 
-        } catch (DockerException | InterruptedException e) {
+        } catch (DockerException | InterruptedException | DockerCertificateException e) {
             throw new CoverageRunnerException("exception from docker.", e);
         }
     }
