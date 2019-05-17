@@ -6,7 +6,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.FaultLocationL
 import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
-import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvLine;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import one.util.streamex.StreamEx;
@@ -16,8 +15,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
@@ -78,17 +77,11 @@ public class DiffSfSubsetByCertainFormula {
         FileUtils.saveString(outputDir + "/" + name + "-detail.csv",
             CsvExporter.toCsvString(diffDetailed));
 
-        final List<CsvLine> csvLines = StreamEx
-            .of(diff.getDiffRankForPrograms())
-            .map(diffItem -> {
-                final String programTitle = diffItem.getProgramTitle();
-                final double effectSize = RankDiffAnalyzer.resolveEffectSize(diffItem);
-                return new CsvLine(new Object[]{programTitle, effectSize});
-            })
-            .prepend(new CsvLine(new Object[]{"programTitle", "effectSize"}))
-            .toImmutableList();
-        FileUtils.saveString(outputDir + "/" + name + "-effect-size.csv",
-            CsvExporter.toCsvString(csvLines));
+        final double effectSize = RankDiffAnalyzer.resolveEffectSizeCohensD(diff);
+        Files.write(
+            Paths.get(outputDir).resolve("effect-size.txt"),
+            (name + " " + effectSize + "\n").getBytes(),
+            StandardOpenOption.APPEND, StandardOpenOption.CREATE);
     }
 
     /**
