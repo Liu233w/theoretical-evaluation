@@ -18,7 +18,7 @@ public class RankDiffAnalyzer {
      * @param diffRankForProgram
      * @return
      */
-    public double resolveVarianceDeviation(DiffRankForProgram diffRankForProgram) {
+    public static double resolveVarianceDeviation(DiffRankForProgram diffRankForProgram) {
 
         // TODO: 如果有一边的语句没有出现（没有排名）怎么办？
 
@@ -38,7 +38,7 @@ public class RankDiffAnalyzer {
      * @param diffRankForProgram
      * @return
      */
-    public double resolveStandardDeviation(DiffRankForProgram diffRankForProgram) {
+    public static double resolveStandardDeviation(DiffRankForProgram diffRankForProgram) {
         return Math.sqrt(resolveVarianceDeviation(diffRankForProgram));
     }
 
@@ -50,7 +50,7 @@ public class RankDiffAnalyzer {
      * @param diffRankForProgram
      * @return
      */
-    public double resolveEffectSize(DiffRankForProgram diffRankForProgram) {
+    public static double resolveEffectSize(DiffRankForProgram diffRankForProgram) {
 
         final List<DiffRankForStatement> list = StreamEx
             .of(diffRankForProgram.getDiffRankForStatements())
