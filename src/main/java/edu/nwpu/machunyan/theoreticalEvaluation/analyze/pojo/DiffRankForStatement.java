@@ -3,6 +3,8 @@ package edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo;
 import lombok.NonNull;
 import lombok.Value;
 
+import java.util.OptionalInt;
+
 /**
  * 表示一条语句在两种计算方式下排名的区别
  */
@@ -22,7 +24,10 @@ public class DiffRankForStatement {
      *
      * @return
      */
-    public int getRankDiff() {
-        return left.getRank() - right.getRank();
+    public OptionalInt getRankDiff() {
+        if (left.getRank() == -1 || right.getRank() == -1) {
+            return OptionalInt.empty();
+        }
+        return OptionalInt.of(left.getRank() - right.getRank());
     }
 }

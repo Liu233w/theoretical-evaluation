@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.OptionalInt;
 
 /**
  * 将数据输出成 csv 格式
@@ -150,12 +151,13 @@ public class CsvExporter {
                         // 跳过不存在的语句
                         return;
                     }
+                    final OptionalInt rankDiff = statement.getRankDiff();
                     csvLines.add(new CsvLine(new Object[]{
                         programTitle,
                         item.getFormulaTitle(),
                         statement.getStatementIndex(),
                         statement.getLeft().getRank() + " -> " + statement.getRight().getRank(),
-                        statement.getRankDiff(),
+                        rankDiff.isPresent() ? rankDiff.getAsInt() : "NaN",
                     }));
                 });
             });
@@ -213,6 +215,7 @@ public class CsvExporter {
                         continue;
                     }
 
+                    final OptionalInt rankDiff = statement.getRankDiff();
                     csvLines.add(new CsvLine(new Object[]{
                         programTitle,
                         printed ? "" : diffStr,
@@ -220,7 +223,7 @@ public class CsvExporter {
                         item.getFormulaTitle(),
                         statement.getStatementIndex(),
                         statement.getLeft().getRank() + " -> " + statement.getRight().getRank(),
-                        statement.getRankDiff(),
+                        rankDiff.isPresent() ? rankDiff.getAsInt() : "NaN",
                     }));
 
                     printed = true;

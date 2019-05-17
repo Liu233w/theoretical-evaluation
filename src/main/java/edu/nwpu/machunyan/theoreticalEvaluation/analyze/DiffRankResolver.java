@@ -6,11 +6,7 @@ import lombok.Value;
 import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
+import java.util.*;
 
 /**
  * 比较两个 Suspiciousness Factor，输出结果
@@ -47,6 +43,8 @@ public class DiffRankResolver {
         final Map<Integer, DiffRankForSide> leftMap = resolveIndexToRank(left);
         final Map<Integer, DiffRankForSide> rightMap = resolveIndexToRank(right);
 
+        final DiffRankForSide absentRank = new DiffRankForSide(-1, Double.NaN);
+
         // 为 null 时回退到普通情况
         if (faultLocationForProgram == null) {
 
@@ -54,7 +52,6 @@ public class DiffRankResolver {
             allIndex.addAll(leftMap.keySet());
             allIndex.addAll(rightMap.keySet());
 
-            final DiffRankForSide absentRank = new DiffRankForSide(-1, Double.NaN);
 
             return StreamEx
                 .of(allIndex)
@@ -72,8 +69,8 @@ public class DiffRankResolver {
                 .of(faultLocationForProgram.getLocations())
                 .map(a -> new DiffRankForStatement(
                     a,
-                    leftMap.getOrDefault(a, new DiffRankForSide(-1, Double.NaN)),
-                    rightMap.getOrDefault(a, new DiffRankForSide(-1, Double.NaN))
+                    leftMap.getOrDefault(a, absentRank),
+                    rightMap.getOrDefault(a, absentRank)
                 ))
                 .toImmutableList();
         }
@@ -219,32 +216,30 @@ public class DiffRankResolver {
     private static Map<Integer, DiffRankForSide> resolveIndexToRank(
         List<SuspiciousnessFactorForStatement> side) {
 
-        return SuspiciousnessFactorUtils.rankedStream(StreamEx.of(side))
-            .mapToEntry(
-                SuspiciousnessFactorForStatement::getStatementIndex,
-                a -> a
-            )
-            .mapValues(
-                new Function<SuspiciousnessFactorForStatement, DiffRankForSide>() {
+        if (side.size() == 0) {
+            return Collections.emptyMap();
+        }
 
-                    int count = 0;
-                    int lastRank = 0;
-                    double lastSf = Double.NaN;
+        final SuspiciousnessFactorForStatement[] sfs
+            = SuspiciousnessFactorUtils.rankedStream(StreamEx.of(side))
+            .toArray(SuspiciousnessFactorForStatement[]::new);
 
-                    @Override
-                    public DiffRankForSide apply(SuspiciousnessFactorForStatement item) {
+        final HashMap<Integer, DiffRankForSide> res = new HashMap<>();
 
-                        ++count;
+        int lastRank = 1;
+        double lastSf = sfs[0].getSuspiciousnessFactor();
+        res.put(sfs[0].getStatementIndex(), new DiffRankForSide(lastRank, lastSf));
 
-                        if (item.getSuspiciousnessFactor() != lastSf) {
-                            lastRank = count;
-                            lastSf = item.getSuspiciousnessFactor();
-                        }
-                        return new DiffRankForSide(lastRank, lastSf);
-                    }
-                }
-            )
-            .toImmutableMap();
+        for (int i = 0; i < sfs.length; i++) {
+
+            if (sfs[i].getSuspiciousnessFactor() != lastSf) {
+                lastRank = i + 1;
+                lastSf = sfs[i].getSuspiciousnessFactor();
+            }
+            res.put(sfs[i].getStatementIndex(), new DiffRankForSide(lastRank, lastSf));
+        }
+
+        return Collections.unmodifiableMap(res);
     }
 
     @Value
