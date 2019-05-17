@@ -69,7 +69,7 @@ v11,"104c104,106
 > 	if (need_upward_RA)
 132,133d139
 < 	    alt_sep = UNRESOLVED;
-< 	else if (need_upward_RA)","106,113,136-144",这里影响了后续的多个 if 分支，先把它们都算上了
+< 	else if (need_upward_RA)","106,113,136",这里影响了后续的多个 if 分支，先把它们都算上了
 v12,"2c2
 < /*  -*- Last-Edit:  Fri Jan 29 11:13:27 1993 by Tarak S. Goradia; -*- */
 ---
@@ -183,7 +183,7 @@ v33,"50,53c50,53
 v34,"124c124
 <     if (enabled && ((tcas_equipped && intent_not_known) || !tcas_equipped))
 ---
->     if (enabled && tcas_equipped && intent_not_known || !tcas_equipped)",124-139,
+>     if (enabled && tcas_equipped && intent_not_known || !tcas_equipped)",124,
 v35,"63c63
 <     return (Climb_Inhibit ? Up_Separation + NOZCROSS : Up_Separation);
 ---

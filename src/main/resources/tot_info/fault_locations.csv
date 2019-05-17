@@ -1,91 +1,91 @@
-version,line_number,是否有效（预测）,类型,diff,comments
-v1,341-342,Y,控制流,"343c343
+version,diff,line_number,comments
+v1,"343c343
 <                            goto ret1;
 ---
-> /*                                 goto ret1; missing code */",这里是影响的退出循环的时机
-v2,85-91,Y,控制流,"85c85
+> /*                                 goto ret1; missing code */",341-342,这里是影响的退出循环的时机
+v2,"85c85
 <                            if ( scanf( "" %ld"", &x(i,j) ) != 1 )
 ---
->                            if ( scanf( "" %ld"", &x(i,j) ) == 0 )",影响读入（判断输入数据是否合理）
-v3,75-79,Y,控制流,"75c75
+>                            if ( scanf( "" %ld"", &x(i,j) ) == 0 )",85,影响读入（判断输入数据是否合理）
+v3,"75c75
 <            if ( r * c > MAXTBL )
 ---
->            if ( r * c > MAXTBL-10)",控制流应当包含 body 内的语句
-v4,233-234,Y,控制流,"233c233
+>            if ( r * c > MAXTBL-10)",75,控制流应当包含 body 内的语句
+v4,"233c233
 <                    if ( Abs( gold ) < EPS * Abs( g ) )
 ---
->                    if ( Abs( gold ) < Abs( g ) )",
-v5,105,N,变量,"105c105
+>                    if ( Abs( gold ) < Abs( g ) )",233,
+v5,"105c105
 <                    totinfo += info;
 ---
->                    totinfo = info; /* removed + before = */",只改了变量（直接输出的），前后覆盖没有变化。
-v6,55,N,变量,"18c18
+>                    totinfo = info; /* removed + before = */",105,只改了变量（直接输出的），前后覆盖没有变化。
+v6,"18c18
 < #define    MAXLINE 256
 ---
-> #define    MAXLINE 56","影响缓冲区长度（代码行是那个使用了这个常量的循环）
+> #define    MAXLINE 56",55,"影响缓冲区长度（代码行是那个使用了这个常量的循环）
 while ( fgets( line, MAXLINE, stdin ) != NULL ) /* start new table */"
-v7,378-379,Y,控制流,"378c378
+v7,"378c378
 <            if ( pi > 0.0 )
 ---
->            if ( pi >= 0.0 ) /* added an = after > */",
-v8,201,N,变量（可能影响控制流）,"200,201c200,201
+>            if ( pi >= 0.0 ) /* added an = after > */",378,
+v8,"200,201c200,201
 <            if ( Abs( del ) < Abs( sum ) * EPS )
 <                    return sum * exp( -x + a * log( x ) - LGamma( a ) );
 ---
 >            if ( Abs(del) < Abs(sum) * EPS )
->                    return sum * exp(  x + a * log( x ) - LGamma( a ) );",
-v9,106,N,变量（可能影响控制流）,"106c106
+>                    return sum * exp(  x + a * log( x ) - LGamma( a ) );",201,
+v9,"106c106
 <                    totdf += infodf;
 ---
->                    totdf = infodf;",这条语句无论如何都会执行的，估计测不出来
-v10,301,N,变量（数值精度）,"301c301
+>                    totdf = infodf;",106,这条语句无论如何都会执行的，估计测不出来
+v10,"301c301
 <    double          N;              /* (double)n */
 ---
->    float           N;              /* (double)n */",
-v11,198,N,变量（可能影响控制流）,"198c198
+>    float           N;              /* (double)n */",301,
+v11,"198c198
 <            sum += del *= x / ++ap;
 ---
->            sum = del *= x / ++ap;",
-v12,177,N,变量（数值精度）,"177c177
+>            sum = del *= x / ++ap;",198,
+v12,"177c177
 <    return -tmp + log( 2.50662827465 * ser );
 ---
->    return -tmp + log( 2.50663 * ser );",
-v13,394,N,控制流,"394c394
+>    return -tmp + log( 2.50663 * ser );",177,
+v13,"394c394
 <            if ( pj > 0.0 )
 ---
->            if ( pj >= 0.0 )",
-v14,75-79,Y,控制流,"75c75
+>            if ( pj >= 0.0 )",394,
+v14,"75c75
 <            if ( r * c > MAXTBL )
 ---
->            if ( r * c >= MAXTBL )",
-v15,200-202,Y,控制流,"200c200
+>            if ( r * c >= MAXTBL )",75,
+v15,"200c200
 <            if ( Abs( del ) < Abs( sum ) * EPS )
 ---
->            if ( Abs( del ) < Abs( sum ) * (EPS-.000001) )",
-v16,99-115,Y,控制流,"99c99
+>            if ( Abs( del ) < Abs( sum ) * (EPS-.000001) )",200,
+v16,"99c99
 <            if ( info >= 0.0 )
 ---
->            if ( info >= 0.1 )",
-v17,223,N,变量,"223c223
+>            if ( info >= 0.1 )",99,
+v17,"223c223
 <            anf = an * fac;
 ---
->            anf = an - fac;",
-v18,308,Y,控制流,"308c308
+>            anf = an - fac;",223,
+v18,"308c308
 <    if ( rdf <= 0 || cdf <= 0 )
 ---
->    if ( rdf == 0 || cdf == 0 )",
-v19,55,N,变量,"18c18
+>    if ( rdf == 0 || cdf == 0 )",308,
+v19,"18c18
 < #define    MAXLINE 256
 ---
-> #define    MAXLINE 26",同 v6，不过效果应该会更明显一些
-v20,308-312,Y,控制流,"308c308
+> #define    MAXLINE 26",55,同 v6，不过效果应该会更明显一些
+v20,"308c308
 <    if ( rdf <= 0 || cdf <= 0 )
 ---
->    if ( rdf <= 0  )",
-v21,75,Y,变量,"22c22
+>    if ( rdf <= 0  )",308,
+v21,"22c22
 < #define    MAXTBL  1000
 ---
-> #define    MAXTBL  5000","使用处：
+> #define    MAXTBL  5000",75,"使用处：
   if ( r * c > MAXTBL )
    {
    (void)fputs( ""* table too large *\n"", stdout );
@@ -93,11 +93,11 @@ v21,75,Y,变量,"22c22
    }
 应该会影响输入
 "
-v22,352-356,Y,控制流,"352c352
+v22,"352c352
 <    if ( N <= 0.0 )
 ---
->    if ( N <= 1.0 )",
-v23,215,N,变量,"215c215
+>    if ( N <= 1.0 )",352,
+v23,"215c215
 <    for ( n = 1; n <= ITMAX; ++n )
 ---
->    for ( n = 0; n <= ITMAX; ++n )",只影响循环体的执行次数，估计测不出来
+>    for ( n = 0; n <= ITMAX; ++n )",215,只影响循环体的执行次数，估计测不出来

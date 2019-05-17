@@ -28,7 +28,7 @@ v6,"199c199
 < 		if( *num_args >= PARSER_MAX_ARGUMENT_COUNT )
 ---
 > 		if( *num_args > PARSER_MAX_ARGUMENT_COUNT ) //origin: if( *num_args >= PARSER_MAX_ARGUMENT_COUNT )
-",199-200,
+",199,
 v7,"272,273c272,273
 < 				if( v0 < 0.0 ) 
 < 					parser_error( pd, ""sqrt(x) undefined for x < 0!"" );
@@ -40,7 +40,7 @@ v8,"277c277
 < 				if( v0 <= 0 )
 ---
 > 				if( v0 < 0 ) //origin: if( v0 <= 0 )
-",277-278,
+",277,
 v9,"309c309
 < 			} else if( strcmp( token, ""abs"" ) == 0 ){
 ---
