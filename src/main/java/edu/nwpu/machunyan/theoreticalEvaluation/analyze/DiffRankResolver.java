@@ -7,13 +7,16 @@ import one.util.streamex.StreamEx;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 /**
  * 比较两个 Suspiciousness Factor，输出结果
  */
 public class DiffRankResolver {
+
     /**
-     * 比较两个 suspiciousness factor 的区别。两个必须有同样的语句数量和编号。
+     * 比较两个 suspiciousness factor 的区别。
      *
      * @param left
      * @param right
@@ -27,53 +30,41 @@ public class DiffRankResolver {
 
     /**
      * 比较两个 suspiciousness factor 的区别。
-     * 使用 {@link FaultLocationForProgram} 来筛选。
      * 如果语句不存在，返回的 {@link DiffRankForSide} 为 (-1, NaN)
      *
      * @param left
      * @param right
-     * @param faultLocationForProgram 用来筛选语句。为 null 时回退到比较所有的语句。
+     * @param resultFilterForProgram 用来筛选语句。为 null 时返回所有的语句。
+     *                               参数表示计算结果，返回值表示最终是否包含此结果
      * @return
      */
     public static List<DiffRankForStatement> resolve(
         List<SuspiciousnessFactorForStatement> left,
         List<SuspiciousnessFactorForStatement> right,
-        @Nullable FaultLocationForProgram faultLocationForProgram) {
+        @Nullable Predicate<DiffRankForStatement> resultFilterForProgram) {
 
         final Map<Integer, DiffRankForSide> leftMap = resolveIndexToRank(left);
         final Map<Integer, DiffRankForSide> rightMap = resolveIndexToRank(right);
 
         final DiffRankForSide absentRank = new DiffRankForSide(-1, Double.NaN);
 
-        // 为 null 时回退到普通情况
-        if (faultLocationForProgram == null) {
+        final HashSet<Integer> allIndex = new HashSet<>();
+        allIndex.addAll(leftMap.keySet());
+        allIndex.addAll(rightMap.keySet());
 
-            final HashSet<Integer> allIndex = new HashSet<>();
-            allIndex.addAll(leftMap.keySet());
-            allIndex.addAll(rightMap.keySet());
+        StreamEx<DiffRankForStatement> stream = StreamEx
+            .of(allIndex)
+            .map(a -> new DiffRankForStatement(
+                a,
+                leftMap.getOrDefault(a, absentRank),
+                rightMap.getOrDefault(a, absentRank)
+            ));
 
-
-            return StreamEx
-                .of(allIndex)
-                .filter(a -> leftMap.getOrDefault(a, absentRank).getRank()
-                    != rightMap.getOrDefault(a, absentRank).getRank())
-                .map(a -> new DiffRankForStatement(
-                    a,
-                    leftMap.getOrDefault(a, absentRank),
-                    rightMap.getOrDefault(a, absentRank)
-                ))
-                .toImmutableList();
-        } else {
-
-            return StreamEx
-                .of(faultLocationForProgram.getLocations())
-                .map(a -> new DiffRankForStatement(
-                    a,
-                    leftMap.getOrDefault(a, absentRank),
-                    rightMap.getOrDefault(a, absentRank)
-                ))
-                .toImmutableList();
+        if (resultFilterForProgram != null) {
+            stream = stream.filter(resultFilterForProgram);
         }
+
+        return stream.toImmutableList();
     }
 
     /**
@@ -104,9 +95,9 @@ public class DiffRankResolver {
      *
      * @param left
      * @param right
-     * @param leftRankTitle           用来标记左侧的标签（比如 weighted）
-     * @param rightRankTitle          用来标记右侧的标签（比如 weighted）
-     * @param faultLocationForProgram 用来表示要输出哪些语句
+     * @param leftRankTitle          用来标记左侧的标签（比如 weighted）
+     * @param rightRankTitle         用来标记右侧的标签（比如 weighted）
+     * @param resultFilterForProgram 用来表示要输出哪些结果
      * @return
      */
     public static DiffRankForProgram resolve(
@@ -114,7 +105,7 @@ public class DiffRankResolver {
         SuspiciousnessFactorForProgram right,
         String leftRankTitle,
         String rightRankTitle,
-        FaultLocationForProgram faultLocationForProgram) {
+        Predicate<DiffRankForStatement> resultFilterForProgram) {
 
         return new DiffRankForProgram(
             left.getProgramTitle(),
@@ -122,14 +113,14 @@ public class DiffRankResolver {
             resolve(
                 left.getResultForStatements(),
                 right.getResultForStatements(),
-                faultLocationForProgram
+                resultFilterForProgram
             ),
             leftRankTitle,
             rightRankTitle);
     }
 
     /**
-     * 比较两侧的可疑因子排名
+     * 比较两侧的可疑因子排名，返回所有的比较结果（不进行筛选）
      *
      * @param left
      * @param right
@@ -146,7 +137,8 @@ public class DiffRankResolver {
         return resolve(
             left, right,
             leftRankTitle, rightRankTitle,
-            new FaultLocationJam(Collections.emptyList()));
+            // 保留所有结果，不进行筛选
+            (a, b) -> true);
     }
 
     /**
@@ -154,10 +146,11 @@ public class DiffRankResolver {
      *
      * @param left
      * @param right
-     * @param leftRankTitle    用来标记左侧的标签（比如 weighted）
-     * @param rightRankTitle   用来标记右侧的标签（比如 weighted）
-     * @param faultLocationJam 用来表示要在结果中包含的语句编号，
-     *                         如果某个 programTitle 的对应 {@link FaultLocationForProgram} 不存在，回退到不使用它的情况
+     * @param leftRankTitle      用来标记左侧的标签（比如 weighted）
+     * @param rightRankTitle     用来标记右侧的标签（比如 weighted）
+     * @param resultFilterForJam 用来筛选得到的结果。
+     *                           第一个参数是版本名称，第二个参数是生成的 diff 结果。
+     *                           如果返回值是 true，表示保留这个结果。
      * @return
      */
     public static DiffRankJam resolve(
@@ -165,7 +158,7 @@ public class DiffRankResolver {
         SuspiciousnessFactorJam right,
         String leftRankTitle,
         String rightRankTitle,
-        @NonNull FaultLocationJam faultLocationJam) {
+        @NonNull BiPredicate<String, DiffRankForStatement> resultFilterForJam) {
 
         if (left.getResultForPrograms().size() != right.getResultForPrograms().size()) {
             throw new IllegalArgumentException("左右两侧必须一一对应");
@@ -178,13 +171,6 @@ public class DiffRankResolver {
             throw new IllegalArgumentException("左右两侧必须一一对应");
         }
 
-        final Map<String, FaultLocationForProgram> titleToLocationMap = StreamEx
-            .of(faultLocationJam.getFaultLocationForPrograms())
-            .toMap(
-                FaultLocationForProgram::getProgramTitle,
-                a -> a
-            );
-
         final List<DiffRankForProgram> collect = StreamEx
             .of(leftMapper.entrySet())
             .map(a -> resolve(
@@ -192,7 +178,7 @@ public class DiffRankResolver {
                 rightMapper.get(a.getKey()),
                 leftRankTitle,
                 rightRankTitle,
-                titleToLocationMap.get(a.getKey().getProgramTitle())
+                diffRankForStatement -> resultFilterForJam.test(a.getKey().getProgramTitle(), diffRankForStatement)
             ))
             .toImmutableList();
         return new DiffRankJam(collect);

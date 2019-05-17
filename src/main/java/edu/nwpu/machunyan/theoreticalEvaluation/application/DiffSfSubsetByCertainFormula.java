@@ -65,7 +65,7 @@ public class DiffSfSubsetByCertainFormula {
             filterSf(sfSubset, emptySfProgram),
             "",
             "",
-            faultLocations);
+            DiffRankFilters.onlyInList(faultLocations));
         FileUtils.saveString(outputDir + "/" + name + ".csv",
             CsvExporter.toSimplifiedCsvString(diff, faultLocations));
 

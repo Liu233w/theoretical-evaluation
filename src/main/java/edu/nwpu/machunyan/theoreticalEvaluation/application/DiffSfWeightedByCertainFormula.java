@@ -65,7 +65,7 @@ public class DiffSfWeightedByCertainFormula {
             sfWeighted,
             "",
             "",
-            faultLocations);
+            DiffRankFilters.onlyInList(faultLocations));
         FileUtils.saveString(outputDir + "/" + name + ".csv",
             CsvExporter.toSimplifiedCsvString(diff, faultLocations));
 
@@ -73,7 +73,8 @@ public class DiffSfWeightedByCertainFormula {
             filterSf(sfUnweighted),
             sfWeighted,
             "unweighted",
-            "weighted");
+            "weighted",
+            DiffRankFilters.rankNotEqual());
         FileUtils.saveString(outputDir + "/" + name + "-detail.csv",
             CsvExporter.toCsvString(diffDetailed));
     }
