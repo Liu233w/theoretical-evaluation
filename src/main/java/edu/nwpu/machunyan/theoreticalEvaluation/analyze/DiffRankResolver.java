@@ -227,14 +227,17 @@ public class DiffRankResolver {
             .mapValues(
                 new Function<SuspiciousnessFactorForStatement, DiffRankForSide>() {
 
+                    int count = 0;
                     int lastRank = 0;
                     double lastSf = Double.NaN;
 
                     @Override
                     public DiffRankForSide apply(SuspiciousnessFactorForStatement item) {
 
+                        ++count;
+
                         if (item.getSuspiciousnessFactor() != lastSf) {
-                            ++lastRank;
+                            lastRank = count;
                             lastSf = item.getSuspiciousnessFactor();
                         }
                         return new DiffRankForSide(lastRank, lastSf);
