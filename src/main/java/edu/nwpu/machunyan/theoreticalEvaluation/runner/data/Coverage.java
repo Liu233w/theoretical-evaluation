@@ -4,7 +4,9 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 表示一次运行的语句覆盖信息
@@ -26,8 +28,9 @@ public final class Coverage {
         map = new HashMap<>();
     }
 
-    public Coverage(HashMap<Integer, Integer> map) {
-        this.map = map;
+    public Coverage(Map<Integer, Integer> map) {
+        this.map = new HashMap<>(map);
+        zipData();
     }
 
     /**
@@ -37,7 +40,9 @@ public final class Coverage {
      * @param executionTimes 执行次数。如果分析器不支持使用执行次数，可以传入 1
      */
     public void setCoverageForStatement(int statementIndex, int executionTimes) {
-        map.put(statementIndex, executionTimes);
+        if (executionTimes != 0) {
+            map.put(statementIndex, executionTimes);
+        }
     }
 
     /**
@@ -48,6 +53,13 @@ public final class Coverage {
      */
     public int getCoverageForStatement(int statementIndex) {
         return map.getOrDefault(statementIndex, 0);
+    }
+
+    /**
+     * 移除所有值为 0 的 entry，用来压缩结果，生成体积更小的文件
+     */
+    public void zipData() {
+        map.values().removeAll(Collections.singleton(0));
     }
 
     /**
