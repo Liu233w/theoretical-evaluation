@@ -22,7 +22,11 @@ public class DiffRankFilters {
      * @return
      */
     public static BiPredicate<String, DiffRankForStatement> rankNotEqual() {
-        return DiffRankFilters::RANK_NOT_EQUAL;
+        return DiffRankFilters::RANK_NOT_EQUAL_FOR_PROGRAMS;
+    }
+
+    public static Predicate<DiffRankForStatement> rankNotEqualForStatements() {
+        return DiffRankFilters::RANK_NOT_EQUAL_FOR_STATEMENTS;
     }
 
     /**
@@ -66,8 +70,15 @@ public class DiffRankFilters {
      * @param diffRankForStatement
      * @return
      */
-    private static boolean RANK_NOT_EQUAL(
+    private static boolean RANK_NOT_EQUAL_FOR_PROGRAMS(
         String programTitle,
+        DiffRankForStatement diffRankForStatement) {
+
+        return diffRankForStatement.getRight().getRank()
+            != diffRankForStatement.getLeft().getRank();
+    }
+
+    private static boolean RANK_NOT_EQUAL_FOR_STATEMENTS(
         DiffRankForStatement diffRankForStatement) {
 
         return diffRankForStatement.getRight().getRank()

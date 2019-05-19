@@ -44,6 +44,15 @@ public class SuspiciousnessFactorResolver {
         this(false, null, formula, 1.0);
     }
 
+    /**
+     * @param sort
+     * @param formulaTitle
+     * @param formula
+     * @param preLimitSfRate 范围： (0,1.0]
+     *                       生成的可疑因子列表中，取前百分之多少
+     *                       <p>
+     *                       如果不是默认的 1.0，则 sort 必须是 true
+     */
     @Builder
     public SuspiciousnessFactorResolver(boolean sort, String formulaTitle, @NonNull SuspiciousnessFactorFormula formula, double preLimitSfRate) {
 

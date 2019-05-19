@@ -25,7 +25,7 @@ class DiffRankResolverTest : FreeSpec({
                 SuspiciousnessFactorForStatement(4, 6.0)
             )
 
-            DiffRankResolver.resolve(left, right) shouldBe
+            DiffRankResolver.resolve(left, right, DiffRankFilters.rankNotEqualForStatements()) shouldBe
                 listOf(
                     DiffRankForStatement(1,
                         DiffRankForSide(1, 9.0),

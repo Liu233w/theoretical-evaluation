@@ -6,7 +6,6 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.TestcaseWeightJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
-import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.NonNull;
 import lombok.ToString;
@@ -49,16 +48,16 @@ public class TestcaseWeightResolver {
     private final boolean useParallel;
 
     public TestcaseWeightResolver(@NonNull SuspiciousnessFactorFormula sfFormula) {
-        this(sfFormula, "", null, null, true);
+        this(sfFormula, "", null, null, true, 0.0);
     }
 
-    @Builder
     private TestcaseWeightResolver(
         @NonNull SuspiciousnessFactorFormula sfFormula,
         String formulaTitle,
         Reporter reporter,
         Provider provider,
-        boolean useParallel) {
+        boolean useParallel,
+        double preLimitSfRate) {
 
         this.reporter = reporter;
         this.provider = provider;
@@ -68,8 +67,7 @@ public class TestcaseWeightResolver {
             .formula(sfFormula)
             .formulaTitle(formulaTitle)
             .sort(true)
-            // 取前 20% 的可疑因子
-            .preLimitSfRate(0.2)
+            .preLimitSfRate(preLimitSfRate)
             .build();
     }
 
@@ -84,7 +82,7 @@ public class TestcaseWeightResolver {
      */
     public static List<TestcaseWeightResolver> of(
         Map<String, SuspiciousnessFactorFormula> map,
-        TestcaseWeightResolverBuilder builder) {
+        Builder builder) {
 
         return StreamEx
             .of(map.entrySet())
@@ -100,6 +98,10 @@ public class TestcaseWeightResolver {
         return IntStream.range(0, runResults.size())
             .filter(i -> i != index)
             .mapToObj(runResults::get);
+    }
+
+    public static Builder builder() {
+        return new Builder();
     }
 
     public SuspiciousnessFactorFormula getFormula() {
@@ -195,5 +197,68 @@ public class TestcaseWeightResolver {
     }
 
     public interface Provider extends BiFunction<TestcaseWeightResolver, RunResultForProgram, Optional<TestcaseWeightForProgram>> {
+    }
+
+    @ToString
+    public static class Builder {
+        private @NonNull SuspiciousnessFactorFormula sfFormula;
+        private String formulaTitle;
+        private Reporter reporter;
+        private Provider provider;
+        private boolean useParallel = true;
+        // 取前 20% 的可疑因子
+        private double preLimitSfRate = 0.2;
+
+        Builder() {
+        }
+
+        public Builder sfFormula(@NonNull SuspiciousnessFactorFormula sfFormula) {
+            this.sfFormula = sfFormula;
+            return this;
+        }
+
+        public Builder formulaTitle(String formulaTitle) {
+            this.formulaTitle = formulaTitle;
+            return this;
+        }
+
+        public Builder reporter(Reporter reporter) {
+            this.reporter = reporter;
+            return this;
+        }
+
+        public Builder provider(Provider provider) {
+            this.provider = provider;
+            return this;
+        }
+
+        /**
+         * 是否使用并行计算，默认为 true
+         *
+         * @param useParallel
+         * @return
+         */
+        public Builder useParallel(boolean useParallel) {
+            this.useParallel = useParallel;
+            return this;
+        }
+
+        /**
+         * 范围： (0,1.0]
+         * 生成的可疑因子列表中，取前百分之多少
+         * <p>
+         * 默认为 0.2，即取前 20%
+         *
+         * @param preLimitSfRate
+         * @return
+         */
+        public Builder preLimitSfRate(double preLimitSfRate) {
+            this.preLimitSfRate = preLimitSfRate;
+            return this;
+        }
+
+        public TestcaseWeightResolver build() {
+            return new TestcaseWeightResolver(sfFormula, formulaTitle, reporter, provider, useParallel, preLimitSfRate);
+        }
     }
 }

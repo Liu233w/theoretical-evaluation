@@ -10,22 +10,23 @@ class TestcaseWeightResolverTest : FreeSpec({
         "能通过论文上的测试" {
 
             val testcases = buildRunResultsFromMatrix(arrayOf(
-                    arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1),
-                    arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 0),
-                    arrayOf(1, 1, 0, 0, 0, 0, 1, 1, 1),
-                    arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1),
-                    arrayOf(0, 0, 1, 0, 1, 1, 1, 1, 1),
-                    arrayOf(0, 0, 1, 0, 1, 1, 1, 1, 1),
-                    arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1),
-                    arrayOf(1, 1, 1, 1, 1, 1, 0, 0, 1),
-                    arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1),
-                    arrayOf(0, 0, 1, 1, 0, 1, 1, 1, 1)
+                arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1),
+                arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 0),
+                arrayOf(1, 1, 0, 0, 0, 0, 1, 1, 1),
+                arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1),
+                arrayOf(0, 0, 1, 0, 1, 1, 1, 1, 1),
+                arrayOf(0, 0, 1, 0, 1, 1, 1, 1, 1),
+                arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1),
+                arrayOf(1, 1, 1, 1, 1, 1, 0, 0, 1),
+                arrayOf(1, 1, 1, 1, 1, 1, 1, 1, 1),
+                arrayOf(0, 0, 1, 1, 0, 1, 1, 1, 1)
             ), arrayOf(1, 1, 1, 1, 1, 1, 0, 0, 0))
 
             val result = TestcaseWeightResolver
                 .builder()
                 .formulaTitle("op")
                 .sfFormula(SuspiciousnessFactorFormulas::op)
+                .preLimitSfRate(1.0)
                 .build()
                 .resolve(testcases)
 
