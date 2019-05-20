@@ -3,13 +3,17 @@ package edu.nwpu.machunyan.theoreticalEvaluation.application.utils;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.FaultLocationForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.FaultLocationJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import lombok.NonNull;
 import one.util.streamex.IntStreamEx;
 import one.util.streamex.StreamEx;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
+import org.apache.commons.lang.ArrayUtils;
+import org.bouncycastle.util.Arrays;
 
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.URISyntaxException;
@@ -24,32 +28,54 @@ import java.util.Set;
  */
 public class FaultLocationLoader {
 
-    public static Optional<FaultLocationJam> getFaultLocations(String name) throws URISyntaxException, IOException {
+    private static final String effect4jFaultLocationDir = "./target/outputs/defects4j-fault-locations/";
 
-        final String faultLocationFile = FileUtils
-            .getFilePathFromResources(name + "/fault_locations.csv")
-            .toString();
-        final CSVParser csvRecords;
+    public static Optional<FaultLocationJam> getFaultLocations(String name) {
+
+        if (ArrayUtils.contains(ProgramDefination.DEFECTS4J_RUN_LIST, name)) {
+
+            try {
+                final FaultLocationJam faultLocationJam = FileUtils.loadObject(
+                    effect4jFaultLocationDir + name + ".json",
+                    FaultLocationJam.class);
+                return Optional.of(faultLocationJam);
+            } catch (FileNotFoundException e) {
+                LogUtils.logError(e);
+                return Optional.empty();
+            }
+
+        } else {
+            return getGccFaultLocations(name);
+        }
+    }
+
+    private static Optional<FaultLocationJam> getGccFaultLocations(String name) {
+
         try {
-            csvRecords = CSVFormat
+            final String faultLocationFile = FileUtils
+                .getFilePathFromResources(name + "/fault_locations.csv")
+                .toString();
+            final CSVParser csvRecords = CSVFormat
                 .EXCEL
                 .withFirstRecordAsHeader()
                 .parse(new InputStreamReader(new FileInputStream(faultLocationFile), Charset.forName("utf-8")));
-        } catch (IOException e) {
+
+            final List<FaultLocationForProgram> collect = StreamEx
+                .of(csvRecords.getRecords())
+                .map(a -> new FaultLocationForProgram(
+                    a.get("version"),
+                    splitLines(a.get("line_number")),
+                    a.get("diff"),
+                    a.get("comments"),
+                    Boolean.parseBoolean(a.get("in_effect_size"))
+                ))
+                .toImmutableList();
+            return Optional.of(new FaultLocationJam(collect));
+
+        } catch (IOException | URISyntaxException e) {
+            LogUtils.logError(e);
             return Optional.empty();
         }
-
-        final List<FaultLocationForProgram> collect = StreamEx
-            .of(csvRecords.getRecords())
-            .map(a -> new FaultLocationForProgram(
-                a.get("version"),
-                splitLines(a.get("line_number")),
-                a.get("diff"),
-                a.get("comments"),
-                Boolean.parseBoolean(a.get("in_effect_size"))
-            ))
-            .toImmutableList();
-        return Optional.of(new FaultLocationJam(collect));
     }
 
     /**

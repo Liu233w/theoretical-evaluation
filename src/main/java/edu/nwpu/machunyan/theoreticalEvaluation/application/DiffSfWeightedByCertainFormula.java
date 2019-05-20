@@ -34,7 +34,7 @@ public class DiffSfWeightedByCertainFormula {
     private static final String outputDir = "./target/outputs/sf-weight-diff-by-" + formulaTitle;
 
 
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws IOException {
 
         for (String name : ProgramDefination.PROGRAM_LIST) {
 
@@ -47,7 +47,7 @@ public class DiffSfWeightedByCertainFormula {
         }
     }
 
-    private static void resolveAndSave(String name) throws IOException, URISyntaxException {
+    private static void resolveAndSave(String name) throws IOException {
 
         final Optional<FaultLocationJam> faultLocationOptional = FaultLocationLoader.getFaultLocations(name);
         if (!faultLocationOptional.isPresent()) {
