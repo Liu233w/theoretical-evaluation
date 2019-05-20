@@ -10,15 +10,19 @@ import java.net.URISyntaxException;
  */
 public class Main {
 
-    public static void main(String[] args) throws IOException, URISyntaxException, CoverageRunnerException {
+    public static void main(String[] args) throws IOException, CoverageRunnerException {
 
         ResolveDefects4jTestcase.main(args);
         Run.main(args);
+
         ResolveSuspiciousnessFactor.main(args);
 //        ResolveTestcaseWeightByOp.main(args);
         ResolveTestSuitSubsetByOp.main(args);
 //        ResolveTestcaseWeight.main(args);
         ResolveTestSuitSubset.main(args);
+
+        ResolveDefects4jFaultLocations.main(args);
+
 //        DiffSfWeightedByCertainFormula.main(args);
         DiffSfSubsetByCertainFormula.main(args);
 //        ResolveSortedTestcaseWeight.main(args);

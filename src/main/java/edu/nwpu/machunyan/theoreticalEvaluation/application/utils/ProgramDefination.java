@@ -20,7 +20,7 @@ public class ProgramDefination {
         "Mockito",
         "Time",
         "Lang",
-        "Closure",
+//        "Closure", /* TOO SLOW */
     };
 
     /**
@@ -42,7 +42,7 @@ public class ProgramDefination {
         "Math",
         "Time",
         "Lang",
-        "Closure",
+//        "Closure", /* TOO SLOW */
     };
 
     @Value
