@@ -51,8 +51,29 @@ public class DiffRankFilters {
     public static BiPredicate<String, DiffRankForStatement> onlyInList(
         FaultLocationJam jam) {
 
-        final Map<String, Set<Integer>> programToLocationMap = StreamEx
-            .of(jam.getFaultLocationForPrograms())
+        return onlyInList(jam, false);
+    }
+
+    /**
+     * 只返回使用 faultLocation 中的语句编号定义的结果
+     *
+     * @param jam
+     * @param excludeNotInEffectSize 默认为 false，如果是 true，
+     *                               结果中将排除 usedInEffectSize 为 false 的版本。
+     * @return
+     */
+    public static BiPredicate<String, DiffRankForStatement> onlyInList(
+        FaultLocationJam jam,
+        boolean excludeNotInEffectSize) {
+
+        StreamEx<FaultLocationForProgram> steam = StreamEx
+            .of(jam.getFaultLocationForPrograms());
+
+        if (excludeNotInEffectSize) {
+            steam = steam.filter(FaultLocationForProgram::isUsedInEffectSize);
+        }
+
+        final Map<String, Set<Integer>> programToLocationMap = steam
             .toMap(
                 FaultLocationForProgram::getProgramTitle,
                 FaultLocationForProgram::getLocations

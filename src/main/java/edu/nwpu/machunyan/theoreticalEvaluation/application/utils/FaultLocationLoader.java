@@ -45,7 +45,8 @@ public class FaultLocationLoader {
                 a.get("version"),
                 splitLines(a.get("line_number")),
                 a.get("diff"),
-                a.get("comments")
+                a.get("comments"),
+                Boolean.parseBoolean(a.get("in_effect_size"))
             ))
             .toImmutableList();
         return Optional.of(new FaultLocationJam(collect));

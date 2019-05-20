@@ -77,7 +77,13 @@ public class DiffSfSubsetByCertainFormula {
         FileUtils.saveString(outputDir + "/" + name + "-detail.csv",
             CsvExporter.toCsvString(diffDetailed));
 
-        final double effectSize = RankDiffAnalyzer.resolveEffectSizeCohensD(diff);
+        final DiffRankJam diffForEffectSize = DiffRankResolver.resolve(
+            filterSf(sfOrigin, emptySfProgram),
+            filterSf(sfSubset, emptySfProgram),
+            "",
+            "",
+            DiffRankFilters.onlyInList(faultLocations, true));
+        final double effectSize = RankDiffAnalyzer.resolveEffectSizeCohensD(diffForEffectSize);
         Files.write(
             Paths.get(outputDir).resolve("effect-size.txt"),
             (name + " " + effectSize + "\n").getBytes(),

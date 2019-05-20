@@ -26,4 +26,9 @@ public class FaultLocationForProgram {
      * 对这一部分错误的注释（可空）
      */
     String comments;
+
+    /**
+     * 在计算 effect size 的时候是否考虑这个版本
+     */
+    boolean usedInEffectSize;
 }
