@@ -1,4 +1,4 @@
-version,diff,line_number,comments
+version,diff,line_number,comments,in_effect_size
 v1,"224c224,225
 <                  case 16 : ch=get_char(tstream_ptr->ch_stream);
 ---
@@ -12,20 +12,20 @@ v1,"224c224,225
 365a366
 >           case 32: return(EQUALGREATER);
 393d393
-<          case 32: return(EQUALGREATER);",217-253,这个和下面那个都是修改了 switch 的条件，有可能会影响switch-body里所有的功能，所以把 switch-body 都算上。
+<          case 32: return(EQUALGREATER);",217-253,这个和下面那个都是修改了 switch 的条件，有可能会影响switch-body里所有的功能，所以把 switch-body 都算上。,FALSE
 v2,"223a224
-> 		 case 12 : /* added code */",217-253,
+> 		 case 12 : /* added code */",217-253,,FALSE
 v3,"232c232
 <                            unget_char(ch,tstream_ptr->ch_stream);
 ---
->                            /*unget_char(ch,tstream_ptr->ch_stream);*/",232,
-v4,修改了 tokens.h 里的 int check[] 的一个定义,462-463,只会影响这两行
+>                            /*unget_char(ch,tstream_ptr->ch_stream);*/",232,,FALSE
+v4,修改了 tokens.h 里的 int check[] 的一个定义,462-463,只会影响这两行,TRUE
 v5,"251c251
 <                            token_ind=next_st=0;
 ---
->                            /* missing code token_ind= */ next_st=0;",251,
-v6,"修改了 tokens.h 里的 base, next 和 check 的定义",460-466,只有一个if使用了这三个变量，就把这一部分都放上去了
+>                            /* missing code token_ind= */ next_st=0;",251,,TRUE
+v6,"修改了 tokens.h 里的 base, next 和 check 的定义",460-466,只有一个if使用了这三个变量，就把这一部分都放上去了,TRUE
 v7,"279c279
 < 		if(token_ind >= 80) break; /* Added protection - hf */
 ---
-> 		if(token_ind >= 10) break; /* Added protection - hf */",279,
+> 		if(token_ind >= 10) break; /* Added protection - hf */",279,,TRUE

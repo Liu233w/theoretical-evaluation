@@ -1,87 +1,87 @@
-version,diff,line_number,comments
+version,diff,line_number,comments,in_effect_size
 v1,"343c343
 <                            goto ret1;
 ---
-> /*                                 goto ret1; missing code */",341-342,这里是影响的退出循环的时机
+> /*                                 goto ret1; missing code */",341-342,这里是影响的退出循环的时机,FALSE
 v2,"85c85
 <                            if ( scanf( "" %ld"", &x(i,j) ) != 1 )
 ---
->                            if ( scanf( "" %ld"", &x(i,j) ) == 0 )",85,影响读入（判断输入数据是否合理）
+>                            if ( scanf( "" %ld"", &x(i,j) ) == 0 )",85,影响读入（判断输入数据是否合理）,TRUE
 v3,"75c75
 <            if ( r * c > MAXTBL )
 ---
->            if ( r * c > MAXTBL-10)",75,控制流应当包含 body 内的语句
+>            if ( r * c > MAXTBL-10)",75,控制流应当包含 body 内的语句,TRUE
 v4,"233c233
 <                    if ( Abs( gold ) < EPS * Abs( g ) )
 ---
->                    if ( Abs( gold ) < Abs( g ) )",233,
+>                    if ( Abs( gold ) < Abs( g ) )",233,,TRUE
 v5,"105c105
 <                    totinfo += info;
 ---
->                    totinfo = info; /* removed + before = */",105,只改了变量（直接输出的），前后覆盖没有变化。
+>                    totinfo = info; /* removed + before = */",105,只改了变量（直接输出的），前后覆盖没有变化。,TRUE
 v6,"18c18
 < #define    MAXLINE 256
 ---
 > #define    MAXLINE 56",55,"影响缓冲区长度（代码行是那个使用了这个常量的循环）
-while ( fgets( line, MAXLINE, stdin ) != NULL ) /* start new table */"
+while ( fgets( line, MAXLINE, stdin ) != NULL ) /* start new table */",TRUE
 v7,"378c378
 <            if ( pi > 0.0 )
 ---
->            if ( pi >= 0.0 ) /* added an = after > */",378,
+>            if ( pi >= 0.0 ) /* added an = after > */",378,,TRUE
 v8,"200,201c200,201
 <            if ( Abs( del ) < Abs( sum ) * EPS )
 <                    return sum * exp( -x + a * log( x ) - LGamma( a ) );
 ---
 >            if ( Abs(del) < Abs(sum) * EPS )
->                    return sum * exp(  x + a * log( x ) - LGamma( a ) );",201,
+>                    return sum * exp(  x + a * log( x ) - LGamma( a ) );",201,,TRUE
 v9,"106c106
 <                    totdf += infodf;
 ---
->                    totdf = infodf;",106,这条语句无论如何都会执行的，估计测不出来
+>                    totdf = infodf;",106,这条语句无论如何都会执行的，估计测不出来,TRUE
 v10,"301c301
 <    double          N;              /* (double)n */
 ---
->    float           N;              /* (double)n */",301,
+>    float           N;              /* (double)n */",301,,TRUE
 v11,"198c198
 <            sum += del *= x / ++ap;
 ---
->            sum = del *= x / ++ap;",198,
+>            sum = del *= x / ++ap;",198,,TRUE
 v12,"177c177
 <    return -tmp + log( 2.50662827465 * ser );
 ---
->    return -tmp + log( 2.50663 * ser );",177,
+>    return -tmp + log( 2.50663 * ser );",177,,TRUE
 v13,"394c394
 <            if ( pj > 0.0 )
 ---
->            if ( pj >= 0.0 )",394,
+>            if ( pj >= 0.0 )",394,,TRUE
 v14,"75c75
 <            if ( r * c > MAXTBL )
 ---
->            if ( r * c >= MAXTBL )",75,
+>            if ( r * c >= MAXTBL )",75,,TRUE
 v15,"200c200
 <            if ( Abs( del ) < Abs( sum ) * EPS )
 ---
->            if ( Abs( del ) < Abs( sum ) * (EPS-.000001) )",200,
+>            if ( Abs( del ) < Abs( sum ) * (EPS-.000001) )",200,,TRUE
 v16,"99c99
 <            if ( info >= 0.0 )
 ---
->            if ( info >= 0.1 )",99,
+>            if ( info >= 0.1 )",99,,TRUE
 v17,"223c223
 <            anf = an * fac;
 ---
->            anf = an - fac;",223,
+>            anf = an - fac;",223,,TRUE
 v18,"308c308
 <    if ( rdf <= 0 || cdf <= 0 )
 ---
->    if ( rdf == 0 || cdf == 0 )",308,
+>    if ( rdf == 0 || cdf == 0 )",308,,TRUE
 v19,"18c18
 < #define    MAXLINE 256
 ---
-> #define    MAXLINE 26",55,同 v6，不过效果应该会更明显一些
+> #define    MAXLINE 26",55,同 v6，不过效果应该会更明显一些,TRUE
 v20,"308c308
 <    if ( rdf <= 0 || cdf <= 0 )
 ---
->    if ( rdf <= 0  )",308,
+>    if ( rdf <= 0  )",308,,TRUE
 v21,"22c22
 < #define    MAXTBL  1000
 ---
@@ -92,12 +92,12 @@ v21,"22c22
    return EXIT_FAILURE;
    }
 应该会影响输入
-"
+",TRUE
 v22,"352c352
 <    if ( N <= 0.0 )
 ---
->    if ( N <= 1.0 )",352,
+>    if ( N <= 1.0 )",352,,TRUE
 v23,"215c215
 <    for ( n = 1; n <= ITMAX; ++n )
 ---
->    for ( n = 0; n <= ITMAX; ++n )",215,只影响循环体的执行次数，估计测不出来
+>    for ( n = 0; n <= ITMAX; ++n )",215,只影响循环体的执行次数，估计测不出来,TRUE

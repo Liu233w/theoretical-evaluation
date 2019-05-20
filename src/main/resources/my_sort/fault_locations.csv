@@ -1,29 +1,29 @@
-version,diff,line_number,comments
+version,diff,line_number,comments,in_effect_size
 v1,"2274c2274
 <     for (i = 1U; i < n; ++i) {
 ---
->     for (i = 1U; i < n-1; ++i) {//11111111111",2274,
+>     for (i = 1U; i < n-1; ++i) {//11111111111",2274,,TRUE
 v2,"2276c2276
 <         SORT_SWAP(dst[i - 1U], dst[i]);
 ---
->         SORT_SWAP(dst[i], dst[i - 1U]);//22222222222222222",2276,
+>         SORT_SWAP(dst[i], dst[i - 1U]);//22222222222222222",2276,,TRUE
 v3,"311c311
 <     if (SORT_CMP(dst[i - 1], dst[i]) <= 0) {
 ---
->     if (SORT_CMP(dst[i - 1], dst[i]) < 0) {//333333333333333",311,
+>     if (SORT_CMP(dst[i - 1], dst[i]) < 0) {//333333333333333",311,,TRUE
 v4,"2249c2249
 <     p0 = 0;
 ---
->     p0 = 1;//4444444444444",2249,
+>     p0 = 1;//4444444444444",2249,,TRUE
 v5,"319c319
 <     for (j = i - 1; j >= location; j--) {
 ---
->     for (j = i - 1; j > location; j--) {//555555555555",319,
+>     for (j = i - 1; j > location; j--) {//555555555555",319,,TRUE
 v6,"289c289
 <       if (r - c <= 1) {
 ---
->       if (r - c <= 2) {//66666666666",289,
+>       if (r - c <= 2) {//66666666666",289,,TRUE
 source,"2274c2274
 <     for (i = 1U; i < n; ++i) {
 ---
->     for (i = 1U; i < n-1; ++i) {//11111111111",2274,
+>     for (i = 1U; i < n-1; ++i) {//11111111111",2274,,TRUE

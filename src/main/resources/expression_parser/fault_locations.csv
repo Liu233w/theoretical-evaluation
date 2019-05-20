@@ -1,68 +1,68 @@
-version,diff,line_number,comments
+version,diff,line_number,comments,in_effect_size
 v1,"514c514
 < 			v0 -= parser_read_term( pd );
 ---
 > 			v0 += parser_read_term( pd );//error 111111111111111111111111111111111111111111111111
-",514,
+",514,,TRUE
 v2,"448c448
 < 			s = -1.0;
 ---
 > 			s = 1.0;//error   222222222222222222222222222222222222222222222222222222222
-",448,
+",448,,TRUE
 v3,"106c106
 < 	while( isspace( parser_peek( pd ) ) )
 ---
 > 	while( !isspace( parser_peek( pd ) ) ) //error, original: while( isspace( parser_peek( pd ) ) )
-",106,
+",106,,TRUE
 v4,"117c117
 < 	if( c == '+' || c == '-' )
 ---
 > 	if( c == '-' ) //origin: if( c == '+' || c == '-' )
-",117,
+",117,,TRUE
 v5,"171c171
 < 	val = parser_read_expr( pd );
 ---
 > 	parser_read_expr( pd ); //origin: val = parser_read_expr( pd );
-",171,
+",171,,TRUE
 v6,"199c199
 < 		if( *num_args >= PARSER_MAX_ARGUMENT_COUNT )
 ---
 > 		if( *num_args > PARSER_MAX_ARGUMENT_COUNT ) //origin: if( *num_args >= PARSER_MAX_ARGUMENT_COUNT )
-",199,
+",199,,TRUE
 v7,"272,273c272,273
 < 				if( v0 < 0.0 ) 
 < 					parser_error( pd, ""sqrt(x) undefined for x < 0!"" );
 ---
 > 				/*if( v0 < 0.0 ) 
 > 					parser_error( pd, ""sqrt(x) undefined for x < 0!"" );*/ // error: ignoring argument check
-",272-273,
+",272-273,,FALSE
 v8,"277c277
 < 				if( v0 <= 0 )
 ---
 > 				if( v0 < 0 ) //origin: if( v0 <= 0 )
-",277,
+",277,,TRUE
 v9,"309c309
 < 			} else if( strcmp( token, ""abs"" ) == 0 ){
 ---
 > 			} else if( strcmp( token, ""ab"" ) == 0 ){ //origin: } else if( strcmp( token, ""abs"" ) == 0 ){
-",309,
+",309,,TRUE
 v10,"414c414
 < 		v0 = -parser_read_paren(pd);
 ---
 > 		v0 = parser_read_paren(pd); //origin: v0 = -parser_read_paren(pd);
-",414,
+",414,,TRUE
 v11,"490c490
 < 			v0 /= parser_read_power( pd );
 ---
 > 			v0 *= parser_read_power( pd ); //origin: v0 /= parser_read_power( pd );
-",490,
+",490,,TRUE
 v12,"585c585
 < 			v0 = (v0 > v1) ? 1.0 : 0.0;
 ---
 > 			v0 = (v0 < v1) ? 1.0 : 0.0; //origin: v0 = (v0 > v1) ? 1.0 : 0.0;
-",585,
+",585,,TRUE
 v13,"639c639
 < 		if( strcmp( oper, ""=="" ) == 0 ){
 ---
 > 		if( strcmp( oper, ""="" ) == 0 ){ //origin: if( strcmp( oper, ""=="" ) == 0 ){
-",639,
+",639,,TRUE
