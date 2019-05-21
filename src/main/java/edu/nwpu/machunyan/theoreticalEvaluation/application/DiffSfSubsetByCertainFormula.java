@@ -15,7 +15,6 @@ import org.jfree.chart.JFreeChart;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
@@ -83,8 +82,8 @@ public class DiffSfSubsetByCertainFormula {
         final DiffRankJam diffForEffectSize = DiffRankResolver.resolve(
             filterSf(sfOrigin, emptySfProgram),
             filterSf(sfSubset, emptySfProgram),
-            "",
-            "",
+            "before",
+            "after",
             DiffRankFilters.onlyInList(faultLocations, true));
         final double effectSize = RankDiffAnalyzer.resolveEffectSizeCohensD(diffForEffectSize);
         Files.write(
@@ -93,12 +92,12 @@ public class DiffSfSubsetByCertainFormula {
             StandardOpenOption.APPEND, StandardOpenOption.CREATE);
 
         // draw png
-        final JFreeChart chart = DiffRankChart.resolveRankBarChart(diffForEffectSize, name + "-" + formulaTitle);
-        ChartUtils.saveChartAsPNG(
-            Paths.get(outputDir).resolve(name + ".png").toFile(),
+        final JFreeChart chart = DiffRankChart.resolveRankDotChart(diffForEffectSize, name + "-" + formulaTitle);
+        ChartUtils.saveChartAsJPEG(
+            Paths.get(outputDir).resolve(name + ".jpg").toFile(),
             chart,
-            600,
-            600
+            1200,
+            800
         );
     }
 
