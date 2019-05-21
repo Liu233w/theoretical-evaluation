@@ -4,11 +4,14 @@ import edu.nwpu.machunyan.theoreticalEvaluation.analyze.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.FaultLocationLoader;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.ProgramDefination;
+import edu.nwpu.machunyan.theoreticalEvaluation.chart.DiffRankChart;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.LogUtils;
 import one.util.streamex.StreamEx;
+import org.jfree.chart.ChartUtils;
+import org.jfree.chart.JFreeChart;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -88,6 +91,15 @@ public class DiffSfSubsetByCertainFormula {
             Paths.get(outputDir).resolve("effect-size.txt"),
             (name + " " + effectSize + "\n").getBytes(),
             StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+
+        // draw png
+        final JFreeChart chart = DiffRankChart.resolveRankBarChart(diffForEffectSize, name + "-" + formulaTitle);
+        ChartUtils.saveChartAsPNG(
+            Paths.get(outputDir).resolve(name + ".png").toFile(),
+            chart,
+            600,
+            600
+        );
     }
 
     /**
