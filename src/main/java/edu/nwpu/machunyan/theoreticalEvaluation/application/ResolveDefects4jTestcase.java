@@ -32,6 +32,13 @@ public class ResolveDefects4jTestcase {
 
     public static void main(String[] args) throws CoverageRunnerException, IOException {
 
+        final boolean allDone = StreamEx
+            .of(ProgramDefination.DEFECTS4J_RUN_LIST)
+            .anyMatch(programName -> !Files.exists(resolveResultFilePath(programName)));
+        if (allDone) {
+            return;
+        }
+
         @Cleanup final Defects4jContainerExecutor executor = Defects4jContainerExecutor.newInstance();
         Runtime.getRuntime().addShutdownHook(new Thread(executor::close));
 
