@@ -1,7 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.chart;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.DiffRankForProgram;
-import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.DiffRankForSide;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.DiffRankForStatement;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.DiffRankJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.chart.renderer.DiffRenderer;
@@ -37,14 +36,18 @@ public class DiffRankChart {
 
             for (DiffRankForStatement diffRankForStatement : diffRankForProgram.getDiffRankForStatements()) {
 
-                final DiffRankForSide left = diffRankForStatement.getLeft();
-                final DiffRankForSide right = diffRankForStatement.getRight();
-                if (left.getRank() == -1 || right.getRank() == -1) {
-                    continue;
+                double leftRank = diffRankForStatement.getLeft().getRank();
+                double rightRank = diffRankForStatement.getRight().getRank();
+
+                if (leftRank == -1) {
+                    leftRank = Double.NaN;
+                }
+                if (rightRank == -1) {
+                    rightRank = Double.NaN;
                 }
 
-                leftData.add(idx, left.getRank());
-                rightData.add(idx, right.getRank());
+                leftData.add(idx, leftRank);
+                rightData.add(idx, rightRank);
                 ++idx;
             }
         }

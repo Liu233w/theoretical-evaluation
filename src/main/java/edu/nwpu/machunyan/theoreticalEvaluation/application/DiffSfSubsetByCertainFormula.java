@@ -91,6 +91,10 @@ public class DiffSfSubsetByCertainFormula {
             (name + " " + effectSize + "\n").getBytes(),
             StandardOpenOption.APPEND, StandardOpenOption.CREATE);
 
+        // 将便于统计的数据单独输出出来
+        FileUtils.saveString(outputDir + "/" + name + "-excluded.json",
+            CsvExporter.toCsvString(diffForEffectSize));
+
         // draw png
         final JFreeChart chart = DiffRankChart.resolveRankDotChart(diffForEffectSize, name + "-" + formulaTitle);
         ChartUtils.saveChartAsJPEG(

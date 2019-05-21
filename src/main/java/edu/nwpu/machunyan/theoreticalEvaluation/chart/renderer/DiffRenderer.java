@@ -45,13 +45,9 @@ public class DiffRenderer extends XYLineAndShapeRenderer
 
         // 剩下的是从 candle renderer 里抄过来的，稍微改了一下
 
-        boolean horiz;
+        // 只绘制 vertical 的情况
         PlotOrientation orientation = plot.getOrientation();
-        if (orientation == PlotOrientation.HORIZONTAL) {
-            horiz = true;
-        } else if (orientation == PlotOrientation.VERTICAL) {
-            horiz = false;
-        } else {
+        if (orientation != PlotOrientation.VERTICAL) {
             return;
         }
 
@@ -68,11 +64,11 @@ public class DiffRenderer extends XYLineAndShapeRenderer
         double yyOpen = rangeAxis.valueToJava2D(yOpen, dataArea, edge);
         double yyClose = rangeAxis.valueToJava2D(yClose, dataArea, edge);
 
-        double stickWidth = 3;
+        double stickWidth = 1;
 
         Paint p = getItemPaint(0, item);
         Stroke s = getItemStroke(0, item);
-        if (yyOpen >= yyClose) {
+        if (!Double.isNaN(yyClose) && yyOpen >= yyClose) {
             // 排名上升（好事）
             p = getItemPaint(1, item);
             s = getItemStroke(1, item);
@@ -86,23 +82,16 @@ public class DiffRenderer extends XYLineAndShapeRenderer
 
         // draw the body
         Rectangle2D body;
-        if (horiz) {
-            body = new Rectangle2D.Double(yyMinOpenClose, xx - stickWidth / 2,
-                yyMaxOpenClose - yyMinOpenClose, stickWidth);
+        if (Double.isNaN(yOpen) || Double.isNaN(yClose)) {
+            // 如果有两个值不存在，就画一条穿过整个区域的竖线
+            body = new Rectangle2D.Double(xx - stickWidth / 2, 0,
+                stickWidth, dataArea.getHeight());
         } else {
             body = new Rectangle2D.Double(xx - stickWidth / 2, yyMinOpenClose,
                 stickWidth, yyMaxOpenClose - yyMinOpenClose);
         }
-        if (yClose > yOpen) {
-            g2.setPaint(p);
-            g2.fill(body);
-        } else {
-            g2.setPaint(p);
-            g2.fill(body);
-        }
 
-        g2.setPaint(p);
+        g2.fill(body);
         g2.draw(body);
-
     }
 }
