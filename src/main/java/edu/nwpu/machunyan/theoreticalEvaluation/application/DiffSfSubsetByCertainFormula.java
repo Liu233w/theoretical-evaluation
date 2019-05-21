@@ -92,7 +92,7 @@ public class DiffSfSubsetByCertainFormula {
             StandardOpenOption.APPEND, StandardOpenOption.CREATE);
 
         // 将便于统计的数据单独输出出来
-        FileUtils.saveString(outputDir + "/" + name + "-excluded.json",
+        FileUtils.saveString(outputDir + "/" + name + "-excluded.csv",
             CsvExporter.toCsvString(diffForEffectSize));
 
         // draw png
