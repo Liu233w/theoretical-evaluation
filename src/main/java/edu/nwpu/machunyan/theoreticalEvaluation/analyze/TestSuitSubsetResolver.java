@@ -115,34 +115,19 @@ public class TestSuitSubsetResolver {
         double currentAveragePerformance = averagePerformanceBeforeDivide;
 
         // 使用贪心算法划分子集
-        int lastRemovedIndex = -1;
-        while (true) {
+        for (int i = 0; i < useItem.length; i++) {
 
-            boolean findOne = false;
+            useItem[i] = false;
 
-            for (int i = lastRemovedIndex + 1; i < useItem.length; ++i) {
+            final double averagePerformance =
+                resolveAveragePerformance(
+                    buildStreamSkipBy(rawRunResult, useItem),
+                    statementCount);
 
-                useItem[i] = false;
-                final double averagePerformance =
-                    resolveAveragePerformance(
-                        buildStreamSkipBy(rawRunResult, useItem),
-                        statementCount);
-
-                if (averagePerformance <= currentAveragePerformance) {
-                    // 找到一个可以被移除的测试用例
-                    currentAveragePerformance = averagePerformance;
-                    lastRemovedIndex = i;
-                    findOne = true;
-                    break;
-                } else {
-                    // 这个测试用例不能被移除，检查下一个
-                    useItem[i] = true;
-                }
-            }
-
-            if (!findOne) {
-                // 没有能被移除的测试用例了，贪心结束
-                break;
+            if (averagePerformance <= currentAveragePerformance) {
+                currentAveragePerformance = averagePerformance;
+            } else {
+                useItem[i] = true;
             }
         }
 
@@ -150,18 +135,15 @@ public class TestSuitSubsetResolver {
             .filter(a -> a)
             .count();
         final int[] toOldSetMap = new int[usedCount];
-        final RunResultForTestcase[] res = new RunResultForTestcase[usedCount];
 
         int tail = 0;
         for (int i = 0; i < useItem.length; ++i) {
             if (useItem[i]) {
                 toOldSetMap[tail] = i;
-                res[tail] = rawRunResult.get(i);
                 ++tail;
             }
         }
 
-        final List<RunResultForTestcase> list = Collections.unmodifiableList(Arrays.asList(res));
         return new TestSuitSubsetForProgram(
             runResultForProgram.getProgramTitle(),
             currentAveragePerformance,
