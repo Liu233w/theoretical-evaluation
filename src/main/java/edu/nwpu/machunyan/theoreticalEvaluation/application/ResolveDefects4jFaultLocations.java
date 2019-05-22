@@ -6,7 +6,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.FaultLocationForProgram;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.FaultLocationJam;
-import edu.nwpu.machunyan.theoreticalEvaluation.application.Run;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementInfo;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.StatementMap;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForProgram;
@@ -71,9 +70,12 @@ public class ResolveDefects4jFaultLocations {
                     // fileName -> lineNumber -> statementIndex
                     final Map<String, Map<Integer, Integer>> fileToLineNumberToStatementIndex = StreamEx
                         .of(statementMap.getMapList())
+                        // 第一个元素是 null
+                        .skip(1)
                         .mapToEntry(
                             StatementInfo::getFilePath,
                             a -> a)
+                        .collapseKeys()
                         .mapValues(StreamEx::of)
                         .mapValues(a -> a.mapToEntry(
                             StatementInfo::getStartRow,
@@ -84,7 +86,16 @@ public class ResolveDefects4jFaultLocations {
                     final Set<Integer> locations = EntryStream
                         .of(entity.getFileToLineNumbers())
                         .flatMapKeyValue((file, lineNumbers) -> StreamEx.of(lineNumbers)
-                            .map(lineNumber -> fileToLineNumberToStatementIndex.get(file).get(lineNumber)))
+                            .map(lineNumber -> {
+                                final Map<Integer, Integer> map = fileToLineNumberToStatementIndex.get(file);
+                                if (map == null) {
+                                    LogUtils.logError("File name not exist in run results, that can be an error\n" +
+                                        "Project: " + programName + ", Version: " + entity.getVersion() + ", File name: " + file);
+                                    return null;
+                                }
+                                return map.get(lineNumber);
+                            })
+                            .filter(Objects::nonNull))
                         .toSet();
 
                     return new FaultLocationForProgram(
