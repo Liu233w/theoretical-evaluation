@@ -51,7 +51,7 @@ public class ResolveDefects4jFaultLocations {
             try {
                 runResults = Run.getResultFromFile(programName);
             } catch (FileNotFoundException e) {
-                LogUtils.logError(e);
+                LogUtils.logInfo("Run result of " + programName + " does not exist, skipping");
                 continue;
             }
 
