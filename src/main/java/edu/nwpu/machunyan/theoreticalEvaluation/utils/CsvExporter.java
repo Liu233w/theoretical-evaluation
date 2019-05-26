@@ -1,6 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
+import edu.nwpu.machunyan.theoreticalEvaluation.chart.pojo.EffectSizeItem;
 import lombok.SneakyThrows;
 import one.util.streamex.StreamEx;
 import org.apache.commons.csv.CSVFormat;
@@ -243,6 +244,19 @@ public class CsvExporter {
                     }));
                 }
             });
+
+        return CsvExporter.toCsvString(csvLines);
+    }
+
+    // java 的泛型是类型擦除，这里不能用 List<EffectSizeItem>
+    public static String toCsvString(EffectSizeItem[] effectSizeItems) {
+
+        final ArrayList<CsvLine> csvLines = new ArrayList<>(effectSizeItems.length);
+        csvLines.add(new CsvLine(new Object[]{"program title", "formula", "effect size"}));
+
+        for (EffectSizeItem item : effectSizeItems) {
+            csvLines.add(new CsvLine(new Object[]{item.getProgramName(), item.getFormulaTitle(), item.getEffectSize()}));
+        }
 
         return CsvExporter.toCsvString(csvLines);
     }
