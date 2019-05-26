@@ -46,6 +46,8 @@ public class SuspiciousnessFactorFormulas {
         return record.getAef() + record.getAnf();
     }
 
+    // =============== 马老师论文里用的公式 =========================
+
     /**
      * O
      *
@@ -73,19 +75,7 @@ public class SuspiciousnessFactorFormulas {
         return record.getAef() - record.getAep() / (resolveP(record) + 1);
     }
 
-    public static double dStar(VectorTableModelForStatement record, double star) {
-        return Math.pow(record.getAef(), star)
-            /
-            (record.getAnf() + record.getAep());
-    }
-
-    // DStar method, use star = 2
-    @Formula
-    public static double dStar2(VectorTableModelForStatement record) {
-        return record.getAef() * record.getAef()
-            /
-            (record.getAnf() + record.getAep());
-    }
+    // ============== from A theoretical analysis on cloning the failed test cases to improve spectrum-based fault localization-2017 相关性
 
     @Formula
     public static double naish1(VectorTableModelForStatement record) {
@@ -396,6 +386,7 @@ public class SuspiciousnessFactorFormulas {
         final double aep = record.getAep();
         final double f = resolveF(record);
 
+        // == aef / (anf + aep)
         return aef / (f - aef + aep);
     }
 
@@ -425,6 +416,46 @@ public class SuspiciousnessFactorFormulas {
         final double p = resolveP(record);
 
         return aef / (2 * f - aef + p + aep);
+    }
+
+    // ======== BoostingSpectrum-BasedFaultLocalizationusingPageRank 中用到的公式（补充）
+
+    public static double dStar(VectorTableModelForStatement record, double star) {
+        return Math.pow(record.getAef(), star)
+            /
+            (record.getAnf() + record.getAep());
+    }
+
+    // DStar method, use star = 2
+    @Formula
+    public static double dStar2(VectorTableModelForStatement record) {
+        return record.getAef() * record.getAef()
+            /
+            (record.getAnf() + record.getAep());
+    }
+
+    @Formula
+    public static double ochiai2(VectorTableModelForStatement record) {
+        final double aef = record.getAef();
+        final double anf = record.getAnf();
+        final double aep = record.getAep();
+        final double anp = record.getAnp();
+
+        return aef * anp
+            /
+            Math.sqrt((aef + aep) * (anf + anp) * (aef + anp) + (anf + aep));
+    }
+
+    // op2 就是 op
+
+    @Formula
+    public static double sbi(VectorTableModelForStatement record) {
+        final double aef = record.getAef();
+        final double anf = record.getAnf();
+        final double aep = record.getAep();
+        final double anp = record.getAnp();
+
+        return 1 - aep / (aep + aef);
     }
 
     // ===== meta programming utils ======================================================
