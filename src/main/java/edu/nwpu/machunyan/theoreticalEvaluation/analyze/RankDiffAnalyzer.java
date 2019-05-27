@@ -20,11 +20,18 @@ public class RankDiffAnalyzer {
      * 计算左右两边结果排名的效应量（效应值）。使用 左-右 的方法，也就是说，如果左边结果的平均排名低于右边，结果将是负数。
      * <p>
      * 如果使用左边表示加权（或者划分子集）之前的结果，右边表示之后的结果，则本方法的计算结果越大越好（正数也好于负数）
+     * <p>
+     * 结果是一个在 [-1,1] 中的浮点数
      *
      * @param jam 一个程序的所有版本在同一个公式下计算出来的排名比较（应该只保留和错误相关的行）
      * @return
      */
     public static double resolveEffectSizeCohensD(DiffRankJam jam) {
+
+        // no diff at all
+        if (jam.getDiffRankForPrograms().size() == 0) {
+            return 0;
+        }
 
         final int formulaCount = StreamEx.of(jam.getDiffRankForPrograms())
             .map(DiffRankForProgram::getFormulaTitle)
@@ -50,6 +57,18 @@ public class RankDiffAnalyzer {
 
         final double[] left = ranksForSide(jam, DiffRankForStatement::getLeft);
         final double[] right = ranksForSide(jam, DiffRankForStatement::getRight);
+
+        // no diff at all
+        if (left.length == 0 && right.length == 0) {
+            return 0;
+        }
+
+        if (left.length == 0) {
+            return 1;
+        }
+        if (right.length == 0) {
+            return -1;
+        }
 
         final MeanVarianceDeviation leftRes = resolveMeanAndVarianceDeviation(left);
         final MeanVarianceDeviation rightRes = resolveMeanAndVarianceDeviation(right);
