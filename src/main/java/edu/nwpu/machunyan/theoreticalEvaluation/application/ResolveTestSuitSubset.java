@@ -56,8 +56,8 @@ public class ResolveTestSuitSubset {
             preLimitSfRate = "";
             sfRate = 0.0;
         } else {
-            preLimitSfRate = "-" + preLimitSfRate;
             sfRate = Double.parseDouble(preLimitSfRate);
+            preLimitSfRate = "-" + preLimitSfRate;
         }
 
         final RunResultJam imports = Run.getResultFromFile(name);
