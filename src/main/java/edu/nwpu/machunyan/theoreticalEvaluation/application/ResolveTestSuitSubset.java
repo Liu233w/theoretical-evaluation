@@ -46,6 +46,11 @@ public class ResolveTestSuitSubset {
 
     private static void resolve(String name, String preLimitSfRate) throws IOException {
 
+        /*
+        sfRate: 实际用作计算的数值，为 0 时表示不取前百分之多少
+        preLimitRate: 在显示和保存文件名时使用的，防止浮点数精度问题
+            如果不取前百分之n，这个值为空字符串，便于复用之前的计算结果
+         */
         final double sfRate;
         if (preLimitSfRate == null || preLimitSfRate.equals("")) {
             preLimitSfRate = "";
@@ -67,7 +72,7 @@ public class ResolveTestSuitSubset {
             final SuspiciousnessFactorFormula formula = entry.getValue();
 
             // 跳过已经计算出的结果
-            if (Files.exists(Paths.get(resolveResultFilePath(name, formulaTitle)))) {
+            if (Files.exists(Paths.get(resolveResultFilePath(name, formulaTitle, preLimitSfRate)))) {
                 LogUtils.logInfo("skip " + name + "-" + formulaTitle + preLimitSfRate);
                 progressBar.maxHint(progressBar.getMax() - imports.getRunResultForPrograms().size());
                 continue;
@@ -136,6 +141,7 @@ public class ResolveTestSuitSubset {
         String formulaTitle,
         String preLimitSfRate) throws FileNotFoundException {
 
+        // 从外部调用的时候，这里的 preLimitSfRate 不带横线
         return FileUtils.loadObject(resolveResultFilePath(name, formulaTitle, "-" + preLimitSfRate), TestSuitSubsetJam.class);
     }
 
@@ -144,6 +150,7 @@ public class ResolveTestSuitSubset {
     }
 
     private static String resolveResultFilePath(String programName, String formulaTitle, String preLimitSfRate) {
+        // 这里的 preLimitSfRate 是已经带了横线的，比如 "-0.5" 或者 ""，后者表示不限制数量。
         return resultOutputDir + "/" + programName + "-" + formulaTitle + preLimitSfRate + ".json";
     }
 }
