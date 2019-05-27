@@ -1,5 +1,6 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.application;
 
+import com.google.gson.reflect.TypeToken;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.analyze.pojo.*;
 import edu.nwpu.machunyan.theoreticalEvaluation.application.utils.FaultLocationLoader;
@@ -8,6 +9,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.chart.EffectSizeChart;
 import edu.nwpu.machunyan.theoreticalEvaluation.chart.pojo.EffectSizeItem;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultJam;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvExporter;
+import edu.nwpu.machunyan.theoreticalEvaluation.utils.CsvLine;
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils;
 import one.util.streamex.StreamEx;
 import org.jfree.chart.ChartUtils;
@@ -38,6 +40,41 @@ public class ResolveAllEffectSize {
 
     public static void main(String[] args) throws IOException {
 
+        List<EffectSizeItem> results;
+        try {
+            results = loadResultFromFile();
+        } catch (FileNotFoundException e) {
+            results = saveAndGetResult();
+        }
+
+        final JFreeChart boxChart = EffectSizeChart.resolveBoxChartGroupByFormula(results, "Box Chart per Formula");
+        ChartUtils.saveChartAsJPEG(
+            Paths.get(outputDir).resolve("boxChart.jpg").toFile(),
+            boxChart,
+            1200,
+            800);
+
+        final EffectSizeChart.AverageResult averageResult = EffectSizeChart.resolveEffectSizeAverageByFormula(results, "Average Effect Size per Formula");
+        ChartUtils.saveChartAsJPEG(
+            Paths.get(outputDir).resolve("averageEffectSizePerFormula.jpg").toFile(),
+            averageResult.getChart(),
+            1200,
+            800);
+        FileUtils.saveString(
+            outputDir + "averageEffectSizePerFormula.csv",
+            toCsvString(averageResult.getFormulaToAverage()));
+    }
+
+    public static List<EffectSizeItem> loadResultFromFile() throws FileNotFoundException {
+
+        final TypeToken<List<EffectSizeItem>> typeToken = new TypeToken<List<EffectSizeItem>>() {
+        };
+
+        return FileUtils.loadObject(outputDir + "result.json", typeToken);
+    }
+
+    private static ArrayList<EffectSizeItem> saveAndGetResult() throws IOException {
+
         final ArrayList<EffectSizeItem> results = new ArrayList<>(formulas.size() * ProgramDefination.PROGRAM_LIST.length);
 
         for (String programName : ProgramDefination.PROGRAM_LIST) {
@@ -66,14 +103,18 @@ public class ResolveAllEffectSize {
             }
         }
 
-        FileUtils.saveString(outputDir + "result.csv", CsvExporter.toCsvString(results.toArray(new EffectSizeItem[0])));
-        final JFreeChart chart = EffectSizeChart.resolveGroupByProgram(results, "All Effect Sizes");
+        FileUtils.saveObject(outputDir + "result.json", results);
 
+        FileUtils.saveString(outputDir + "result.csv", CsvExporter.toCsvString(results.toArray(new EffectSizeItem[0])));
+
+        final JFreeChart chart = EffectSizeChart.resolveGroupByProgram(results, "All Effect Sizes");
         ChartUtils.saveChartAsJPEG(
             Paths.get(outputDir).resolve("result.jpg").toFile(),
             chart,
             1200,
             800);
+
+        return results;
     }
 
     /**
@@ -128,5 +169,17 @@ public class ResolveAllEffectSize {
             .toImmutableList();
 
         return new SuspiciousnessFactorJam(list);
+    }
+
+    private static String toCsvString(Map<String, Double> averageES) {
+
+        final ArrayList<CsvLine> csvLines = new ArrayList<>(averageES.size());
+        csvLines.add(new CsvLine(new Object[]{"formula", "average effect size"}));
+
+        averageES.forEach((formula, es) -> {
+            csvLines.add(new CsvLine(new Object[]{formula, es}));
+        });
+
+        return CsvExporter.toCsvString(csvLines);
     }
 }
