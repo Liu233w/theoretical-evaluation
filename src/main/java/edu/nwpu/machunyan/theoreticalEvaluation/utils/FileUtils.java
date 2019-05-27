@@ -1,6 +1,7 @@
 package edu.nwpu.machunyan.theoreticalEvaluation.utils;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.*;
 import java.net.URISyntaxException;
@@ -51,6 +52,14 @@ public class FileUtils {
 
     public static <T> T loadObject(Path path, Class<T> type, Gson gson) throws FileNotFoundException {
         return gson.fromJson(new FileReader(path.toFile()), type);
+    }
+
+    public static <T> T loadObject(Path path, TypeToken<T> token) throws FileNotFoundException {
+        return new Gson().fromJson(new FileReader(path.toFile()), token.getType());
+    }
+
+    public static <T> T loadObject(String path, TypeToken<T> token) throws FileNotFoundException {
+        return loadObject(Paths.get(path), token);
     }
 
     /**
