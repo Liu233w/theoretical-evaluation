@@ -46,13 +46,17 @@ public class TestSuitSubsetResolver {
     private final boolean useParallel;
 
     public TestSuitSubsetResolver(@NonNull SuspiciousnessFactorFormula sfFormula) {
-        this(sfFormula, "", null, null, true);
+        this(sfFormula, "", null, null, true, 0.0);
     }
 
     @Builder
     public TestSuitSubsetResolver(
         @NonNull SuspiciousnessFactorFormula sfFormula,
-        String formulaTitle, Reporter reporter, Provider provider, boolean useParallel) {
+        String formulaTitle,
+        Reporter reporter,
+        Provider provider,
+        boolean useParallel,
+        double preLimitSfRate) {
 
         this.reporter = reporter;
         this.provider = provider;
@@ -62,6 +66,7 @@ public class TestSuitSubsetResolver {
             .formula(sfFormula)
             .formulaTitle(formulaTitle)
             .sort(true)
+            .preLimitSfRate(preLimitSfRate)
             .build();
     }
 

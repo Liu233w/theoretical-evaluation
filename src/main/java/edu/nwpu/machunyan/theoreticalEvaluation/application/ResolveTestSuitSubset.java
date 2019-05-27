@@ -29,66 +29,88 @@ public class ResolveTestSuitSubset {
     // 结果的输出路径
     private static final String resultOutputDir = "./target/outputs/test-suit-subset";
 
+    private static final String[] sfRates = new String[]{
+        "0.3",
+        "0.5",
+    };
+
     public static void main(String[] args) throws IOException {
 
         for (String name : ProgramDefination.PROGRAM_LIST) {
-
-            final RunResultJam imports = Run.getResultFromFile(name);
-            final Set<Map.Entry<String, SuspiciousnessFactorFormula>> entrySet = SuspiciousnessFactorFormulas.getAllFormulas().entrySet();
-
-            @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", imports.getRunResultForPrograms().size() * entrySet.size());
-
-            for (Map.Entry<String, SuspiciousnessFactorFormula> entry :
-                entrySet) {
-
-                final String formulaTitle = entry.getKey();
-                final SuspiciousnessFactorFormula formula = entry.getValue();
-
-                // 跳过已经计算出的结果
-                if (Files.exists(Paths.get(resolveResultFilePath(name, formulaTitle)))) {
-                    LogUtils.logInfo("skip " + name + "-" + formulaTitle);
-                    progressBar.maxHint(progressBar.getMax() - imports.getRunResultForPrograms().size());
-                    continue;
-                }
-
-                LogUtils.logInfo("working on " + name + "-" + formulaTitle);
-
-                // 缓存中间结果
-                final CacheHandler cache = new CacheHandler("testsuit-subset-" + name + "-" + formulaTitle);
-                final TestSuitSubsetResolver.Reporter reporter = item -> {
-                    final String key = item.getProgramTitle();
-                    LogUtils.logFine("saving cache: " + key);
-                    cache.saveCache(key, item);
-                    progressBar.step();
-                };
-                final TestSuitSubsetResolver.Provider provider = (resolver, input) -> {
-                    final String key = input.getProgramTitle();
-                    final Optional<TestSuitSubsetForProgram> result = cache.tryLoadCache(key, TestSuitSubsetForProgram.class);
-                    if (result.isPresent()) {
-
-                        // 避免缓存影响对剩余时间的计算
-                        progressBar.maxHint(progressBar.getMax() - 1);
-                        progressBar.stepBy(-1);
-
-                        LogUtils.logFine("loaded item from cache: " + key);
-                    }
-                    return result;
-                };
-
-                final TestSuitSubsetResolver resolver = TestSuitSubsetResolver
-                    .builder()
-                    .sfFormula(formula)
-                    .formulaTitle(formulaTitle)
-                    .provider(provider)
-                    .reporter(reporter)
-                    .useParallel(true)
-                    .build();
-                final TestSuitSubsetJam result = resolver.resolve(imports);
-
-                FileUtils.saveObject(resolveResultFilePath(name, formulaTitle), result);
-
-                cache.deleteAllCaches();
+            resolve(name, null);
+            for (String sfRate : sfRates) {
+                resolve(name, sfRate);
             }
+        }
+    }
+
+    private static void resolve(String name, String preLimitSfRate) throws IOException {
+
+        final double sfRate;
+        if (preLimitSfRate == null || preLimitSfRate.equals("")) {
+            preLimitSfRate = "";
+            sfRate = 0.0;
+        } else {
+            preLimitSfRate = "-" + preLimitSfRate;
+            sfRate = Double.parseDouble(preLimitSfRate);
+        }
+
+        final RunResultJam imports = Run.getResultFromFile(name);
+        final Set<Map.Entry<String, SuspiciousnessFactorFormula>> entrySet = SuspiciousnessFactorFormulas.getAllFormulas().entrySet();
+
+        @Cleanup final ProgressBar progressBar = LogUtils.newProgressBarInstance("", imports.getRunResultForPrograms().size() * entrySet.size());
+
+        for (Map.Entry<String, SuspiciousnessFactorFormula> entry :
+            entrySet) {
+
+            final String formulaTitle = entry.getKey();
+            final SuspiciousnessFactorFormula formula = entry.getValue();
+
+            // 跳过已经计算出的结果
+            if (Files.exists(Paths.get(resolveResultFilePath(name, formulaTitle)))) {
+                LogUtils.logInfo("skip " + name + "-" + formulaTitle + preLimitSfRate);
+                progressBar.maxHint(progressBar.getMax() - imports.getRunResultForPrograms().size());
+                continue;
+            }
+
+            LogUtils.logInfo("working on " + name + "-" + formulaTitle + preLimitSfRate);
+
+            // 缓存中间结果
+            final CacheHandler cache = new CacheHandler("testsuit-subset-" + name + "-" + formulaTitle + preLimitSfRate);
+            final TestSuitSubsetResolver.Reporter reporter = item -> {
+                final String key = item.getProgramTitle();
+                LogUtils.logFine("saving cache: " + key);
+                cache.saveCache(key, item);
+                progressBar.step();
+            };
+            final TestSuitSubsetResolver.Provider provider = (resolver, input) -> {
+                final String key = input.getProgramTitle();
+                final Optional<TestSuitSubsetForProgram> result = cache.tryLoadCache(key, TestSuitSubsetForProgram.class);
+                if (result.isPresent()) {
+
+                    // 避免缓存影响对剩余时间的计算
+                    progressBar.maxHint(progressBar.getMax() - 1);
+                    progressBar.stepBy(-1);
+
+                    LogUtils.logFine("loaded item from cache: " + key);
+                }
+                return result;
+            };
+
+            final TestSuitSubsetResolver resolver = TestSuitSubsetResolver
+                .builder()
+                .sfFormula(formula)
+                .formulaTitle(formulaTitle)
+                .provider(provider)
+                .reporter(reporter)
+                .useParallel(true)
+                .preLimitSfRate(sfRate)
+                .build();
+            final TestSuitSubsetJam result = resolver.resolve(imports);
+
+            FileUtils.saveObject(resolveResultFilePath(name, formulaTitle, preLimitSfRate), result);
+
+            cache.deleteAllCaches();
         }
     }
 
@@ -104,7 +126,24 @@ public class ResolveTestSuitSubset {
         return FileUtils.loadObject(resolveResultFilePath(name, formulaTitle), TestSuitSubsetJam.class);
     }
 
+    /**
+     * 从运行结果读取数据，必须已经存在
+     *
+     * @return
+     */
+    public static TestSuitSubsetJam getResultFromFile(
+        String name,
+        String formulaTitle,
+        String preLimitSfRate) throws FileNotFoundException {
+
+        return FileUtils.loadObject(resolveResultFilePath(name, formulaTitle, "-" + preLimitSfRate), TestSuitSubsetJam.class);
+    }
+
     private static String resolveResultFilePath(String programName, String formulaTitle) {
-        return resultOutputDir + "/" + programName + "-" + formulaTitle + ".json";
+        return resolveResultFilePath(programName, formulaTitle, "");
+    }
+
+    private static String resolveResultFilePath(String programName, String formulaTitle, String preLimitSfRate) {
+        return resultOutputDir + "/" + programName + "-" + formulaTitle + preLimitSfRate + ".json";
     }
 }
