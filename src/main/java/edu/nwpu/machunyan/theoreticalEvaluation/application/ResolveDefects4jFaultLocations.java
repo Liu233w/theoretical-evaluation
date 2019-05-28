@@ -116,7 +116,7 @@ public class ResolveDefects4jFaultLocations {
         final LinkedList<CsvLine> csvLines = new LinkedList<>();
 
         csvLines.add(new CsvLine(new Object[]{
-            "program title", "version", "diff", "changed line",
+            "program title", "version", "diff", "changed line", "in effect size",
         }));
 
         for (Map.Entry<String, List<Entity>> entry : result.entrySet()) {
@@ -143,6 +143,7 @@ public class ResolveDefects4jFaultLocations {
                     entity.getVersion(),
                     entity.getDiff(),
                     sb.toString(),
+                    entity.isUsedInEffectSize(),
                 }));
             }
         }
