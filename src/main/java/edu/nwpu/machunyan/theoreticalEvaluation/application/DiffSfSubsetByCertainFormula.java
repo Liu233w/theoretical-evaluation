@@ -114,8 +114,7 @@ public class DiffSfSubsetByCertainFormula {
     private static SuspiciousnessFactorJam resolveSubsetSf(String name) throws FileNotFoundException {
 
         final RunResultJam jam = Run.getResultFromFile(name);
-        // TODO: 如果改成多个公式的话，需要把这里换成 ResolveTestSuitSubset
-        final TestSuitSubsetJam subsetJam = ResolveTestSuitSubsetByOp.getResultFromFile(name);
+        final TestSuitSubsetJam subsetJam = ResolveTestSuitSubset.getResultFromFile(name, formulaTitle);
         final RunResultJam subsetResult = subsetJam.getRunResultJam(jam);
 
         final VectorTableModelJam vtm = VectorTableModelResolver.resolve(subsetResult);
