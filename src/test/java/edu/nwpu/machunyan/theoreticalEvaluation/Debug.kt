@@ -15,6 +15,7 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.RunResultForTestcase
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.pojo.TestcaseItem
 import edu.nwpu.machunyan.theoreticalEvaluation.utils.FileUtils
 import one.util.streamex.IntStreamEx
+import java.lang.Exception
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.stream.IntStream
@@ -22,7 +23,15 @@ import java.util.stream.Stream
 
 fun main() {
 
-    extractTestcases()
+    mockitoAveragePerformance()
+}
+
+fun mockitoAveragePerformance() {
+    val resultFromFile = Run.getResultFromFile("Mockito")
+    val runResultForProgram = resultFromFile.runResultForPrograms.find { it.programTitle == "6b" }!!
+
+    val vtm = VectorTableModelResolver.resolve(runResultForProgram)
+    val ap = AveragePerformanceResolver.resolve(vtm, SuspiciousnessFactorFormulas::op)
 }
 
 fun extractTestcases() {

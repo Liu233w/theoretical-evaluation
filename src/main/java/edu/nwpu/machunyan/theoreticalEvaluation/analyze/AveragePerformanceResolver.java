@@ -49,6 +49,7 @@ public class AveragePerformanceResolver {
         SuspiciousnessFactorResolver sfResolver) {
 
         final List<SuspiciousnessFactorForStatement> sfs = sfResolver.resolve(vtmRecords);
+        // statementIndex -> examScore
         final Map<Integer, Double> examScore = resolveExamScore(sfs, sfResolver.isSort());
 
         return vtmRecords.stream()
