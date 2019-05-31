@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 /**
- * 从一个大的测试用例中去除掉无效的测试用例
+ * 从一系列测试用例中获得一个较优的测试用例子集
  */
 @EqualsAndHashCode
 @ToString

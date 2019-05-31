@@ -77,7 +77,7 @@ public class CacheHandler {
      * 将对象保存进缓存中（必须确保对象可以序列化，并且能够通过反射获取类型）
      * <p>
      * eg.
-     * TestcaseWeightForProgram 可以被缓存，但 List<TestcaseWeightForProgram> 不行，
+     * TestcaseWeightForProgram 可以被缓存，但 List&lt;TestcaseWeightForProgram&gt; 不行，
      * 必须被装进 TestcaseWeightJam。
      *
      * @param key

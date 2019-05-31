@@ -17,10 +17,13 @@ import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * 生成 Effect Size 的图表
+ */
 public class EffectSizeChart {
 
     /**
-     * @param input programName -> formulaTitle -> effectSize
+     * @param input programName - formulaTitle - effectSize
      * @return
      */
     public static JFreeChart resolveGroupByProgram(List<EffectSizeItem> input, String chartTitle) {

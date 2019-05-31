@@ -18,6 +18,9 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.stream.Collectors;
 
+/**
+ * 读取 Defects4j 的覆盖文件，获取覆盖信息。
+ */
 public class Defects4jCoverageParser {
 
     /**

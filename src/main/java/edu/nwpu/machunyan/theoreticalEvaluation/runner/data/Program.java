@@ -3,7 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner.data;
 import lombok.Value;
 
 /**
- * 一个源程序代码，用于储存用来分析的程序的元信息
+ * 储存用来分析的程序的元信息，包含了程序名称和位置。
  */
 @Value
 public class Program {

@@ -7,6 +7,9 @@ import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Coverage;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.Program;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.data.RunResultFromRunner;
 
+/**
+ * 用于运行 Defects4j 的测试程序
+ */
 public class Defects4jRunner implements ICoverageRunner {
 
     private final Defects4jContainerExecutor executor;

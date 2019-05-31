@@ -3,7 +3,7 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner.data;
 import lombok.Value;
 
 /**
- * 一条语句的信息
+ * 一条语句的信息，包括其编号、位置。
  */
 @Value
 public class StatementInfo {

@@ -19,7 +19,7 @@ import java.nio.file.Paths;
 import java.util.List;
 
 /**
- * 获取
+ * 获取可疑因子
  */
 public class ResolveSuspiciousnessFactor {
 

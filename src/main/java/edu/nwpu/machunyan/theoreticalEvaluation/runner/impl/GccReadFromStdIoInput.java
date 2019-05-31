@@ -5,7 +5,7 @@ import lombok.Value;
 import org.apache.commons.lang.NotImplementedException;
 
 /**
- * 从命令行读入，检测输出是否正确
+ * 定义了C语言测试程序的一个输入。从命令行读入，检测输出是否正确
  */
 @Value
 public class GccReadFromStdIoInput implements IProgramInput {

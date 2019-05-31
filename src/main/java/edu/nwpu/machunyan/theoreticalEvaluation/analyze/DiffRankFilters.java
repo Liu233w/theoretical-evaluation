@@ -12,7 +12,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
 /**
- * DiffRank 的筛选器，用来筛选 {@link DiffRankResolver 获得的结果}
+ * DiffRank 的筛选器，用来筛选 {@link DiffRankResolver} 获得的结果
  */
 public class DiffRankFilters {
 

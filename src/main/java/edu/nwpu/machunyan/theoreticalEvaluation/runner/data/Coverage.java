@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 表示一次运行的语句覆盖信息
+ * 表示一个测试用例的语句覆盖信息
  */
 @EqualsAndHashCode
 @ToString

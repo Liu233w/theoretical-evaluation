@@ -13,6 +13,9 @@ import org.jfree.data.xy.XYSeriesCollection;
 
 import java.awt.*;
 
+/**
+ * 生成用于比较排名的图表。
+ */
 public class DiffRankChart {
 
     /**

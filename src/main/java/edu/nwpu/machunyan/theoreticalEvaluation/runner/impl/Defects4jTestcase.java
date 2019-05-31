@@ -3,6 +3,9 @@ package edu.nwpu.machunyan.theoreticalEvaluation.runner.impl;
 import edu.nwpu.machunyan.theoreticalEvaluation.runner.IProgramInput;
 import lombok.Value;
 
+/**
+ * 定义了 Defects4j 测试程序的一个输入
+ */
 @Value
 public class Defects4jTestcase implements IProgramInput {
 

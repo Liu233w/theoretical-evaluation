@@ -17,6 +17,9 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+/**
+ * 用于在一个程序上运行所有的测试用例，输出结果和覆盖信息。
+ */
 @Builder
 public class RunningScheduler {
 
