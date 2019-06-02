@@ -133,8 +133,9 @@ public class SuspiciousnessFactorFormulas {
         final double aef = record.getAef();
         final double aep = record.getAep();
         final double f = resolveF(record);
+        final double p = resolveP(record);
 
-        return (aef / f) / (aef / f + aep / f);
+        return (aef / f) / (aef / f + aep / p);
     }
 
     @Formula
@@ -443,7 +444,7 @@ public class SuspiciousnessFactorFormulas {
 
         return aef * anp
             /
-            Math.sqrt((aef + aep) * (anf + anp) * (aef + anp) + (anf + aep));
+            Math.sqrt((aef + aep) * (anf + anp) * (aef + anp) * (anf + aep));
     }
 
     // op2 就是 op
