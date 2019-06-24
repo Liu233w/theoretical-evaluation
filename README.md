@@ -14,7 +14,11 @@ and [Defects4j](https://github.com/rjust/defects4j)) and generate coverage infor
 - utils: utility functions
 - application: a bunch of class that contains main method, to run the project.
 
-## usage
+SIR database is located in [resources](./src/main/resources), while Defects4j has to be executed by docker.
+
+## Usage
 1. run the main class directly in IDE
 2. or use `mvn exec:java -DmainClass="...."`
 3. or install docker and use `build-and-run-image.sh`
+
+Output files are located in `target/outputs/`, cache file in `target/outputs/.cache`.
