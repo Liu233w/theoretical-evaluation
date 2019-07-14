@@ -35,10 +35,7 @@ public class SuspiciousnessFactorUtils {
      * @return
      */
     public static StreamEx<SuspiciousnessFactorForStatement> rankedStream(StreamEx<SuspiciousnessFactorForStatement> stream) {
-        return stream.sorted(
-            Comparator.comparingDouble(
-                SuspiciousnessFactorForStatement::getSuspiciousnessFactor)
-                .reversed());
+        return stream.sorted(SuspiciousnessFactorUtils.getSuspiciousnessFactorComparator());
     }
 
     /**
@@ -105,4 +102,17 @@ public class SuspiciousnessFactorUtils {
             .toImmutableList();
     }
 
+    public static Comparator<SuspiciousnessFactorForStatement> getSuspiciousnessFactorComparator() {
+        return (left, right) -> {
+            double lf = left.getSuspiciousnessFactor();
+            double rf = right.getSuspiciousnessFactor();
+            if (Double.isNaN(lf)) {
+                lf = Double.NEGATIVE_INFINITY;
+            }
+            if (Double.isNaN(rf)) {
+                rf = Double.NEGATIVE_INFINITY;
+            }
+            return -Double.compare(lf, rf);
+        };
+    }
 }

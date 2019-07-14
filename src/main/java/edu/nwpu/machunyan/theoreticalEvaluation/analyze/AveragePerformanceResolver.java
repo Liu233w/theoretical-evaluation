@@ -83,9 +83,7 @@ public class AveragePerformanceResolver {
             sortedInput = sfs;
         } else {
             sortedInput = new ArrayList<>(sfs);
-            sortedInput.sort(Comparator.comparingDouble(
-                SuspiciousnessFactorForStatement::getSuspiciousnessFactor)
-                .reversed());
+            sortedInput.sort(SuspiciousnessFactorUtils.getSuspiciousnessFactorComparator());
         }
 
         final HashMap<Integer, Double> result = new HashMap<>();
