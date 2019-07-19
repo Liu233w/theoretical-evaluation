@@ -129,7 +129,8 @@ public class TestSuitSubsetResolver {
                     buildStreamSkipBy(rawRunResult, useItem),
                     statementCount);
 
-            if (averagePerformance <= currentAveragePerformance) {
+            if (!Double.isNaN(averagePerformance)
+                && averagePerformance <= currentAveragePerformance) {
                 currentAveragePerformance = averagePerformance;
             } else {
                 useItem[i] = true;

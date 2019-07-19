@@ -14,7 +14,8 @@ import java.util.*;
 public class AveragePerformanceResolver {
 
     /**
-     * 获取 vtm 的 average performance。如果vtm中没有满足要求的语句（即所有执行过的语句都是 anf != 0的），返回 0
+     * 获取 vtm 的 average performance。
+     * 如果vtm中没有满足要求的语句（即所有执行过的语句都是 anf != 0的，或者可疑因子均不存在），返回 NaN
      *
      * @param vtm
      * @param sfFormula 用来计算 SuspiciousnessFactor 的公式
@@ -25,7 +26,8 @@ public class AveragePerformanceResolver {
     }
 
     /**
-     * 获取 vtm 的 average performance。如果vtm中没有满足要求的语句（即所有执行过的语句都是 anf != 0的），返回 0
+     * 获取 vtm 的 average performance。
+     * 如果vtm中没有满足要求的语句（即所有执行过的语句都是 anf != 0的，或者可疑因子均不存在），返回 NaN
      *
      * @param vtmRecords
      * @param sfFormula  用来计算 SuspiciousnessFactor 的公式
@@ -48,7 +50,11 @@ public class AveragePerformanceResolver {
         List<VectorTableModelForStatement> vtmRecords,
         SuspiciousnessFactorResolver sfResolver) {
 
-        final List<SuspiciousnessFactorForStatement> sfs = sfResolver.resolve(vtmRecords);
+        List<SuspiciousnessFactorForStatement> sfs = sfResolver.resolve(vtmRecords);
+        sfs = SuspiciousnessFactorUtils.removeNanSf(sfs);
+        if (sfs.size() == 0) {
+            return Double.NaN;
+        }
         // statementIndex -> examScore
         final Map<Integer, Double> examScore = resolveExamScore(sfs, sfResolver.isSort());
 
@@ -60,7 +66,7 @@ public class AveragePerformanceResolver {
             .filter(Objects::nonNull)
             .mapToDouble(Double::doubleValue)
             .average()
-            .orElse(0);
+            .orElse(Double.NaN);
     }
 
     private static boolean isStatementNeeded(VectorTableModelForStatement record) {

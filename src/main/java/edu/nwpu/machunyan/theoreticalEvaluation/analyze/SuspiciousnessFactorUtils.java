@@ -115,4 +115,10 @@ public class SuspiciousnessFactorUtils {
             return -Double.compare(lf, rf);
         };
     }
+
+    public static List<SuspiciousnessFactorForStatement> removeNanSf(List<SuspiciousnessFactorForStatement> input) {
+        return StreamEx.of(input)
+            .filter(a -> !Double.isNaN(a.getSuspiciousnessFactor()))
+            .toImmutableList();
+    }
 }
